@@ -1,4 +1,4 @@
-![preview](https://github.com/SergeiMakrushin/animalShelterInfobot/blob/feature-VS/preview.jpg)
+![preview](https://github.com/SergeiMakrushin/animalShelterInfobot/blob/dev/preview.jpg)
 
 # AnimalShelterInfoBot - Твой лохматый друг!
 Телеграм бот, в котором ты можешь легко подобрать для себя лохматого друга! 
