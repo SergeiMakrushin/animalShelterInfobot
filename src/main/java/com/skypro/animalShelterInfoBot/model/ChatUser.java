@@ -1,16 +1,20 @@
-package com.skypro.animalShelterInfoBot.bot.model;
+package com.skypro.animalShelterInfoBot.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-    //Модель таблицы, куда будут попадать все первоначально общающиеся с ботом.
+
+//Модель таблицы, куда будут попадать все первоначально общающиеся с ботом.
 @EqualsAndHashCode(exclude = "id")
+
 @Builder
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users_contact_info")
 @Entity
 public class ChatUser {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -36,15 +40,15 @@ public class ChatUser {
 
     @Column(name = "email")
     private String email;
-    public ChatUser() {
-    }
-
-    public ChatUser(long chatId, String name, String surname, int age, long phoneNumber, String email) {
-        this.chatId = chatId;
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-    }
+//    public ChatUser() {
+//    }
+//
+//    public ChatUser(long chatId, String name, String surname, int age, long phoneNumber, String email) {
+//        this.chatId = chatId;
+//        this.name = name;
+//        this.surname = surname;
+//        this.age = age;
+//        this.phoneNumber = phoneNumber;
+//        this.email = email;
+//    }
 }
