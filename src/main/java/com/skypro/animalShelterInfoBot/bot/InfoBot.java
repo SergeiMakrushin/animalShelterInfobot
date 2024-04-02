@@ -20,6 +20,10 @@ public class InfoBot extends TelegramLongPollingBot {
     @Value("${bot.name}")
     private String nameBot;
 
+    /**
+     * метод получения и обработки сообщения.
+     * @param update
+     */
     @Override
     public void onUpdateReceived(Update update) {
         logger.info("метод получения и обработки сообщения");
@@ -33,7 +37,12 @@ public class InfoBot extends TelegramLongPollingBot {
 
     }
 
-    // Метод отправляет сообщение пользователю
+    /**
+     * Метод отправляет сообщение пользователю.
+     * @param id
+     * @param message
+     * @return
+     */
     public String sendText(Long id, String message) {
         logger.info("метод отправки сообщения пользователю");
 

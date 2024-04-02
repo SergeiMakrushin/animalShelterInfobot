@@ -12,6 +12,10 @@ import lombok.*;
 @Getter
 @Entity
 
+    /**
+    * модель животных.
+    */
+
 public class ShelterAnimals {
     public enum TapeOfAnimal {DOG, CAT}
 

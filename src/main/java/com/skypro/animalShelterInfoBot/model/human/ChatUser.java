@@ -3,7 +3,9 @@ package com.skypro.animalShelterInfoBot.model.human;
 import jakarta.persistence.*;
 import lombok.*;
 
-//Модель таблицы, куда будут попадать все первоначально общающиеся с ботом.
+    /**
+    * Модель таблицы, куда будут попадать все первоначально общающиеся с ботом.
+    */
 @EqualsAndHashCode(exclude = "id")
 
 @Builder
@@ -32,8 +34,10 @@ public class ChatUser {
     @Column(name = "age")
     private int age;
 
-    /*На первом этапе бот тоже может записать данные пользователя
-     * Поэтому тут тоже можно запросить телефон-емайл*/
+        /**
+         * На первом этапе бот тоже может записать данные пользователя.
+         * Поэтому тут тоже можно запросить телефон-емайл.
+         */
 
     @Column(name = "phone")
     private long phoneNumber;
