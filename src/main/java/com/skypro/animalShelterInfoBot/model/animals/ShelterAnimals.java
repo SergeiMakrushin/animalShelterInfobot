@@ -1,22 +1,34 @@
 package com.skypro.animalShelterInfoBot.model.animals;
 
-import jakarta.persistence.Column;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import jakarta.persistence.*;
+import lombok.*;
 
-@SuperBuilder
+
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-abstract class ShelterAnimals {
+@Setter
+@Getter
+@Entity
+
+public class ShelterAnimals {
+    public enum TapeOfAnimal {DOG, CAT}
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    private Long id;
+
+    private TapeOfAnimal catOrDog; //вид животного
     @Column(name = "name")
     private String nickName;  //кличка
-    @Column(name = "breed")
+
     private String breed;     //порода
-    @Column(name = "age")
+
     private float age;        //возраст
-    @Column(name = "color")
+
     private String color;     //окрас
+
+
 }

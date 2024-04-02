@@ -1,4 +1,4 @@
-package com.skypro.animalShelterInfoBot.model;
+package com.skypro.animalShelterInfoBot.model.human;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,15 +40,7 @@ public class ChatUser {
 
     @Column(name = "email")
     private String email;
-//    public ChatUser() {
-//    }
-//
-//    public ChatUser(long chatId, String name, String surname, int age, long phoneNumber, String email) {
-//        this.chatId = chatId;
-//        this.name = name;
-//        this.surname = surname;
-//        this.age = age;
-//        this.phoneNumber = phoneNumber;
-//        this.email = email;
-//    }
+
+    private boolean isVolunteer;
+
 }
