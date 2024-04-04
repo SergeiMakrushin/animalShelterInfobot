@@ -26,7 +26,7 @@ public class AnimalController {
 
     private final InfoBot infoBot;
 
-    AnimalController(InfoBot infoBot) {
+    public AnimalController(InfoBot infoBot) {
         this.infoBot = infoBot;
     }
 

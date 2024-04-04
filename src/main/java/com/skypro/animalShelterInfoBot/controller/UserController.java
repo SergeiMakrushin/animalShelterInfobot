@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Tag(name = "Контроллер пользователей",
         description = "Создание пользователя.  " +
                 "Получение пользователей из базы.  " +
@@ -27,7 +28,7 @@ public class UserController {
 
     private final InfoBot infoBot;
 
-    UserController(InfoBot infoBot) {
+    public UserController(InfoBot infoBot) {
         this.infoBot = infoBot;
     }
 
