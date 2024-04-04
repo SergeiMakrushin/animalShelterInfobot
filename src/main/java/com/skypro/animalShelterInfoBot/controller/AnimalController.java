@@ -6,11 +6,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +16,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Tag(name = "Контроллер животных",
+        description = "Создание животного.  " +
+                "Получение животных из базы.  " +
+                "Удаление животных из базы.")
 @RestController
 @RequestMapping("/animals")
 public class AnimalController {
-    @Autowired
-    private InfoBot infoBot;
+
+    private final InfoBot infoBot;
+
+    AnimalController(InfoBot infoBot) {
+        this.infoBot = infoBot;
+    }
 
 
     @Operation(summary = "Создание животного",
