@@ -20,7 +20,7 @@ public class InfoBot extends TelegramLongPollingBot {
     @Value("${bot.name}")
     private String nameBot;
 
-    /**
+     /**
      * метод получения и обработки сообщения.
      * @param update
      */
@@ -37,7 +37,7 @@ public class InfoBot extends TelegramLongPollingBot {
 
     }
 
-    /**
+     /**
      * Метод отправляет сообщение пользователю.
      * @param id
      * @param message
