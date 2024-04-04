@@ -3,9 +3,9 @@ package com.skypro.animalShelterInfoBot.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-    /**
-    * Сущность аватара.
-    */
+ /**
+ * Сущность Аватар
+ */
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = "id")

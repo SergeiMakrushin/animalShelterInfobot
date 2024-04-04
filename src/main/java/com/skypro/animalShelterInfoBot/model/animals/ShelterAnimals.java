@@ -3,18 +3,15 @@ package com.skypro.animalShelterInfoBot.model.animals;
 import jakarta.persistence.*;
 import lombok.*;
 
-
+ /**
+ * модель животных.
+ */
 @Builder
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @Entity
-
-    /**
-    * модель животных.
-    */
 
 public class ShelterAnimals {
     public enum TapeOfAnimal {DOG, CAT}
