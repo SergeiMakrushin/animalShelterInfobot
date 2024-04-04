@@ -9,20 +9,27 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Tag(name = "Контроллер пользователей",
+        description = "Создание пользователя.  " +
+                "Получение пользователей из базы.  " +
+                "Удаление пользователей из базы.  " +
+                "Прочие операции.")
 @RequestMapping("/user")
 @RestController
 public class UserController {
-    @Autowired
-    private InfoBot infoBot;
 
+    private final InfoBot infoBot;
+
+    UserController(InfoBot infoBot) {
+        this.infoBot = infoBot;
+    }
 
     @Operation(summary = "Получаем пользователей их базы данных",
             responses = {
