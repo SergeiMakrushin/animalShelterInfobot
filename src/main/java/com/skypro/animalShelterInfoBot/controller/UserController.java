@@ -32,7 +32,7 @@ public class UserController {
         this.infoBot = infoBot;
     }
 
-    @Operation(summary = "Получаем пользователей их базы данных",
+    @Operation(summary = "Получаем пользователей из базы данных",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
