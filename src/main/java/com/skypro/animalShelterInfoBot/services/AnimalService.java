@@ -37,8 +37,19 @@ public class AnimalService {
         animals.add(animal);
         return animal;
     }
+    public List<ShelterAnimals> getAnimalsPagination(Integer pageNumber, Integer size, Integer sizeNumber){
+        if (pageNumber != null && sizeNumber != null) {
+            int startIndex = (pageNumber - 1) * sizeNumber;
+            int endIndex = Math.min(startIndex + sizeNumber, animals.size());
 
-    public List<ShelterAnimals> getAllAnimals() {
+            animals = animals.subList(startIndex, endIndex);
+        } else {
+            animals = animals;
+        }
+        return animals;
+    }
+
+    public List<ShelterAnimals> getAllAnimals(Integer pageNumber, Integer size) {
         if (animals.isEmpty()) {
             throw new IllegalArgumentException("No animals found in the database");
         } else {

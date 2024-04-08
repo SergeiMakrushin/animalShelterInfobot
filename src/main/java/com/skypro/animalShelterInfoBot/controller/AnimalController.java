@@ -27,6 +27,7 @@ public class AnimalController {
 
     private final InfoBot infoBot;
     private final AnimalService animalService;
+    private AnimalController service;
 
     public AnimalController(InfoBot infoBot, AnimalService animalService) {
         this.infoBot = infoBot;
@@ -44,17 +45,12 @@ public class AnimalController {
                     )
             )
     )
-
     @PostMapping
-    public ShelterAnimals creatAnimal(@RequestBody ShelterAnimals animal) {
-        return animalService.createAnimal(animal);
+    public ResponseEntity<String> createAnimal(@RequestBody ShelterAnimals animals) {
+        //        в shelterAnimals будет записываться ответ от сервиса
+        ShelterAnimals shelterAnimals = new ShelterAnimals();
+        return ResponseEntity.ok("Animal created successfully" + shelterAnimals);
     }
-//    @PostMapping
-//    public ResponseEntity<String> createAnimal(@RequestBody ShelterAnimals animals) {
-//        //        в shelterAnimals будет записываться ответ от сервиса
-//        ShelterAnimals shelterAnimals = new ShelterAnimals();
-//        return ResponseEntity.ok("Раздел в разработке" + shelterAnimals);
-//    }
 
 
     @Operation(summary = "получаем животных из базы данных",
@@ -69,17 +65,23 @@ public class AnimalController {
                     )
             })
     @GetMapping
-    public List<ShelterAnimals> getAllAnimals() {
-        return animalService.getAllAnimals();
+    public ResponseEntity<String> getAllAnimals(@RequestBody ShelterAnimals animals)
+//   @Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
+//    @RequestParam(value = "page", required = false) Integer pageNumber,
+//    @RequestParam(name = "кол-во элементов") Integer sizeNumber)
+    {
+//        в animalsList будет записываться ответ от сервиса
+        List<ShelterAnimals> animalsList = new ArrayList<>();
+        return ResponseEntity.ok("All animals" + animalsList);
     }
-//    @GetMapping
-//    public ResponseEntity<String> getAnimal(@Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
-//                                            @RequestParam(value = "page", required = false) Integer pageNumber,
-//                                            @RequestParam(name = "кол-во элементов") Integer sizeNumber) {
-////        в animalsList будет записываться ответ от сервиса
-//        List<ShelterAnimals> animalsList = new ArrayList<>();
-//        return ResponseEntity.ok("Раздел в разработке" + animalsList);
-//    }
+    @GetMapping("/pagination")
+    public ResponseEntity<List<ShelterAnimals>> getAnimalPagination(@Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
+                                                          @RequestParam(value = "page", required = false) Integer pageNumber,
+                                                          @RequestParam(name = "кол-во элементов") Integer sizeNumber) {
+        List<ShelterAnimals> paginatedList = new ArrayList<>();
+
+        return ResponseEntity.ok(paginatedList);
+    }
 
 
     @Operation(summary = "Удаляем животное из базы",
@@ -93,13 +95,8 @@ public class AnimalController {
                     )
             })
     @DeleteMapping("/{nickname}")
-    public void deleteAnimal(@PathVariable String nickname) {
+    public ResponseEntity<String> deleteAnimalByNickname(@PathVariable String nickname) {
         animalService.deleteAnimalByNickname(nickname);
+        return ResponseEntity.ok("Animal with nickname " + nickname + " deleted");
     }
-//    @DeleteMapping
-//    public ResponseEntity<String> deleteAnimal(@RequestParam(name = "Кличка животного") String nickName) {
-//        //        в animal будет записываться ответ от сервиса
-//        ShelterAnimals animal = new ShelterAnimals();
-//        return ResponseEntity.ok("Раздел в разработке" + animal);
-//    }
 }
