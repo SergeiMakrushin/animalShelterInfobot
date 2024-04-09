@@ -27,8 +27,6 @@ public class AnimalController {
 
     private final InfoBot infoBot;
     private final AnimalService animalService;
-    private AnimalController service;
-
     public AnimalController(InfoBot infoBot, AnimalService animalService) {
         this.infoBot = infoBot;
         this.animalService = animalService;
@@ -53,7 +51,7 @@ public class AnimalController {
     }
 
 
-    @Operation(summary = "получаем животных из базы данных",
+    @Operation(summary = "получаем всех животных из базы данных",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -65,15 +63,22 @@ public class AnimalController {
                     )
             })
     @GetMapping
-    public ResponseEntity<String> getAllAnimals(@RequestBody ShelterAnimals animals)
-//   @Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
-//    @RequestParam(value = "page", required = false) Integer pageNumber,
-//    @RequestParam(name = "кол-во элементов") Integer sizeNumber)
-    {
+    public ResponseEntity<String> getAllAnimals(@RequestBody ShelterAnimals animals) {
 //        в animalsList будет записываться ответ от сервиса
         List<ShelterAnimals> animalsList = new ArrayList<>();
         return ResponseEntity.ok("All animals" + animalsList);
     }
+    @Operation(summary = "получаем животных из базы данных",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "найденные животные",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    array = @ArraySchema(schema = @Schema(implementation = ShelterAnimals.class))
+                            )
+                    )
+            })
     @GetMapping("/pagination")
     public ResponseEntity<List<ShelterAnimals>> getAnimalPagination(@Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
                                                           @RequestParam(value = "page", required = false) Integer pageNumber,

@@ -49,7 +49,7 @@ public class AnimalService {
         return animals;
     }
 
-    public List<ShelterAnimals> getAllAnimals(Integer pageNumber, Integer size) {
+    public List<ShelterAnimals> getAllAnimals() {
         if (animals.isEmpty()) {
             throw new IllegalArgumentException("No animals found in the database");
         } else {
