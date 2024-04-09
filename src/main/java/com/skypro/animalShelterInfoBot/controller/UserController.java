@@ -3,6 +3,7 @@ package com.skypro.animalShelterInfoBot.controller;
 import com.skypro.animalShelterInfoBot.bot.InfoBot;
 import com.skypro.animalShelterInfoBot.model.animals.ShelterAnimals;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+import com.skypro.animalShelterInfoBot.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -27,9 +28,11 @@ import java.util.List;
 public class UserController {
 
     private final InfoBot infoBot;
+    private final UserService userService;
 
-    public UserController(InfoBot infoBot) {
+    public UserController(InfoBot infoBot, UserService userService) {
         this.infoBot = infoBot;
+        this.userService = userService;
     }
 
     @Operation(summary = "Получаем пользователей из базы данных",
@@ -43,14 +46,31 @@ public class UserController {
                             )
                     )
             })
-    @GetMapping
-    public ResponseEntity<String> getUsers(
+    @GetMapping("/pagination")
+    public ResponseEntity <List<ChatUser>> getUsersPagination(
             @Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
             @RequestParam(value = "page", required = false) Integer pageNumber,
             @RequestParam(name = "кол-во элементов") Integer sizeNumber) {
 //        в лист будет записываться ответ от сервиса
-        List<ChatUser> users = new ArrayList<>();
-        return ResponseEntity.ok("Раздел в разработке" + users);
+        List<ChatUser> paginatedUsersList = new ArrayList<>();
+        return ResponseEntity.ok(paginatedUsersList);
+    }
+    @Operation(summary = "Получаем всех пользователей из базы данных",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "найденные ползователи",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    array = @ArraySchema(schema = @Schema(implementation = ShelterAnimals.class))
+                            )
+                    )
+            })
+    @GetMapping
+    public ResponseEntity<String> getAllUsers(@RequestBody ChatUser users) {
+//        в лист будет записываться ответ от сервиса
+        List<ChatUser> chatUsersList = new ArrayList<>();
+        return ResponseEntity.ok("All animals" + chatUsersList);
     }
 
     @Operation(summary = "Отправляем сообщение пользователю",
@@ -85,7 +105,7 @@ public class UserController {
     public ResponseEntity<String> createUser(@RequestBody ChatUser chatUser) {
         //        в chatUserResponse будет записываться ответ от сервиса
         ChatUser chatUserResponse = new ChatUser();
-        return ResponseEntity.ok("Раздел в разработке" + chatUserResponse);
+        return ResponseEntity.ok("User created successfully" + chatUserResponse);
     }
 
 
@@ -99,11 +119,10 @@ public class UserController {
                             )
                     )
             })
-    @DeleteMapping
-    public ResponseEntity<String> deleteUser(@RequestParam(name = "chatId пользователя") Long chatId) {
-        //        в chatUserResponse будет записываться ответ от сервиса
-        ChatUser chatUserResponse = new ChatUser();
-        return ResponseEntity.ok("Раздел в разработке" + chatUserResponse);
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
+        userService.deleteUserById(userId);
+        return ResponseEntity.ok("User with id " + userId + " deleted");
     }
 
 

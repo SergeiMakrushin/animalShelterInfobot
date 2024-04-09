@@ -37,7 +37,7 @@ public class AnimalService {
         animals.add(animal);
         return animal;
     }
-    public List<ShelterAnimals> getAnimalsPagination(Integer pageNumber, Integer size, Integer sizeNumber){
+    public List<ShelterAnimals> getAnimalsPagination(Integer pageNumber, Integer sizeNumber){
         if (pageNumber != null && sizeNumber != null) {
             int startIndex = (pageNumber - 1) * sizeNumber;
             int endIndex = Math.min(startIndex + sizeNumber, animals.size());
