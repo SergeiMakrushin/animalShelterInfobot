@@ -1,67 +1,44 @@
 package com.skypro.animalShelterInfoBot.services;
 
 import com.skypro.animalShelterInfoBot.model.animals.ShelterAnimals;
+import com.skypro.animalShelterInfoBot.repositories.AnimalRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
 public class AnimalService {
-    private List<ShelterAnimals> animals = new ArrayList<>();
+    private final AnimalRepository animalRepository;
+    private Collection<ShelterAnimals> animals;
 
-    public ShelterAnimals createAnimal(ShelterAnimals animal) {
-         /**
-         * Проверка наличия животного.
-         */
-        if (animal == null) {
-            throw new IllegalArgumentException("An animal can't be empty");
-        }
-
-         /**
-         * Проверка наличия клички у животного.
-         */
-        if (animal.getNickName() == null || animal.getNickName().isEmpty()) {
-            throw new IllegalArgumentException("The animal's nickname is not specified");
-        }
-
-         /**
-         * Проверка наличия такого животного в базе
-         */
-        for (ShelterAnimals existingAnimal : animals) {
-            if (existingAnimal.getNickName().equals(animal.getNickName())) {
-                throw new IllegalArgumentException("An animal with the same nickname already exists");
-            }
-        }
-
-        animals.add(animal);
-        return animal;
+    public AnimalService(AnimalRepository animalRepository) {
+        this.animalRepository = animalRepository;
     }
-    public List<ShelterAnimals> getAnimalsPagination(Integer pageNumber, Integer sizeNumber){
+    public ShelterAnimals createAnimal(ShelterAnimals animal) {
+        return animalRepository.save(animal);
+    }
+    public Object getAnimalsPagination(Integer pageNumber, Integer sizeNumber){
         if (pageNumber != null && sizeNumber != null) {
             int startIndex = (pageNumber - 1) * sizeNumber;
             int endIndex = Math.min(startIndex + sizeNumber, animals.size());
 
-            animals = animals.subList(startIndex, endIndex);
-        } else {
-            animals = animals;
-        }
-        return animals;
-    }
-
-    public List<ShelterAnimals> getAllAnimals() {
-        if (animals.isEmpty()) {
-            throw new IllegalArgumentException("No animals found in the database");
+            return animals.size();
         } else {
             return animals;
         }
     }
 
+
+    public List<ShelterAnimals> getAllAnimals() {
+        return animalRepository.findAll();
+    }
+
     public void deleteAnimalByNickname(String nickname) {
         boolean found = false;
-        for (ShelterAnimals animal : animals) {
+        for (ShelterAnimals animal : getAllAnimals()) {
             if (animal.getNickName().equals(nickname)) {
-                animals.remove(animal);
+                getAllAnimals().remove(animal);
                 found = true;
                 break;
             }
