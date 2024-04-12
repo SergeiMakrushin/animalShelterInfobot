@@ -14,7 +14,8 @@ import lombok.*;
 @Entity
 
 public class ShelterAnimals {
-    public enum TapeOfAnimal {DOG, CAT}
+
+     public enum TapeOfAnimal {DOG, CAT}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -4,7 +4,6 @@ import com.skypro.animalShelterInfoBot.bot.InfoBot;
 import com.skypro.animalShelterInfoBot.model.animals.ShelterAnimals;
 import com.skypro.animalShelterInfoBot.services.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,8 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 @Tag(name = "Контроллер животных",
         description = "Создание животного.  " +
@@ -27,11 +25,11 @@ public class AnimalController {
 
     private final InfoBot infoBot;
     private final AnimalService animalService;
+
     public AnimalController(InfoBot infoBot, AnimalService animalService) {
         this.infoBot = infoBot;
         this.animalService = animalService;
     }
-
 
     @Operation(summary = "Создание животного",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -43,13 +41,10 @@ public class AnimalController {
                     )
             )
     )
-    @PostMapping
-    public ResponseEntity<String> createAnimal(@RequestBody ShelterAnimals animals) {
-        //        в shelterAnimals будет записываться ответ от сервиса
-        ShelterAnimals shelterAnimals = new ShelterAnimals();
-        return ResponseEntity.ok("Animal created successfully" + shelterAnimals);
+    @PostMapping("/create")
+    public ShelterAnimals createAnimal(@RequestBody ShelterAnimals animal) {
+        return animalService.createAnimal(animal);
     }
-
 
     @Operation(summary = "получаем всех животных из базы данных",
             responses = {
@@ -62,12 +57,12 @@ public class AnimalController {
                             )
                     )
             })
-    @GetMapping
-    public ResponseEntity<String> getAllAnimals(@RequestBody ShelterAnimals animals) {
-//        в animalsList будет записываться ответ от сервиса
-        List<ShelterAnimals> animalsList = new ArrayList<>();
-        return ResponseEntity.ok("All animals" + animalsList);
+
+    @GetMapping("/findAllAnimals")
+    public ResponseEntity<Collection<ShelterAnimals>> getAllAnimals() {
+        return ResponseEntity.ok(animalService.getAllAnimals());
     }
+
     @Operation(summary = "получаем животных из базы данных",
             responses = {
                     @ApiResponse(
@@ -79,15 +74,11 @@ public class AnimalController {
                             )
                     )
             })
+
     @GetMapping("/pagination")
-    public ResponseEntity<List<ShelterAnimals>> getAnimalPagination(@Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
-                                                          @RequestParam(value = "page", required = false) Integer pageNumber,
-                                                          @RequestParam(name = "кол-во элементов") Integer sizeNumber) {
-        List<ShelterAnimals> paginatedList = new ArrayList<>();
-
-        return ResponseEntity.ok(paginatedList);
+    public ResponseEntity<Object> getAnimalsPagination(@RequestParam Integer pageNumber, @RequestParam Integer sizeNumber) {
+        return ResponseEntity.ok(animalService.getAnimalsPagination(pageNumber, sizeNumber));
     }
-
 
     @Operation(summary = "Удаляем животное из базы",
             responses = {
@@ -99,9 +90,10 @@ public class AnimalController {
                             )
                     )
             })
-    @DeleteMapping("/{nickname}")
-    public ResponseEntity<String> deleteAnimalByNickname(@PathVariable String nickname) {
-        animalService.deleteAnimalByNickname(nickname);
-        return ResponseEntity.ok("Animal with nickname " + nickname + " deleted");
+
+    @DeleteMapping("/delete/{Id}")
+    public ResponseEntity<Void> deleteAnimalById(@PathVariable Long Id) {
+        animalService.deleteAnimalById(Id);
+        return ResponseEntity.ok().build();
     }
 }

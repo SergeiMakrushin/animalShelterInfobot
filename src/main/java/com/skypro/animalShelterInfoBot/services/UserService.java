@@ -34,19 +34,7 @@ public class UserService {
         }
         return users;
     }
-
     public void deleteUserById(Long userId) {
-        boolean found = false;
-        for (ChatUser user : getAllUsers()) {
-            if (user.getId().equals(userId)) {
-                getAllUsers().remove(user);
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            throw new IllegalArgumentException("User with id " + userId + " not found");
-        }
+        userRepository.deleteById(userId);
     }
-
 }
