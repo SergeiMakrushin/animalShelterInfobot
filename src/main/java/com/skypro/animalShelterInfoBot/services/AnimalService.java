@@ -34,7 +34,7 @@ public class AnimalService {
         return animalRepository.findAll();
     }
 
-    public void deleteAnimalByNickname(String nickname) {
+    public void deleteAnimalByNickname(String nickname) { // удалять нужно по id или я что то непонимаю)
         boolean found = false;
         for (ShelterAnimals animal : getAllAnimals()) {
             if (animal.getNickName().equals(nickname)) {
@@ -48,4 +48,6 @@ public class AnimalService {
         }
 
     }
+
+    // метод редактирования нужен
 }

@@ -35,7 +35,7 @@ public class UserService {
         return users;
     }
 
-    public void deleteUserById(Long userId) {
+    public void deleteUserById(Long userId) { // удалять нужно по id же
         boolean found = false;
         for (ChatUser user : getAllUsers()) {
             if (user.getId().equals(userId)) {
@@ -48,5 +48,6 @@ public class UserService {
             throw new IllegalArgumentException("User with id " + userId + " not found");
         }
     }
+    // метод редактирования нужен
 
 }

@@ -46,7 +46,7 @@ public class AnimalController {
     @PostMapping
     public ResponseEntity<String> createAnimal(@RequestBody ShelterAnimals animals) {
         //        в shelterAnimals будет записываться ответ от сервиса
-        ShelterAnimals shelterAnimals = new ShelterAnimals();
+        ShelterAnimals shelterAnimals = new ShelterAnimals(); // нет метода create
         return ResponseEntity.ok("Animal created successfully" + shelterAnimals);
     }
 
@@ -65,7 +65,7 @@ public class AnimalController {
     @GetMapping
     public ResponseEntity<String> getAllAnimals(@RequestBody ShelterAnimals animals) {
 //        в animalsList будет записываться ответ от сервиса
-        List<ShelterAnimals> animalsList = new ArrayList<>();
+        List<ShelterAnimals> animalsList = new ArrayList<>(); // здесь должен быть getAllAnimals
         return ResponseEntity.ok("All animals" + animalsList);
     }
     @Operation(summary = "получаем животных из базы данных",
@@ -83,7 +83,7 @@ public class AnimalController {
     public ResponseEntity<List<ShelterAnimals>> getAnimalPagination(@Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
                                                           @RequestParam(value = "page", required = false) Integer pageNumber,
                                                           @RequestParam(name = "кол-во элементов") Integer sizeNumber) {
-        List<ShelterAnimals> paginatedList = new ArrayList<>();
+        List<ShelterAnimals> paginatedList = new ArrayList<>(); // метод getAnimalsPagination
 
         return ResponseEntity.ok(paginatedList);
     }

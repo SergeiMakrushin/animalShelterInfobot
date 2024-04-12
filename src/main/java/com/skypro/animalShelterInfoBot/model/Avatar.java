@@ -13,7 +13,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Avatar {
+public class Avatar { // переложить сущность в пакет model
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
