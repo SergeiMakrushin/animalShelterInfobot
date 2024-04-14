@@ -46,6 +46,24 @@ public class UserController {
     public ChatUser createUser(@RequestBody ChatUser user) {
         return userService.createUser(user);
     }
+    @Operation(summary = "Редактирование пользователя",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Редактировать запись о пользователе",
+
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ChatUser.class)
+                    )
+            )
+    )
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ChatUser> editStudent(@PathVariable long id, @RequestBody ChatUser user) {
+        ChatUser updatedUser = userService.updateUser(id, user);
+        if (updatedUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedUser);
+    }
     @Operation(summary = "Получаем всех пользователей из базы данных",
             responses = {
                     @ApiResponse(

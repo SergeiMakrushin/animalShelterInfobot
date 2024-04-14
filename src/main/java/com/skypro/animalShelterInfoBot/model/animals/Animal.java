@@ -1,5 +1,6 @@
 package com.skypro.animalShelterInfoBot.model.animals;
 
+import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import lombok.*;
 @Getter
 @Entity
 
-public class ShelterAnimals {
+public class Animal {
 
      public enum TapeOfAnimal {DOG, CAT}
 
@@ -31,6 +32,5 @@ public class ShelterAnimals {
     private float age;        //возраст
 
     private String color;     //окрас
-
 
 }

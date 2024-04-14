@@ -19,7 +19,18 @@ public class UserService {
     public ChatUser createUser(ChatUser user) {
         return userRepository.save(user);
     }
-
+    public ChatUser updateUser(long id, ChatUser user) {
+        ChatUser updatedUser = userRepository.findUserById(id);
+        if (updatedUser == null) {
+            return null;
+        }
+        updatedUser.setName(user.getName());
+        updatedUser.setSurname(user.getSurname());
+        updatedUser.setAge(user.getAge());
+        updatedUser.setPhoneNumber(user.getPhoneNumber());
+        updatedUser.setEmail(user.getEmail());
+        return userRepository.save(updatedUser);
+    }
     public List<ChatUser> getAllUsers() {
         return userRepository.findAll();
     }

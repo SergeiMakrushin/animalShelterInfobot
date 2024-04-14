@@ -1,7 +1,8 @@
 package com.skypro.animalShelterInfoBot.controller;
 
 import com.skypro.animalShelterInfoBot.bot.InfoBot;
-import com.skypro.animalShelterInfoBot.model.animals.ShelterAnimals;
+import com.skypro.animalShelterInfoBot.model.animals.Animal;
+import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import com.skypro.animalShelterInfoBot.services.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -37,13 +38,31 @@ public class AnimalController {
 
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ShelterAnimals.class)
+                            schema = @Schema(implementation = Animal.class)
                     )
             )
     )
     @PostMapping("/create")
-    public ShelterAnimals createAnimal(@RequestBody ShelterAnimals animal) {
+    public Animal createAnimal(@RequestBody Animal animal) {
         return animalService.createAnimal(animal);
+    }
+    @Operation(summary = "Редактирование животного",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Редактировать запись о животном",
+
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Animal.class)
+                    )
+            )
+    )
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Animal> editStudent(@PathVariable long id, @RequestBody Animal animal) {
+        Animal updatedAnimal = animalService.updateAnimal(id, animal);
+        if (updatedAnimal == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedAnimal);
     }
 
     @Operation(summary = "получаем всех животных из базы данных",
@@ -53,13 +72,13 @@ public class AnimalController {
                             description = "найденные животные",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = ShelterAnimals.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Animal.class))
                             )
                     )
             })
 
     @GetMapping("/findAllAnimals")
-    public ResponseEntity<Collection<ShelterAnimals>> getAllAnimals() {
+    public ResponseEntity<Collection<Animal>> getAllAnimals() {
         return ResponseEntity.ok(animalService.getAllAnimals());
     }
 
@@ -70,7 +89,7 @@ public class AnimalController {
                             description = "найденные животные",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = ShelterAnimals.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = Animal.class))
                             )
                     )
             })
@@ -86,7 +105,7 @@ public class AnimalController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ShelterAnimals.class)
+                                    schema = @Schema(implementation = Animal.class)
                             )
                     )
             })
