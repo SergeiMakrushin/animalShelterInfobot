@@ -94,6 +94,11 @@
 			<version>8.0.33</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
+
 		<!--пробую зависимости-->
 
 		<dependency>
