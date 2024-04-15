@@ -1,6 +1,5 @@
 package com.skypro.animalShelterInfoBot.model.animals;
 
-import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +14,6 @@ import lombok.*;
 @Entity
 
 public class Animal {
-
      public enum TapeOfAnimal {DOG, CAT}
 
     @Id
