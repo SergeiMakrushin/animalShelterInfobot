@@ -43,8 +43,8 @@ public class AnimalController {
             )
     )
     @PostMapping("/create")
-    public Animal createAnimal(@RequestBody Animal animal) {
-        return animalService.createAnimal(animal);
+    public ResponseEntity <Animal> createAnimal(@RequestBody Animal animal) {
+        return ResponseEntity.ok(animalService.createAnimal(animal));
     }
     @Operation(summary = "Редактирование животного",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(

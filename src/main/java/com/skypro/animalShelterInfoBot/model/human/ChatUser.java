@@ -46,4 +46,6 @@ public class ChatUser {
     @Column(name = "email")
     private String email;
 
+    private boolean isVolunteer;
+    
 }

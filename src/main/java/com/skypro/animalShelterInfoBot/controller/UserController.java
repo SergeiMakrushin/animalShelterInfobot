@@ -20,7 +20,7 @@ import java.util.List;
                 "Получение пользователей из базы.  " +
                 "Удаление пользователей из базы.  " +
                 "Прочие операции.")
-@RequestMapping("/user")
+@RequestMapping("/users")
 @RestController
 public class UserController {
 
@@ -43,8 +43,8 @@ public class UserController {
     )
 
     @PostMapping("/create")
-    public ChatUser createUser(@RequestBody ChatUser user) {
-        return userService.createUser(user);
+    public ResponseEntity <ChatUser> createUser(@RequestBody ChatUser user) {
+        return ResponseEntity.ok(userService.createUser(user));
     }
     @Operation(summary = "Редактирование пользователя",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
