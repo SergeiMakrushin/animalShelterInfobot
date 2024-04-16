@@ -17,12 +17,15 @@ public class UserService {
     }
 
     public ChatUser createUser(ChatUser user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
         return userRepository.save(user);
     }
     public ChatUser updateUser(long id, ChatUser user) {
         ChatUser updatedUser = userRepository.findUserById(id);
         if (updatedUser == null) {
-            return null;
+            throw new IllegalArgumentException("User not found with id: " + id);
         }
         updatedUser.setName(user.getName());
         updatedUser.setSurname(user.getSurname());
@@ -39,6 +42,10 @@ public class UserService {
             int startIndex = (pageNumber - 1) * sizeNumber;
             int endIndex = Math.min(startIndex + sizeNumber, users.size());
 
+            if (startIndex >= users.size()) {
+                throw new IllegalArgumentException("Invalid pageNumber: " + pageNumber);
+            }
+
             users = users.subList(startIndex, endIndex);
         } else {
             users = users;
@@ -46,6 +53,9 @@ public class UserService {
         return users;
     }
     public void deleteUserById(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("User not found with id: " + userId);
+        }
         userRepository.deleteById(userId);
     }
 }
