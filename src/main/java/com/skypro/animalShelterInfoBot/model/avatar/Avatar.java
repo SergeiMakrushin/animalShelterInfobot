@@ -1,4 +1,4 @@
-package com.skypro.animalShelterInfoBot.model;
+package com.skypro.animalShelterInfoBot.model.avatar;
 
 import jakarta.persistence.*;
 import lombok.*;

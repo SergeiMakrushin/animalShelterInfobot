@@ -1,11 +1,9 @@
 package com.skypro.animalShelterInfoBot.controller;
 
 import com.skypro.animalShelterInfoBot.bot.InfoBot;
-import com.skypro.animalShelterInfoBot.model.animals.ShelterAnimals;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import com.skypro.animalShelterInfoBot.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Контроллер пользователей",
@@ -23,7 +20,7 @@ import java.util.List;
                 "Получение пользователей из базы.  " +
                 "Удаление пользователей из базы.  " +
                 "Прочие операции.")
-@RequestMapping("/user")
+@RequestMapping("/users")
 @RestController
 public class UserController {
 
@@ -34,26 +31,38 @@ public class UserController {
         this.infoBot = infoBot;
         this.userService = userService;
     }
+    @Operation(summary = "Создание пользователя",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Создать запись о пользователе",
 
-    @Operation(summary = "Получаем пользователей из базы данных",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "найденные ползователи",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = ShelterAnimals.class))
-                            )
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ChatUser.class)
                     )
-            })
-    @GetMapping("/pagination")
-    public ResponseEntity <List<ChatUser>> getUsersPagination(
-            @Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
-            @RequestParam(value = "page", required = false) Integer pageNumber,
-            @RequestParam(name = "кол-во элементов") Integer sizeNumber) {
-//        в лист будет записываться ответ от сервиса
-        List<ChatUser> paginatedUsersList = new ArrayList<>();
-        return ResponseEntity.ok(paginatedUsersList);
+            )
+    )
+
+    @PostMapping("/create")
+    public ResponseEntity <ChatUser> createUser(@RequestBody ChatUser user) {
+        return ResponseEntity.ok(userService.createUser(user));
+    }
+    @Operation(summary = "Редактирование пользователя",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Редактировать запись о пользователе",
+
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ChatUser.class)
+                    )
+            )
+    )
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ChatUser> editStudent(@PathVariable long id, @RequestBody ChatUser user) {
+        ChatUser updatedUser = userService.updateUser(id, user);
+        if (updatedUser == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedUser);
     }
     @Operation(summary = "Получаем всех пользователей из базы данных",
             responses = {
@@ -62,17 +71,46 @@ public class UserController {
                             description = "найденные ползователи",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = ShelterAnimals.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = ChatUser.class))
                             )
                     )
             })
-    @GetMapping
-    public ResponseEntity<String> getAllUsers(@RequestBody ChatUser users) {
-//        в лист будет записываться ответ от сервиса
-        List<ChatUser> chatUsersList = new ArrayList<>();
-        return ResponseEntity.ok("All animals" + chatUsersList);
+    @GetMapping("/all")
+    public ResponseEntity<List<ChatUser>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
+    @Operation(summary = "Получаем пользователей из базы данных",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "найденные ползователи",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    array = @ArraySchema(schema = @Schema(implementation = ChatUser.class))
+                            )
+                    )
+            })
 
+    @GetMapping("/pagination")
+    public ResponseEntity<List<ChatUser>> getUsersPagination(@RequestParam(required = false) Integer pageNumber, @RequestParam(required = false) Integer sizeNumber) {
+        return ResponseEntity.ok(userService.getUsersPagination(pageNumber, sizeNumber));
+    }
+    @Operation(summary = "Удаляем пользователя из базы данных",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ChatUser.class)
+                            )
+                    )
+            })
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
+            userService.deleteUserById(userId);
+            return ResponseEntity.ok().build();
+    }
     @Operation(summary = "Отправляем сообщение пользователю",
             responses = {
                     @ApiResponse(
@@ -89,43 +127,6 @@ public class UserController {
             @RequestParam(name = "Текст сообщения") String message) {
         return ResponseEntity.ok(infoBot.sendText(chatId, message));
     }
-
-
-    @Operation(summary = "Создание пользователя",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Создать запись о пользователе",
-
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ChatUser.class)
-                    )
-            )
-    )
-    @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody ChatUser chatUser) {
-        //        в chatUserResponse будет записываться ответ от сервиса
-        ChatUser chatUserResponse = new ChatUser();
-        return ResponseEntity.ok("User created successfully" + chatUserResponse);
-    }
-
-
-    @Operation(summary = "Удаляем пользователя из базы данных",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            content = @Content(
-                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ShelterAnimals.class)
-                            )
-                    )
-            })
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<String> deleteUserById(@PathVariable Long userId) {
-        userService.deleteUserById(userId);
-        return ResponseEntity.ok("User with id " + userId + " deleted");
-    }
-
-
     @Operation(summary = "Отключаем рассылку пользователю")
     @PutMapping("/turn_newsletter")
     public ResponseEntity<String> turnOffTheNewsletter(@RequestParam(name = "chatId пользователя") Long chatId) {

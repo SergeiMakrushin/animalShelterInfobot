@@ -13,8 +13,8 @@ import lombok.*;
 @Getter
 @Entity
 
-public class ShelterAnimals {
-    public enum TapeOfAnimal {DOG, CAT} // переименовать в TypeOfAnimal
+public class Animal {
+     public enum TapeOfAnimal {DOG, CAT}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
