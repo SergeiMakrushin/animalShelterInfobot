@@ -9,19 +9,19 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-    public class AnimalService {
-        private final AnimalRepository animalRepository;
-        private Collection<Animal> animals;
+public class AnimalService {
+    private final AnimalRepository animalRepository;
+    private Collection<Animal> animals;
 
-        public AnimalService(AnimalRepository animalRepository) {
-            this.animalRepository = animalRepository;
+    public AnimalService(AnimalRepository animalRepository) {
+        this.animalRepository = animalRepository;
+    }
+    public Animal createAnimal(Animal animal) {
+        if (animal == null) {
+            throw new IllegalArgumentException("Animal cannot be null");
         }
-        public Animal createAnimal(Animal animal) {
-            if (animal == null) {
-                throw new IllegalArgumentException("Animal cannot be null");
-            }
-            return animalRepository.save(animal);
-        }
+        return animalRepository.save(animal);
+    }
     public Animal updateAnimal(long id, Animal animal) {
         if (animal == null) {
             throw new IllegalArgumentException("Animal cannot be null");
@@ -37,26 +37,26 @@ import java.util.List;
         updatedAnimal.setColor(animal.getColor());
         return animalRepository.save(updatedAnimal);
     }
-        public Object getAnimalsPagination(Integer pageNumber, Integer sizeNumber){
-            if (pageNumber != null && sizeNumber != null) {
-                int startIndex = (pageNumber - 1) * sizeNumber;
-                int endIndex = Math.min(startIndex + sizeNumber, animals.size());
+    public Object getAnimalsPagination(Integer pageNumber, Integer sizeNumber){
+        if (pageNumber != null && sizeNumber != null) {
+            int startIndex = (pageNumber - 1) * sizeNumber;
+            int endIndex = Math.min(startIndex + sizeNumber, animals.size());
 
-                return animals.size();
-            } else {
-                throw new IllegalArgumentException("Page number and size number must not be null");
-            }
+            return animals.size();
+        } else {
+            throw new IllegalArgumentException("Page number and size number must not be null");
         }
+    }
 
 
-        public List<Animal> getAllAnimals() {
+    public List<Animal> getAllAnimals() {
 
-            return animalRepository.findAll();
+        return animalRepository.findAll();
+    }
+    public void deleteAnimalById(Long Id) {
+        if (Id == null) {
+            throw new IllegalArgumentException("Id cannot be null");
         }
-        public void deleteAnimalById(Long Id) {
-            if (Id == null) {
-                throw new IllegalArgumentException("Id cannot be null");
-            }
-            animalRepository.deleteById(Id);
-        }
+        animalRepository.deleteById(Id);
+    }
 }
