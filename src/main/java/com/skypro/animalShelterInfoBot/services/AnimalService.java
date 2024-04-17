@@ -13,11 +13,29 @@ import java.util.List;
         private final AnimalRepository animalRepository;
         private Collection<Animal> animals;
 
-    public AnimalService(AnimalRepository animalRepository) {
-        this.animalRepository = animalRepository;
-    }
-    public ShelterAnimals createAnimal(ShelterAnimals animal) {
-        return animalRepository.save(animal);
+        public AnimalService(AnimalRepository animalRepository) {
+            this.animalRepository = animalRepository;
+        }
+        public Animal createAnimal(Animal animal) {
+            if (animal == null) {
+                throw new IllegalArgumentException("Animal cannot be null");
+            }
+            return animalRepository.save(animal);
+        }
+    public Animal updateAnimal(long id, Animal animal) {
+        if (animal == null) {
+            throw new IllegalArgumentException("Animal cannot be null");
+        }
+        Animal updatedAnimal = animalRepository.findAnimalById(id);
+        if (updatedAnimal == null) {
+            throw new IllegalArgumentException("Animal with id " + id + " not found");
+        }
+        updatedAnimal.setCatOrDog(animal.getCatOrDog());
+        updatedAnimal.setNickName(animal.getNickName());
+        updatedAnimal.setBreed(animal.getBreed());
+        updatedAnimal.setAge(animal.getAge());
+        updatedAnimal.setColor(animal.getColor());
+        return animalRepository.save(updatedAnimal);
     }
         public Object getAnimalsPagination(Integer pageNumber, Integer sizeNumber){
             if (pageNumber != null && sizeNumber != null) {
@@ -26,7 +44,7 @@ import java.util.List;
 
                 return animals.size();
             } else {
-                return animals;
+                throw new IllegalArgumentException("Page number and size number must not be null");
             }
         }
 
@@ -36,6 +54,9 @@ import java.util.List;
             return animalRepository.findAll();
         }
         public void deleteAnimalById(Long Id) {
+            if (Id == null) {
+                throw new IllegalArgumentException("Id cannot be null");
+            }
             animalRepository.deleteById(Id);
         }
 }
