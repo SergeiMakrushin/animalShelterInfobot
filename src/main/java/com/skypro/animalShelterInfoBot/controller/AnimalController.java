@@ -3,6 +3,9 @@ package com.skypro.animalShelterInfoBot.controller;
 import com.skypro.animalShelterInfoBot.bot.InfoBot;
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+
+
+import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
 import com.skypro.animalShelterInfoBot.services.AnimalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -24,11 +27,11 @@ import java.util.Collection;
 @RequestMapping("/animals")
 public class AnimalController {
 
-    private final InfoBot infoBot;
+    private final TelegramBot telegramBot;
     private final AnimalService animalService;
 
-    public AnimalController(InfoBot infoBot, AnimalService animalService) {
-        this.infoBot = infoBot;
+    public AnimalController( TelegramBot telegramBot,AnimalService animalService) {
+        this.telegramBot = telegramBot;
         this.animalService = animalService;
     }
 

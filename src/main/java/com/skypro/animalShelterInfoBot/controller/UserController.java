@@ -2,8 +2,11 @@ package com.skypro.animalShelterInfoBot.controller;
 
 import com.skypro.animalShelterInfoBot.bot.InfoBot;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+import com.skypro.animalShelterInfoBot.service.bot.BotService;
+import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
 import com.skypro.animalShelterInfoBot.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +15,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Контроллер пользователей",
@@ -24,12 +29,14 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    private final InfoBot infoBot;
+    private final TelegramBot telegramBot;
     private final UserService userService;
+    private final BotService botService;
 
-    public UserController(InfoBot infoBot, UserService userService) {
-        this.infoBot = infoBot;
+    public UserController( TelegramBot telegramBot,UserService userService, BotService botService) {
+        this.telegramBot = telegramBot;
         this.userService = userService;
+        this.botService = botService;
     }
     @Operation(summary = "Создание пользователя",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -125,7 +132,11 @@ public class UserController {
     public ResponseEntity<String> messageUser(
             @RequestParam(name = "chatId пользователя") Long chatId,
             @RequestParam(name = "Текст сообщения") String message) {
-        return ResponseEntity.ok(infoBot.sendText(chatId, message));
+        SendMessage sendMessage= new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(message);
+        telegramBot.sendMessage(sendMessage);
+        return ResponseEntity.ok(message);
     }
     @Operation(summary = "Отключаем рассылку пользователю")
     @PutMapping("/turn_newsletter")
