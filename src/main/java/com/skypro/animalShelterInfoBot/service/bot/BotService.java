@@ -22,11 +22,7 @@ import java.util.List;
 @Service
 public class BotService {
 
-//    @Autowired
-//    ShelterInformationDirectory shelterInformationDirectory;
 
-    @Autowired
-    TelegramBot telegramBot;
     @Value("${bot.token}")
     private String token;
 
@@ -240,7 +236,6 @@ public class BotService {
         } else if (text.equals("/cats")) {
             textToSend = dogsAndCatMenu(chatId);
         }
-//        telegramBot.sendMessage(textToSend);
         return textToSend;
     }
 
@@ -324,19 +319,17 @@ public class BotService {
 
     ////////
     private SendMessage InfoShelterTimeAndAddress(long chatId) {
-//        SendMessage timeAndAddress = new SendMessage();
-//        timeAndAddress.setChatId(chatId);
-//        timeAndAddress.setText(shelterInformationDirectory.SHELTERADRESS + shelterInformationDirectory.WORKTIME);
-//        return timeAndAddress;
-        return  null;
+        SendMessage timeAndAddress = new SendMessage();
+        timeAndAddress.setChatId(chatId);
+        timeAndAddress.setText(ShelterInformationDirectory.SHELTERADRESS + ShelterInformationDirectory.WORKTIME);
+        return timeAndAddress;
     }
 
     private SendMessage infoShelter(long chatId) {
-//        SendMessage shelterInfo = new SendMessage();
-//        shelterInfo.setChatId(chatId);
-//        shelterInfo.setText(shelterInformationDirectory.SHELTERINFO);
-//        return shelterInfo;
-return  null;
+        SendMessage shelterInfo = new SendMessage();
+        shelterInfo.setChatId(chatId);
+        shelterInfo.setText(ShelterInformationDirectory.SHELTERINFO);
+        return shelterInfo;
     }
 ///////////
 

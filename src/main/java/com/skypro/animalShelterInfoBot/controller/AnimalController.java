@@ -26,11 +26,11 @@ import java.util.List;
 @RequestMapping("/animals")
 public class AnimalController {
 
-//    private final TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
     private final AnimalService animalService;
 
-    public AnimalController( AnimalService animalService) {
-//        this.telegramBot = telegramBot;TelegramBot telegramBot,
+    public AnimalController( TelegramBot telegramBot,AnimalService animalService) {
+        this.telegramBot = telegramBot;
         this.animalService = animalService;
     }
 

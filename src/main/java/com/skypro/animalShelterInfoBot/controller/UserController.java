@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,14 @@ import java.util.List;
 @RestController
 public class UserController {
 
-//    private final TelegramBot telegramBot;
+    private final TelegramBot telegramBot;
     private final UserService userService;
-//    private final BotService botService;
+    private final BotService botService;
 
-    public UserController( UserService userService) {
-//        this.telegramBot = telegramBot;TelegramBot telegramBot,
+    public UserController( TelegramBot telegramBot,UserService userService, BotService botService) {
+        this.telegramBot = telegramBot;
         this.userService = userService;
-//        this.botService = botService;, BotService botService
+        this.botService = botService;
     }
 
     @Operation(summary = "Получаем пользователей из базы данных",
@@ -92,7 +93,10 @@ public class UserController {
     public ResponseEntity<String> messageUser(
             @RequestParam(name = "chatId пользователя") Long chatId,
             @RequestParam(name = "Текст сообщения") String message) {
-//        telegramBot.sendMessage(botService.settingSendMessage(chatId, message));
+        SendMessage sendMessage= new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(message);
+        telegramBot.sendMessage(sendMessage);
         return ResponseEntity.ok(message);
     }
 
