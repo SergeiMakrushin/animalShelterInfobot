@@ -1,8 +1,10 @@
 package com.skypro.animalShelterInfoBot.controller;
 
-import com.skypro.animalShelterInfoBot.bot.InfoBot;
+
 import com.skypro.animalShelterInfoBot.model.animals.ShelterAnimals;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+import com.skypro.animalShelterInfoBot.service.bot.BotService;
+import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
 import com.skypro.animalShelterInfoBot.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,12 +29,14 @@ import java.util.List;
 @RestController
 public class UserController {
 
-    private final InfoBot infoBot;
+//    private final TelegramBot telegramBot;
     private final UserService userService;
+//    private final BotService botService;
 
-    public UserController(InfoBot infoBot, UserService userService) {
-        this.infoBot = infoBot;
+    public UserController( UserService userService) {
+//        this.telegramBot = telegramBot;TelegramBot telegramBot,
         this.userService = userService;
+//        this.botService = botService;, BotService botService
     }
 
     @Operation(summary = "Получаем пользователей из базы данных",
@@ -47,7 +51,7 @@ public class UserController {
                     )
             })
     @GetMapping("/pagination")
-    public ResponseEntity <List<ChatUser>> getUsersPagination(
+    public ResponseEntity<List<ChatUser>> getUsersPagination(
             @Parameter(description = "на сколько элементов отступить, начиная с 1-го, не может быть меньше 1", example = "2")
             @RequestParam(value = "page", required = false) Integer pageNumber,
             @RequestParam(name = "кол-во элементов") Integer sizeNumber) {
@@ -55,6 +59,7 @@ public class UserController {
         List<ChatUser> paginatedUsersList = new ArrayList<>();
         return ResponseEntity.ok(paginatedUsersList);
     }
+
     @Operation(summary = "Получаем всех пользователей из базы данных",
             responses = {
                     @ApiResponse(
@@ -87,7 +92,8 @@ public class UserController {
     public ResponseEntity<String> messageUser(
             @RequestParam(name = "chatId пользователя") Long chatId,
             @RequestParam(name = "Текст сообщения") String message) {
-        return ResponseEntity.ok(infoBot.sendText(chatId, message));
+//        telegramBot.sendMessage(botService.settingSendMessage(chatId, message));
+        return ResponseEntity.ok(message);
     }
 
 
