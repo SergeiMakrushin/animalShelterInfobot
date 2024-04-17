@@ -1,6 +1,6 @@
 package com.skypro.animalShelterInfoBot.controller;
 
-import com.skypro.animalShelterInfoBot.bot.InfoBot;
+
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 

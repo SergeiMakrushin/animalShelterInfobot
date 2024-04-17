@@ -1,6 +1,6 @@
 package com.skypro.animalShelterInfoBot.controller;
 
-import com.skypro.animalShelterInfoBot.bot.InfoBot;
+
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import com.skypro.animalShelterInfoBot.service.bot.BotService;
 import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
@@ -33,11 +33,12 @@ public class UserController {
     private final UserService userService;
     private final BotService botService;
 
-    public UserController( TelegramBot telegramBot,UserService userService, BotService botService) {
+    public UserController(TelegramBot telegramBot, UserService userService, BotService botService) {
         this.telegramBot = telegramBot;
         this.userService = userService;
         this.botService = botService;
     }
+
     @Operation(summary = "Создание пользователя",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Создать запись о пользователе",
@@ -50,9 +51,10 @@ public class UserController {
     )
 
     @PostMapping("/create")
-    public ResponseEntity <ChatUser> createUser(@RequestBody ChatUser user) {
+    public ResponseEntity<ChatUser> createUser(@RequestBody ChatUser user) {
         return ResponseEntity.ok(userService.createUser(user));
     }
+
     @Operation(summary = "Редактирование пользователя",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Редактировать запись о пользователе",
@@ -71,6 +73,7 @@ public class UserController {
         }
         return ResponseEntity.ok(updatedUser);
     }
+
     @Operation(summary = "Получаем всех пользователей из базы данных",
             responses = {
                     @ApiResponse(
@@ -86,6 +89,7 @@ public class UserController {
     public ResponseEntity<List<ChatUser>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
     @Operation(summary = "Получаем пользователей из базы данных",
             responses = {
                     @ApiResponse(
@@ -102,6 +106,7 @@ public class UserController {
     public ResponseEntity<List<ChatUser>> getUsersPagination(@RequestParam(required = false) Integer pageNumber, @RequestParam(required = false) Integer sizeNumber) {
         return ResponseEntity.ok(userService.getUsersPagination(pageNumber, sizeNumber));
     }
+
     @Operation(summary = "Удаляем пользователя из базы данных",
             responses = {
                     @ApiResponse(
@@ -115,9 +120,10 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
-            userService.deleteUserById(userId);
-            return ResponseEntity.ok().build();
+        userService.deleteUserById(userId);
+        return ResponseEntity.ok().build();
     }
+
     @Operation(summary = "Отправляем сообщение пользователю",
             responses = {
                     @ApiResponse(
@@ -132,12 +138,13 @@ public class UserController {
     public ResponseEntity<String> messageUser(
             @RequestParam(name = "chatId пользователя") Long chatId,
             @RequestParam(name = "Текст сообщения") String message) {
-        SendMessage sendMessage= new SendMessage();
+        SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(message);
         telegramBot.sendMessage(sendMessage);
         return ResponseEntity.ok(message);
     }
+
     @Operation(summary = "Отключаем рассылку пользователю")
     @PutMapping("/turn_newsletter")
     public ResponseEntity<String> turnOffTheNewsletter(@RequestParam(name = "chatId пользователя") Long chatId) {
