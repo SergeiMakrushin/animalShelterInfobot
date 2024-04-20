@@ -1,5 +1,6 @@
 package com.skypro.animalShelterInfoBot.model.avatar;
 
+import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,4 +23,7 @@ public class Avatar { // переложить сущность в пакет mod
     private String mediaType;
     @Lob
     private byte[] data;
-}
+
+     public void setAnimal(Animal animal) {
+     }
+ }

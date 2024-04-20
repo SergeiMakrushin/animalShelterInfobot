@@ -12,7 +12,6 @@ import lombok.*;
 @Setter
 @Getter
 @Entity
-
 public class Animal {
      public enum TapeOfAnimal {DOG, CAT}
 
@@ -31,5 +30,5 @@ public class Animal {
 
     private String color;     //окрас
 
-
+    private boolean isVolunteer;
 }

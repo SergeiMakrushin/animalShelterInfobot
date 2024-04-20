@@ -1,8 +1,8 @@
 package com.skypro.animalShelterInfoBot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skypro.animalShelterInfoBot.bot.InfoBot;
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
+import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
 import com.skypro.animalShelterInfoBot.services.AnimalService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -36,7 +35,7 @@ class AnimalControllerWebMvcTest {
     private AnimalService animalService;
 
     @MockBean
-    private InfoBot infoBot;
+    private TelegramBot telegramBot;
 
     @Test
     public void testCreateAnimal() throws Exception {
@@ -86,5 +85,4 @@ class AnimalControllerWebMvcTest {
 
         verify(animalService).deleteAnimalById(1L);
     }
-
 }

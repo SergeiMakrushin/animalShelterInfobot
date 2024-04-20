@@ -1,7 +1,6 @@
 package com.skypro.animalShelterInfoBot.services;
 
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
-import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import com.skypro.animalShelterInfoBot.repositories.AnimalRepository;
 import org.springframework.stereotype.Service;
 
@@ -58,5 +57,9 @@ public class AnimalService {
             throw new IllegalArgumentException("Id cannot be null");
         }
         animalRepository.deleteById(Id);
+    }
+
+    public Animal findAnimal(Long animalId) {
+        return findAnimal(animalId);
     }
 }
