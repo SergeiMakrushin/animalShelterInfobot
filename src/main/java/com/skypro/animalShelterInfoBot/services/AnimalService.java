@@ -60,6 +60,6 @@ public class AnimalService {
     }
 
     public Animal findAnimal(Long animalId) {
-        return findAnimal(animalId);
+        return animalRepository.findAnimalById(animalId);
     }
 }

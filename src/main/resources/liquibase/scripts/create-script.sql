@@ -7,8 +7,7 @@ CREATE TABLE Human
 Id INTEGER PRIMARY KEY,
 Name TEXT,
 Age INTEGER DEFAULT 18 CHECK(Age >0 AND Age < 100),
-Rights BOOLEAN NOT null,
-CarId INTEGER REFERENCES Cars(Id)
+Rights BOOLEAN NOT null
 );
 
 --changeset smakrushin:4

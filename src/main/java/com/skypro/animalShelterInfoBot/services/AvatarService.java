@@ -25,7 +25,7 @@ public class AvatarService {
     private String avatarDir;
     private final AnimalService animalService;
     private final AvatarRepository avatarRepository;
-    @Autowired
+
     public AvatarService(AvatarRepository avatarRepository, AnimalService animalService) {
         this.avatarRepository = avatarRepository;
         this.animalService = animalService;
@@ -52,11 +52,13 @@ public class AvatarService {
         avatar.setData(generateImagePreview(filePath));
         avatarRepository.save(avatar);
     }
-    public void deleteAvatar(long animalId) {
-        avatarRepository.deleteByAnimalId(animalId);
+    public void deleteAvatar(Long animalId) {
+        avatarRepository.deleteAvatarByAnimal_Id(animalId);
+
     }
     public Avatar findAvatar(long animalId) {
-        return avatarRepository.findByAnimalId(animalId).orElse(new Avatar());
+        return avatarRepository.findAvatarByAnimal_Id(animalId).orElse(new Avatar());
+
     }
     private byte[] generateImagePreview(Path filePath) throws IOException {
         try (InputStream is = Files.newInputStream(filePath);

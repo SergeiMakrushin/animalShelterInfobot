@@ -24,6 +24,7 @@ public class Avatar { // переложить сущность в пакет mod
     @Lob
     private byte[] data;
 
-     public void setAnimal(Animal animal) {
-     }
+
+     @OneToOne
+     Animal animal;
  }
