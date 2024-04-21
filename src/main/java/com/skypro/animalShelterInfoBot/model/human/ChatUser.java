@@ -51,7 +51,4 @@ public class ChatUser {
     private String email;
 
     private boolean isVolunteer;
-    @JsonIgnore
-    @OneToMany(mappedBy = "animal_id")
-    private Collection<Animal> animals;
 }
