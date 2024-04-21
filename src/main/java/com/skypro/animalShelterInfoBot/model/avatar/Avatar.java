@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Avatar { // переложить сущность в пакет model
+public class Avatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,6 +24,6 @@ public class Avatar { // переложить сущность в пакет mod
     @Lob
     private byte[] data;
 
-     public void setAnimal(Animal animal) {
-     }
+     @OneToOne
+     private Animal animal;
  }

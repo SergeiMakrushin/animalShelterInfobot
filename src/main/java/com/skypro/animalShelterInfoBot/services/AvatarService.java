@@ -1,5 +1,4 @@
 package com.skypro.animalShelterInfoBot.services;
-
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
 import com.skypro.animalShelterInfoBot.repositories.AvatarRepository;
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -43,7 +41,7 @@ public class AvatarService {
         ) {
             bis.transferTo(bos);
         }
-        Avatar avatar = findAvatar(animalId);
+        Avatar avatar = findAvatar(animal.getId());
         avatar.setAnimal(animal);
         avatar.setFilePath(filePath.toString());
         avatar.setData(file.getBytes());

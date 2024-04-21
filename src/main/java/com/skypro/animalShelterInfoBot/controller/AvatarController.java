@@ -3,6 +3,7 @@ package com.skypro.animalShelterInfoBot.controller;
 import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
 import com.skypro.animalShelterInfoBot.services.AvatarService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +21,7 @@ import java.nio.file.Path;
 @RequestMapping(path = "/avatar")
 public class AvatarController {
     private final AvatarService avatarService;
-
+@Autowired
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }

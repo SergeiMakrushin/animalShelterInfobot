@@ -2,6 +2,7 @@ package com.skypro.animalShelterInfoBot.services;
 
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 public class UserService {
     private  final UserRepository userRepository;
     private List<ChatUser> users = new ArrayList<>();
-
+@Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }

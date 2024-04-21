@@ -1,10 +1,14 @@
 package com.skypro.animalShelterInfoBot.model.human;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import jakarta.persistence.*;
 import lombok.*;
 
- /**
+import java.util.Collection;
+import java.util.List;
+
+/**
  * Модель таблицы, куда будут попадать все первоначально общающиеся с ботом.
  */
 @EqualsAndHashCode(exclude = "id")
@@ -47,5 +51,7 @@ public class ChatUser {
     private String email;
 
     private boolean isVolunteer;
-    
+    @JsonIgnore
+    @OneToMany(mappedBy = "animal_id")
+    private Collection<Animal> animals;
 }
