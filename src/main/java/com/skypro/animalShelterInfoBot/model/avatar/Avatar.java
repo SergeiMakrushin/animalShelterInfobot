@@ -28,3 +28,5 @@ public class Avatar { // переложить сущность в пакет mod
      @OneToOne
      Animal animal;
  }
+// @Column(
+//            columnDefinition = "BLOB")
