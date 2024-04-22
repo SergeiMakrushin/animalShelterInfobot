@@ -3,8 +3,12 @@ package com.skypro.animalShelterInfoBot.model.avatar;
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 
- /**
+import java.sql.Types;
+
+/**
  * Сущность Аватар
  */
 @Getter
@@ -22,6 +26,7 @@ public class Avatar {
     private long fileSize;
     private String mediaType;
     @Lob
+    @JdbcTypeCode(Types.LONGVARBINARY)
     private byte[] data;
 
      @OneToOne

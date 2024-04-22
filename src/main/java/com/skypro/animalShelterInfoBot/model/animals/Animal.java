@@ -30,6 +30,9 @@ public class Animal {
     private float age;        //возраст
 
     private String color;     //окрас
+
+    private boolean isVolunteer;
+
      @ManyToOne(fetch = FetchType.EAGER)
      @JoinColumn(name = "avatar_id")
      private Avatar avatar;

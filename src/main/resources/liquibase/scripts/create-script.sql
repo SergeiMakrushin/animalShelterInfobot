@@ -13,3 +13,6 @@ CarId INTEGER REFERENCES Cars(Id)
 
 --changeset smakrushin:4
 DROP TABLE Human;
+
+--changeset smakrushin:5
+ALTER TABLE avatar MODIFY data BLOB;
