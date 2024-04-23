@@ -240,81 +240,140 @@ public class BotService {
     }
 
     private SendMessage reasonsForRefusal(long chatId) {
-        return null;
+        SendMessage reasonsForRefusal = new SendMessage();
+        reasonsForRefusal.setChatId(chatId);
+        reasonsForRefusal.setText("Пожалуйста, свяжитесь с нами для получения дополнительной информации о причинах отказа.");
+        return reasonsForRefusal;
     }
 
     private SendMessage adviceDogHandlers(long chatId) {
-        return null;
+        SendMessage adviceDogHandlers = new SendMessage();
+        adviceDogHandlers.setChatId(chatId);
+        adviceDogHandlers.setText("Пожалуйста, обратитесь к нашим собаководам за консультацией.");
+        return adviceDogHandlers;
     }
 
     private SendMessage getContactDogHandlers(long chatId) {
-        return null;
+        SendMessage getContactDogHandlers = new SendMessage();
+        getContactDogHandlers.setChatId(chatId);
+        getContactDogHandlers.setText("Контактную информацию наших кинологов можно предоставить по запросу.");
+        return getContactDogHandlers;
     }
 
     private SendMessage homeForLimitedOpportunities(long chatId) {
-        return null;
+        SendMessage homeForLimitedOpportunities = new SendMessage();
+        homeForLimitedOpportunities.setChatId(chatId);
+        homeForLimitedOpportunities.setText("Наша программа по уходу за домашними животными с ограниченными" +
+                " возможностями предлагает любящую среду для животных с особыми потребностями.");
+        return homeForLimitedOpportunities;
     }
 
     private SendMessage homeForAdults(long chatId) {
-        return null;
+        SendMessage homeForAdults = new SendMessage();
+        homeForAdults.setChatId(chatId);
+        homeForAdults.setText("У нас есть специальная программа для взрослых животных, которые ищут постоянный дом.");
+        return homeForAdults;
     }
 
     private SendMessage homeForChild(long chatId) {
-        return null;
+        SendMessage homeForChild = new SendMessage();
+        homeForChild.setChatId(chatId);
+        homeForChild.setText("Если вы заинтересованы в усыновлении пушистого друга для вашего ребенка, пожалуйста, свяжитесь с нами.");
+        return homeForChild;
     }
 
     private SendMessage recommendationTransportAnimal(long chatId) {
-        return null;
+        SendMessage transportAnimal = new SendMessage();
+        transportAnimal.setChatId(chatId);
+        transportAnimal.setText("Мы можем порекомендовать транспортные услуги для вашего нового питомца.");
+        return transportAnimal;
     }
 
     private SendMessage listDocsDecor(long chatId) {
-        return null;
+        SendMessage listDocsDecor = new SendMessage();
+        listDocsDecor.setChatId(chatId);
+        listDocsDecor.setText("Документы, необходимые для усыновления, будут предоставлены по запросу.");
+        return listDocsDecor;
     }
 
     private SendMessage meetingAnimals(long chatId) {
-        return null;
+        SendMessage shelterInfo = new SendMessage();
+        shelterInfo.setChatId(chatId);
+        shelterInfo.setText("Вы можете назначить встречу с нашими животными, связавшись с нами.");
+        return shelterInfo;
     }
 
     private SendMessage getBreedDogAndColor(long chatId) {
-        return null;
+        SendMessage getBreedDogAndColor = new SendMessage();
+        getBreedDogAndColor.setChatId(chatId);
+        getBreedDogAndColor.setText("Пожалуйста, укажите породу и предпочтительный окрас собаки, которую вы ищете.");
+        return getBreedDogAndColor;
     }
 
     ///////////////
     private SendMessage getColorDogAndCat(long chatId) {
-        return null;
+        SendMessage getColorDogAndCat = new SendMessage();
+        getColorDogAndCat.setChatId(chatId);
+        getColorDogAndCat.setText("Дайте нам знать предпочтения по цвету для собаки или кота, которого вы хотели бы усыновить.");
+        return getColorDogAndCat;
     }
 
     private SendMessage getAgeDogAndCat(long chatId) {
-        return null;
+        SendMessage getAgeDogAndCat = new SendMessage();
+        getAgeDogAndCat.setChatId(chatId);
+        getAgeDogAndCat.setText("Какой возрастной диапазон вы ищете у собаки или кошки?");
+        return getAgeDogAndCat;
     }
 
     private SendMessage getNameDogAndCat(long chatId) {
-        return null;
+        SendMessage getNameDogAndCat = new SendMessage();
+        getNameDogAndCat.setChatId(chatId);
+        getNameDogAndCat.setText("Пожалуйста, укажите имя, которое вы хотите дать собаке или кошке, которую вы усыновляете.");
+        return getNameDogAndCat;
     }
 
     private SendMessage getAllDogAndCat(long chatId) {
-        return null;
+        SendMessage getAllDogAndCat = new SendMessage();
+        getAllDogAndCat.setChatId(chatId);
+        getAllDogAndCat.setText("У нас есть разнообразие собак и кошек, доступных для усыновления. " +
+                "Свяжитесь с нами для получения более подробной информации.");
+        return getAllDogAndCat;
     }
 
     //////////////////////
     private SendMessage getContactVolunteer(long chatId) {
-        return null;
+        SendMessage getContactVolunteer = new SendMessage();
+        getContactVolunteer.setChatId(chatId);
+        getContactVolunteer.setText("Наши добровольцы готовы помочь вам. Свяжитесь с нами для возможностей добровольчества.");
+        return getContactVolunteer;
     }
 
     private SendMessage leaveContact(long chatId) {
-        return null;
+        SendMessage leaveContact = new SendMessage();
+        leaveContact.setChatId(chatId);
+        leaveContact.setText("Пожалуйста, оставьте ваш контактную информацию, чтобы мы могли связаться с вами.");
+        return leaveContact;
     }
 
     private SendMessage shelterTB(long chatId) {
-        return null;
+        SendMessage shelterTB = new SendMessage();
+        shelterTB.setChatId(chatId);
+        shelterTB.setText("Посетите наш приют, чтобы увидеть наших пушистых друзей лично.");
+        return shelterTB;
     }
 
     private SendMessage registerPass(long chatId) {
-        return null;
+        SendMessage registerPass = new SendMessage();
+        registerPass.setChatId(chatId);
+        registerPass.setText("Вы можете зарегистрироваться, чтобы получить пропуск для посещения нашего приюта.");
+        return registerPass;
     }
 
     private SendMessage sendReport(long chatId) {
-        return null;
+        SendMessage sendReport = new SendMessage();
+        sendReport.setChatId(chatId);
+        sendReport.setText("Если у вас есть какие-либо вопросы или нужно сообщить о проблеме, пожалуйста, свяжитесь с нами.");
+        return sendReport;
     }
 
     ////////
