@@ -1,6 +1,9 @@
 package com.skypro.animalShelterInfoBot.model.human;
+import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 /**
  * Модель таблицы, куда будут попадать все первоначально общающиеся с ботом.
@@ -45,4 +48,7 @@ public class ChatUser {
     private String email;
 
     private boolean isVolunteer;
+
+    @OneToMany(mappedBy = "chatUser")
+    private List<Animal> animals;
 }

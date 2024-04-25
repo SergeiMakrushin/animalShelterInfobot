@@ -1,6 +1,7 @@
 package com.skypro.animalShelterInfoBot.model.animals;
 
 import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
+import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,9 +32,12 @@ public class Animal {
 
     private String color;     //окрас
 
-    private boolean isVolunteer;
-
-     @ManyToOne(fetch = FetchType.EAGER)
-     @JoinColumn(name = "avatar_id")
+     @OneToOne(cascade = CascadeType.ALL)
+     @JoinColumn(name = "avatar_id", referencedColumnName = "id")
      private Avatar avatar;
-}
+
+     @ManyToOne
+     @JoinColumn(name = "chat_user_id", referencedColumnName = "id")
+     private ChatUser chatUser;
+
+ }
