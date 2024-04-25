@@ -1,6 +1,8 @@
 package com.skypro.animalShelterInfoBot.service.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
+import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+import com.skypro.animalShelterInfoBot.services.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,7 +25,8 @@ import java.util.List;
 @Service
 public class BotService {
 
-
+    @Autowired
+    UserService userService;
     @Value("${bot.token}")
     private String token;
 
@@ -342,10 +346,26 @@ public class BotService {
 
     //////////////////////
     private SendMessage getContactVolunteer(long chatId) {
+//        Записываем в лист всех полученных волонтеров
+        List<ChatUser> volunteerList = userService.getAllVolunteer();
+//        Выбираем ChatId случайного волонтера
+        Random rand = new Random();
+        long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
+//        Создаем сообщение для волонтера с контактами пользователя
+        SendMessage messageVolunteer = new SendMessage();
+        messageVolunteer.setChatId(randomVolunteer);
+        messageVolunteer.setText("Пользователь " + chatId + " телеграмм-бота просит написать ему");
+//        Дальше надо разбираться, метод для отправки сообщений в классе TelegramBot, если на него сделать зависимость будет циклическая ссылка
+//        надо искать в этом классе, он есть, так как сообщения отправляются
+//        Должно быть что-то типа:
+//        execute(messageVolunteer);
+
         SendMessage getContactVolunteer = new SendMessage();
         getContactVolunteer.setChatId(chatId);
-        getContactVolunteer.setText("Наши добровольцы готовы помочь вам. Свяжитесь с нами для возможностей добровольчества.");
+        getContactVolunteer.setText("Наши добровольцы скоро свяжутся с вами");
+//        getContactVolunteer.setText("Наши добровольцы готовы помочь вам. Свяжитесь с нами для возможностей добровольчества.");
         return getContactVolunteer;
+
     }
 
     private SendMessage leaveContact(long chatId) {
