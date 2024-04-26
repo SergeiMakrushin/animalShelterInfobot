@@ -191,7 +191,7 @@ public class BotService {
     private SendMessage adviceDogHandlers(long chatId) {
         SendMessage adviceDogHandlers = new SendMessage();
         adviceDogHandlers.setChatId(chatId);
-        adviceDogHandlers.setText("Пожалуйста, обратитесь к нашим собаководам за консультацией.");
+        adviceDogHandlers.setText(ShelterInformationDirectory.DOGHANDLERADVICE);
         return adviceDogHandlers;
     }
 
