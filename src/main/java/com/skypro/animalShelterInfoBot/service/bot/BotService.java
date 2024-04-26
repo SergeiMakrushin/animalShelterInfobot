@@ -4,7 +4,6 @@ import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDi
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -70,8 +69,8 @@ public class BotService {
     /**
      * Настройка сообщений
      *
-     * @param chatId
-     * @param text
+     * @param chatId Id чата
+     * @param text Текст сообщения
      * @return message
      */
     public SendMessage settingSendMessage(long chatId, String text) {
@@ -83,11 +82,11 @@ public class BotService {
     }
 
     /**
-     * Проверка что пришло от пользователя
+     * Проверка, что пришло от пользователя
      * нажатие клавиши или текст
      *
-     * @param update
-     * @return
+     * @param update данные от пользователя
+     * @return текст для отправки
      */
     SendMessage inputMsg(Update update) {
         SendMessage textToSend = new SendMessage();
@@ -111,10 +110,10 @@ public class BotService {
      * Обработка входящих сообщений
      * Обработка нажатий кнопок меню
      *
-     * @param chatId
-     * @param text
-     * @param name
-     * @return
+     * @param chatId Id чата
+     * @param text текст, который пришел от пользователя
+     * @param name имя пользователя
+     * @return сообщение для пользователя
      */
     SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
         SendMessage textToSend;
@@ -395,9 +394,9 @@ public class BotService {
     /**
      * Стартовое меню
      *
-     * @param chatId
-     * @param name
-     * @return message
+     * @param chatId Id чата
+     * @param name имя пользователя
+     * @return сообщение для пользователя
      */
     public SendMessage sendStartMenu(long chatId, String name) {
         log.info("Идет инициализация стартового меню... ");
@@ -440,8 +439,8 @@ public class BotService {
     /**
      * Создаем меню администрации
      *
-     * @param chatId
-     * @return message
+     * @param chatId Id чата
+     * @return сообщение для администратора
      */
     SendMessage administrationMenu(long chatId) {
         log.info("Идет инициализация меню администрации... ");
