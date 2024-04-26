@@ -52,6 +52,18 @@ public class BotService {
     private final String BTN_HANDLERS_TIPS = "Советы кинолога";
     private final String BTN_REFUSE_REASONS = "Причины отказа";
 
+    private final String CMD_START = "/start";
+    private final String CMD_INFO_SHELTER = "/info_shelter";
+    private final String CMD_INFO_TAKE_ANIMAL = "/info_take_animal";
+    private final String CMD_SEND_REPORT = "/send_report";
+    private final String CMD_LEAVE_CONTACT = "/leave_contact";
+    private final String CMD_HELP = "/help";
+    private final String CMD_GET_PASS = "/get_pass";
+    private final String CMD_TB_RECOMMENDATIONS = "/tb_recommendations";
+    private final String CMD_LOCATION = "/location";
+    private final String CMD_DOGS = "/dogs";
+    private final String CMD_CATS = "/cats";
+
     @Autowired
     UserService userService;
 
@@ -126,7 +138,8 @@ public class BotService {
             long chatId = callbackQuery.getMessage().getChatId();
             String name = callbackQuery.getFrom().getFirstName();
             textToSend = processingTextAndCallbackQuery(chatId, msgText, name);
-        } else if (update.hasMessage() && update.getMessage().hasText()) {
+        }
+        else if (update.hasMessage() && update.getMessage().hasText()) {
             String msgText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             String name = update.getMessage().getChat().getFirstName();
@@ -191,16 +204,16 @@ public class BotService {
 
         // Текстовые команды
         textToSend = switch (text) {
-            case "/start" -> sendStartMenu(chatId, name);
-            case "/info_shelter" -> infoShelter(chatId);
-            case "/info_take_animal" -> instructionAdoptionMenu(chatId);
-            case "/send_report" -> sendReport(chatId);
-            case "/leave_contact" -> leaveContact(chatId);
-            case "/help" -> getContactVolunteer(chatId);
-            case "/get_pass" -> registerPass(chatId);
-            case "/tb_recommendations" -> shelterTB(chatId);
-            case "/location" -> InfoShelterTimeAndAddress(chatId);
-            case "/dogs", "/cats" -> dogsAndCatMenu(chatId);
+            case CMD_START -> sendStartMenu(chatId, name);
+            case CMD_INFO_SHELTER -> infoShelter(chatId);
+            case CMD_INFO_TAKE_ANIMAL -> instructionAdoptionMenu(chatId);
+            case CMD_SEND_REPORT -> sendReport(chatId);
+            case CMD_LEAVE_CONTACT -> leaveContact(chatId);
+            case CMD_HELP -> getContactVolunteer(chatId);
+            case CMD_GET_PASS -> registerPass(chatId);
+            case CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
+            case CMD_LOCATION -> InfoShelterTimeAndAddress(chatId);
+            case CMD_DOGS, CMD_CATS -> dogsAndCatMenu(chatId);
             default -> textToSend;
         };
 
