@@ -116,7 +116,6 @@ public class BotService {
      * @return сообщение для пользователя
      */
     SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
-        SendMessage textToSend;
         //проходим по индексам кнопок
         int indexButton = -1;
         for (int i = 0; i < NAME_BUTTONS.size(); i++) {
@@ -125,116 +124,57 @@ public class BotService {
                 break;
             }
         }
+
+        log.info("Нажата клавиша " + indexButton);
+
+        SendMessage textToSend;
+
         //Команды кнопок
-        switch (indexButton) {
-            case 0:
-                log.info("Нажата клавиша");
-                textToSend = administrationMenu(chatId);
-                break;
-            case 1, 2:                                    //Настроить логику выбора
-                textToSend = dogsAndCatMenu(chatId);      //Кошки и собаки
-                break;
-            ////////
-            case 3:
-                textToSend = infoShelter(chatId);
-                break;
-            case 4:
-                textToSend = InfoShelterTimeAndAddress(chatId);
-                break;
-            //////
-            case 5:
-                textToSend = sendReport(chatId);
-                break;
-            case 6:
-                textToSend = instructionAdoptionMenu(chatId);
-                break;
-            case 7:
-                textToSend = registerPass(chatId);
-                break;
-            case 8:
-                textToSend = shelterTB(chatId);
-                break;
-            case 9:
-                textToSend = leaveContact(chatId);
-                break;
-            case 10:
-                textToSend = getContactVolunteer(chatId);
-                break;
-            case 11:
-                textToSend = sendStartMenu(chatId, name);  //Написать логику, если пользователь уже есть в БД - не приветствовать
-                break;
-            case 12:
-                textToSend = getAllDogAndCat(chatId);
-                break;
-            case 13:
-                textToSend = getNameDogAndCat(chatId);
-                break;
-            //////
-            case 14:
-                textToSend = getAgeDogAndCat(chatId);
-                break;
-            case 15:
-                textToSend = getColorDogAndCat(chatId);
-                break;
-            ///////
-            case 16:
-                textToSend = getBreedDogAndColor(chatId);
-                break;
-            case 17:
-                textToSend = meetingAnimals(chatId);
-                break;
-            case 18:
-                textToSend = listDocsDecor(chatId);
-                break;
-            case 19:
-                textToSend = recommendationTransportAnimal(chatId);
-                break;
-            case 20:
-                textToSend = homeForChild(chatId);
-                break;
-            case 21:
-                textToSend = homeForAdults(chatId);
-                break;
-            case 22:
-                textToSend = homeForLimitedOpportunities(chatId);
-                break;
-            case 23:
-                textToSend = getContactDogHandlers(chatId);
-                break;
-            case 24:
-                textToSend = adviceDogHandlers(chatId);
-                break;
-            case 25:
-                textToSend = reasonsForRefusal(chatId);
-                break;
-            default:
-                textToSend = settingSendMessage(chatId, "Выберите интересующую вас кнопку меню \uD83D\uDC47 \n" +
-                        "Или воспользуйтесь кнопкой вызова волонтера, он вам поможет \uD83D\uDE09");
-                break;
-        }
-        if (text.equals("/start")) {
-            textToSend = sendStartMenu(chatId, name);
-        } else if (text.equals("/info_shelter")) {
-            textToSend = infoShelter(chatId);
-        } else if (text.equals("/info_take_animal")) {
-            textToSend = instructionAdoptionMenu(chatId);
-        } else if (text.equals("/send_report")) {
-            textToSend = sendReport(chatId);
-        } else if (text.equals("/leave_contact")) {
-            textToSend = leaveContact(chatId);
-        } else if (text.equals("/help")) {
-            textToSend = getContactVolunteer(chatId);
-        } else if (text.equals("/get_pass")) {
-            textToSend = registerPass(chatId);
-        } else if (text.equals("/tb_recommendations")) {
-            textToSend = shelterTB(chatId);
-        } else if (text.equals("/location")) {
-            textToSend = InfoShelterTimeAndAddress(chatId);
-        } else if (text.equals("/dogs")) {
-            textToSend = dogsAndCatMenu(chatId);
-        } else if (text.equals("/cats")) {
-            textToSend = dogsAndCatMenu(chatId);
-        }
+        textToSend = switch (indexButton) {
+            case 0 -> administrationMenu(chatId);
+            case 1, 2 -> dogsAndCatMenu(chatId);            //Настроить логику выбора (Кошки и собаки)
+            case 3 -> infoShelter(chatId);
+            case 4 -> InfoShelterTimeAndAddress(chatId);
+            case 5 -> sendReport(chatId);
+            case 6 -> instructionAdoptionMenu(chatId);
+            case 7 -> registerPass(chatId);
+            case 8 -> shelterTB(chatId);
+            case 9 -> leaveContact(chatId);
+            case 10 -> getContactVolunteer(chatId);
+            case 11 -> sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
+            case 12 -> getAllDogAndCat(chatId);
+            case 13 -> getNameDogAndCat(chatId);
+            case 14 -> getAgeDogAndCat(chatId);
+            case 15 -> getColorDogAndCat(chatId);
+            case 16 -> getBreedDogAndColor(chatId);
+            case 17 -> meetingAnimals(chatId);
+            case 18 -> listDocsDecor(chatId);
+            case 19 -> recommendationTransportAnimal(chatId);
+            case 20 -> homeForChild(chatId);
+            case 21 -> homeForAdults(chatId);
+            case 22 -> homeForLimitedOpportunities(chatId);
+            case 23 -> getContactDogHandlers(chatId);
+            case 24 -> adviceDogHandlers(chatId);
+            case 25 -> reasonsForRefusal(chatId);
+            default -> settingSendMessage(chatId, "Выберите интересующую вас кнопку меню \uD83D\uDC47 \n" +
+                    "Или воспользуйтесь кнопкой вызова волонтера, он вам поможет \uD83D\uDE09");
+        };
+
+        // Текстовые команды
+        textToSend = switch (text) {
+            case "/start" -> sendStartMenu(chatId, name);
+            case "/info_shelter" -> infoShelter(chatId);
+            case "/info_take_animal" -> instructionAdoptionMenu(chatId);
+            case "/send_report" -> sendReport(chatId);
+            case "/leave_contact" -> leaveContact(chatId);
+            case "/help" -> getContactVolunteer(chatId);
+            case "/get_pass" -> registerPass(chatId);
+            case "/tb_recommendations" -> shelterTB(chatId);
+            case "/location" -> InfoShelterTimeAndAddress(chatId);
+            case "/dogs", "/cats" -> dogsAndCatMenu(chatId);
+            default -> textToSend;
+        };
+
         return textToSend;
     }
 
