@@ -69,46 +69,6 @@ public class BotService {
     UserService userService;
 
     /**
-     * Создаем List с названием всех кнопок меню
-     */
-    private final List<String> NAME_BUTTONS = new ArrayList<>(List.of(
-            //Стартовое меню
-            // индекс 0 - 1 - 2
-            BTN_ADMINISTRATION, BTN_DOGS, BTN_CATS,
-
-            //Меню администрация
-            // индекс 3 - 4
-            BTN_INFO_SHELTER, BTN_LOCATION,
-            // индекс 5 - 6
-            BTN_SEND_REPORT, BTN_INFO_TAKE_ANIMAL,
-            // индекс 7 - 8
-            BTN_GET_PASS, BTN_TB_RECOMMENDATION,
-            // индекс 9 - 10
-            BTN_LEAVE_CONTACTS, BTN_HELP,
-            // индекс 11
-            BTN_MAIN_MENU,
-
-            //меню Отдел собак (Отдел кошек)
-            // индекс 12 - 13
-            BTN_SHOW_ALL, BTN_FIND_BY_NICK,
-            // индекс 14 - 15
-            BTN_FIND_BY_AGE, BTN_FIND_BY_COLOR,
-            // индекс 16
-            BTN_FIND_BY_BREED,
-
-            //меню взятия животного
-            // индекс 17 - 18
-            BTN_RULES_TO_MEETING, BTN_DOCUMENTS_LISTS,
-            // индекс 19 - 20
-            BTN_TRANSPORT_RECOMMENDATION, BTN_HOME_FOR_CUB,
-            // индекс 21 - 22
-            BTN_HOME_FOR_ADULT, BTN_HOME_FOR_DISABLE,
-            // индекс 23 - 24
-            BTN_HANDLERS_CONTACT, BTN_HANDLERS_TIPS,
-            // индекс 25
-            BTN_REFUSE_REASONS));
-
-    /**
      * Создаем постоянную клавиатуру
      *
      * @param chatId Id чата
@@ -406,23 +366,12 @@ public class BotService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton3 = new InlineKeyboardButton(); //Создаем кнопку
-
-        inlineKeyboardButton1.setText(BTN_ADMINISTRATION); //Текст самой кнопки
-        inlineKeyboardButton1.setCallbackData(getBTN_ADMINISTRATION()); //Отклик на нажатие кнопки
-        inlineKeyboardButton2.setText(NAME_BUTTONS.get(1)); //Текст самой кнопки
-        inlineKeyboardButton2.setCallbackData(NAME_BUTTONS.get(1)); //Отклик на нажатие кнопки
-        inlineKeyboardButton3.setText(NAME_BUTTONS.get(2)); //Текст самой кнопки
-        inlineKeyboardButton3.setCallbackData(NAME_BUTTONS.get(2)); //Отклик на нажатие кнопки
-
         List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
         List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>();
 
-        keyboardButtonsRow1.add(inlineKeyboardButton1);
-        keyboardButtonsRow2.add(inlineKeyboardButton2);
-        keyboardButtonsRow2.add(inlineKeyboardButton3);
+        keyboardButtonsRow1.add(createButton(BTN_ADMINISTRATION));
+        keyboardButtonsRow2.add(createButton(BTN_DOGS));
+        keyboardButtonsRow2.add(createButton(BTN_CATS));
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём ряд
         rowList.add(keyboardButtonsRow1);
@@ -450,50 +399,21 @@ public class BotService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton3 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton4 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton5 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton6 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton7 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton8 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton9 = new InlineKeyboardButton(); //Создаем кнопку
-
-        inlineKeyboardButton1.setText(NAME_BUTTONS.get(3)); //Текст самой кнопки
-        inlineKeyboardButton1.setCallbackData(NAME_BUTTONS.get(3)); //Отклик на нажатие кнопки
-        inlineKeyboardButton2.setText(NAME_BUTTONS.get(4)); //Текст самой кнопки
-        inlineKeyboardButton2.setCallbackData(NAME_BUTTONS.get(4)); //Отклик на нажатие кнопки
-        inlineKeyboardButton3.setText(NAME_BUTTONS.get(5)); //Текст самой кнопки
-        inlineKeyboardButton3.setCallbackData(NAME_BUTTONS.get(5)); //Отклик на нажатие кнопки
-        inlineKeyboardButton4.setText(NAME_BUTTONS.get(6)); //Текст самой кнопки
-        inlineKeyboardButton4.setCallbackData(NAME_BUTTONS.get(6)); //Отклик на нажатие кнопки
-        inlineKeyboardButton5.setText(NAME_BUTTONS.get(7)); //Текст самой кнопки
-        inlineKeyboardButton5.setCallbackData(NAME_BUTTONS.get(7)); //Отклик на нажатие кнопки
-        inlineKeyboardButton6.setText(NAME_BUTTONS.get(8)); //Текст самой кнопки
-        inlineKeyboardButton6.setCallbackData(NAME_BUTTONS.get(8)); //Отклик на нажатие кнопки
-        inlineKeyboardButton7.setText(NAME_BUTTONS.get(9)); //Текст самой кнопки
-        inlineKeyboardButton7.setCallbackData(NAME_BUTTONS.get(9)); //Отклик на нажатие кнопки
-        inlineKeyboardButton8.setText(NAME_BUTTONS.get(10)); //Текст самой кнопки
-        inlineKeyboardButton8.setCallbackData(NAME_BUTTONS.get(10)); //Отклик на нажатие кнопки
-        inlineKeyboardButton9.setText(NAME_BUTTONS.get(11)); //Текст самой кнопки
-        inlineKeyboardButton9.setCallbackData(NAME_BUTTONS.get(11)); //Отклик на нажатие кнопки
-
         List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> keyboardButtonsRow4 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> keyboardButtonsRow5 = new ArrayList<>(); //Создаем ряд кнопок
 
-        keyboardButtonsRow1.add(inlineKeyboardButton1); //Добавляем кнопки в ряд
-        keyboardButtonsRow1.add(inlineKeyboardButton2); //Добавляем кнопки в ряд
-        keyboardButtonsRow2.add(inlineKeyboardButton3); //Добавляем кнопки в ряд
-        keyboardButtonsRow2.add(inlineKeyboardButton4); //Добавляем кнопки в ряд
-        keyboardButtonsRow3.add(inlineKeyboardButton5); //Добавляем кнопки в ряд
-        keyboardButtonsRow3.add(inlineKeyboardButton6); //Добавляем кнопки в ряд
-        keyboardButtonsRow4.add(inlineKeyboardButton7); //Добавляем кнопки в ряд
-        keyboardButtonsRow4.add(inlineKeyboardButton8); //Добавляем кнопки в ряд
-        keyboardButtonsRow5.add(inlineKeyboardButton9); //Добавляем кнопки в ряд
+        keyboardButtonsRow1.add(createButton(BTN_INFO_SHELTER)); //Добавляем кнопки в ряд
+        keyboardButtonsRow1.add(createButton(BTN_LOCATION)); //Добавляем кнопки в ряд
+        keyboardButtonsRow2.add(createButton(BTN_SEND_REPORT)); //Добавляем кнопки в ряд
+        keyboardButtonsRow2.add(createButton(BTN_INFO_TAKE_ANIMAL)); //Добавляем кнопки в ряд
+        keyboardButtonsRow3.add(createButton(BTN_GET_PASS)); //Добавляем кнопки в ряд
+        keyboardButtonsRow3.add(createButton(BTN_TB_RECOMMENDATION)); //Добавляем кнопки в ряд
+        keyboardButtonsRow4.add(createButton(BTN_LEAVE_CONTACTS)); //Добавляем кнопки в ряд
+        keyboardButtonsRow4.add(createButton(BTN_HELP)); //Добавляем кнопки в ряд
+        keyboardButtonsRow5.add(createButton(BTN_MAIN_MENU)); //Добавляем кнопки в ряд
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
         rowList.add(keyboardButtonsRow1);
@@ -518,32 +438,15 @@ public class BotService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton3 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton4 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton5 = new InlineKeyboardButton(); //Создаем кнопку
-
-        inlineKeyboardButton1.setText(NAME_BUTTONS.get(12)); //Текст самой кнопки
-        inlineKeyboardButton1.setCallbackData(NAME_BUTTONS.get(12)); //Отклик на нажатие кнопки
-        inlineKeyboardButton2.setText(NAME_BUTTONS.get(13)); //Текст самой кнопки
-        inlineKeyboardButton2.setCallbackData(NAME_BUTTONS.get(13)); //Отклик на нажатие кнопки
-        inlineKeyboardButton3.setText(NAME_BUTTONS.get(14)); //Текст самой кнопки
-        inlineKeyboardButton3.setCallbackData(NAME_BUTTONS.get(14)); //Отклик на нажатие кнопки
-        inlineKeyboardButton4.setText(NAME_BUTTONS.get(15)); //Текст самой кнопки
-        inlineKeyboardButton4.setCallbackData(NAME_BUTTONS.get(15)); //Отклик на нажатие кнопки
-        inlineKeyboardButton5.setText(NAME_BUTTONS.get(16)); //Текст самой кнопки
-        inlineKeyboardButton5.setCallbackData(NAME_BUTTONS.get(16)); //Отклик на нажатие кнопки
-
         List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>(); //Создаем ряд кнопок
 
-        keyboardButtonsRow1.add(inlineKeyboardButton1); //Добавляем кнопки в ряд
-        keyboardButtonsRow2.add(inlineKeyboardButton2); //Добавляем кнопки в ряд
-        keyboardButtonsRow2.add(inlineKeyboardButton3); //Добавляем кнопки в ряд
-        keyboardButtonsRow3.add(inlineKeyboardButton4); //Добавляем кнопки в ряд
-        keyboardButtonsRow3.add(inlineKeyboardButton5); //Добавляем кнопки в ряд
+        keyboardButtonsRow1.add(createButton(BTN_SHOW_ALL)); //Добавляем кнопки в ряд
+        keyboardButtonsRow2.add(createButton(BTN_FIND_BY_NICK)); //Добавляем кнопки в ряд
+        keyboardButtonsRow2.add(createButton(BTN_FIND_BY_AGE)); //Добавляем кнопки в ряд
+        keyboardButtonsRow3.add(createButton(BTN_FIND_BY_COLOR)); //Добавляем кнопки в ряд
+        keyboardButtonsRow3.add(createButton(BTN_FIND_BY_BREED)); //Добавляем кнопки в ряд
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
         rowList.add(keyboardButtonsRow1);
@@ -566,35 +469,6 @@ public class BotService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
-        InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton3 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton4 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton5 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton6 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton7 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton8 = new InlineKeyboardButton(); //Создаем кнопку
-        InlineKeyboardButton inlineKeyboardButton9 = new InlineKeyboardButton(); //Создаем кнопку
-
-        inlineKeyboardButton1.setText(NAME_BUTTONS.get(17)); //Текст самой кнопки
-        inlineKeyboardButton1.setCallbackData(NAME_BUTTONS.get(17)); //Отклик на нажатие кнопки
-        inlineKeyboardButton2.setText(NAME_BUTTONS.get(18)); //Текст самой кнопки
-        inlineKeyboardButton2.setCallbackData(NAME_BUTTONS.get(18)); //Отклик на нажатие кнопки
-        inlineKeyboardButton3.setText(NAME_BUTTONS.get(19)); //Текст самой кнопки
-        inlineKeyboardButton3.setCallbackData(NAME_BUTTONS.get(19)); //Отклик на нажатие кнопки
-        inlineKeyboardButton4.setText(NAME_BUTTONS.get(20)); //Текст самой кнопки
-        inlineKeyboardButton4.setCallbackData(NAME_BUTTONS.get(20)); //Отклик на нажатие кнопки
-        inlineKeyboardButton5.setText(NAME_BUTTONS.get(21)); //Текст самой кнопки
-        inlineKeyboardButton5.setCallbackData(NAME_BUTTONS.get(21)); //Отклик на нажатие кнопки
-        inlineKeyboardButton6.setText(NAME_BUTTONS.get(22)); //Текст самой кнопки
-        inlineKeyboardButton6.setCallbackData(NAME_BUTTONS.get(22)); //Отклик на нажатие кнопки
-        inlineKeyboardButton7.setText(NAME_BUTTONS.get(23)); //Текст самой кнопки
-        inlineKeyboardButton7.setCallbackData(NAME_BUTTONS.get(23)); //Отклик на нажатие кнопки
-        inlineKeyboardButton8.setText(NAME_BUTTONS.get(24)); //Текст самой кнопки
-        inlineKeyboardButton8.setCallbackData(NAME_BUTTONS.get(24)); //Отклик на нажатие кнопки
-        inlineKeyboardButton9.setText(NAME_BUTTONS.get(25)); //Текст самой кнопки
-        inlineKeyboardButton9.setCallbackData(NAME_BUTTONS.get(25)); //Отклик на нажатие кнопки
-
         List<InlineKeyboardButton> buttonsRow1 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> buttonsRow2 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> buttonsRow3 = new ArrayList<>(); //Создаем ряд кнопок
@@ -604,15 +478,15 @@ public class BotService {
         List<InlineKeyboardButton> buttonsRow7 = new ArrayList<>(); //Создаем ряд кнопок
         List<InlineKeyboardButton> buttonsRow8 = new ArrayList<>(); //Создаем ряд кнопок
 
-        buttonsRow1.add(inlineKeyboardButton1); //Добавляем кнопки в ряд
-        buttonsRow2.add(inlineKeyboardButton2); //Добавляем кнопки в ряд
-        buttonsRow3.add(inlineKeyboardButton3); //Добавляем кнопки в ряд
-        buttonsRow4.add(inlineKeyboardButton4); //Добавляем кнопки в ряд
-        buttonsRow5.add(inlineKeyboardButton5); //Добавляем кнопки в ряд
-        buttonsRow6.add(inlineKeyboardButton6); //Добавляем кнопки в ряд
-        buttonsRow7.add(inlineKeyboardButton7); //Добавляем кнопки в ряд
-        buttonsRow8.add(inlineKeyboardButton8); //Добавляем кнопки в ряд
-        buttonsRow8.add(inlineKeyboardButton9); //Добавляем кнопки в ряд
+        buttonsRow1.add(createButton(BTN_RULES_TO_MEETING)); //Добавляем кнопки в ряд
+        buttonsRow2.add(createButton(BTN_DOCUMENTS_LISTS)); //Добавляем кнопки в ряд
+        buttonsRow3.add(createButton(BTN_TRANSPORT_RECOMMENDATION)); //Добавляем кнопки в ряд
+        buttonsRow4.add(createButton(BTN_HOME_FOR_CUB)); //Добавляем кнопки в ряд
+        buttonsRow5.add(createButton(BTN_HOME_FOR_ADULT)); //Добавляем кнопки в ряд
+        buttonsRow6.add(createButton(BTN_HOME_FOR_DISABLE)); //Добавляем кнопки в ряд
+        buttonsRow7.add(createButton(BTN_HANDLERS_CONTACT)); //Добавляем кнопки в ряд
+        buttonsRow8.add(createButton(BTN_HANDLERS_TIPS)); //Добавляем кнопки в ряд
+        buttonsRow8.add(createButton(BTN_REFUSE_REASONS)); //Добавляем кнопки в ряд
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
         rowList.add(buttonsRow1);
@@ -629,6 +503,18 @@ public class BotService {
         msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
 
         return msg; //Отправляем сообщение
+    }
+
+    /**
+     * Возвращает кнопку, у которой текст и отклик совпадают
+     * @param text текст и отклик кнопки
+     * @return кнопка
+     */
+    private InlineKeyboardButton createButton(String text) {
+        InlineKeyboardButton btn = new InlineKeyboardButton();    //Создаем кнопку
+        btn.setText(text);                                        //Текст самой кнопки
+        btn.setCallbackData(text);                                //Отклик на нажатие кнопки
+        return btn;
     }
 }
 
