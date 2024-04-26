@@ -26,17 +26,17 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.config = config;
         this.botService = botService;
         List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand("/start", "Начать диалог с ботом."));
-        listOfCommands.add(new BotCommand("/info_shelter", "Общая информация о приюте"));
-        listOfCommands.add(new BotCommand("/info_take_animal", "Инструкция - как приютить животное"));
-        listOfCommands.add(new BotCommand("/send_report", "прислать отчет"));
-        listOfCommands.add(new BotCommand("/leave_contact", "Оставить контакты для связи"));
-        listOfCommands.add(new BotCommand("/help", "Позвать волонтера"));
-        listOfCommands.add(new BotCommand("/get_pass", "Получить контакт охраны, для регистрации пропуска"));
-        listOfCommands.add(new BotCommand("/tb_recommendations", "ТБ нахождения на территории приюта"));
-        listOfCommands.add(new BotCommand("/location", "Расписание работы приюта, адрес и схема проезда"));
-        listOfCommands.add(new BotCommand("/dogs", "Собачий отдел"));
-        listOfCommands.add(new BotCommand("/cats", "Кошачий отдел"));
+        listOfCommands.add(new BotCommand(BotService.CMD_START, "Начать диалог с ботом."));
+        listOfCommands.add(new BotCommand(BotService.CMD_INFO_SHELTER, "Общая информация о приюте"));
+        listOfCommands.add(new BotCommand(BotService.CMD_INFO_TAKE_ANIMAL, "Инструкция - как приютить животное"));
+        listOfCommands.add(new BotCommand(BotService.CMD_SEND_REPORT, "прислать отчет"));
+        listOfCommands.add(new BotCommand(BotService.CMD_LEAVE_CONTACT, "Оставить контакты для связи"));
+        listOfCommands.add(new BotCommand(BotService.CMD_HELP, "Позвать волонтера"));
+        listOfCommands.add(new BotCommand(BotService.CMD_GET_PASS, "Получить контакт охраны, для регистрации пропуска"));
+        listOfCommands.add(new BotCommand(BotService.CMD_TB_RECOMMENDATIONS, "ТБ нахождения на территории приюта"));
+        listOfCommands.add(new BotCommand(BotService.CMD_LOCATION, "Расписание работы приюта, адрес и схема проезда"));
+        listOfCommands.add(new BotCommand(BotService.CMD_DOGS, "Собачий отдел"));
+        listOfCommands.add(new BotCommand(BotService.CMD_CATS, "Кошачий отдел"));
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
