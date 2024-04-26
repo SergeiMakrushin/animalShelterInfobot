@@ -404,6 +404,12 @@ public class BotService {
         return msg; //Отправляем сообщение
     }
 
+    /**
+     * Создаем меню животных
+     *
+     * @param chatId идентификатор чата
+     * @return отправляем ответ
+     */
     SendMessage dogsAndCatMenu(long chatId) {
         log.info("Идет инициализация меню животных... ");
 
@@ -424,6 +430,12 @@ public class BotService {
         return msg; //Отправляем сообщение
     }
 
+    /**
+     * Создаем меню что нужно знать для взятия животного
+     *
+     * @param chatId идентификатор чата
+     * @return отправляем ответ
+     */
     SendMessage instructionAdoptionMenu(long chatId) {
         log.info("Идет инициализация меню как взять животное ... ");
 
@@ -434,14 +446,11 @@ public class BotService {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
-        rowList.add(List.of(createButton(BTN_RULES_TO_MEETING)));
-        rowList.add(List.of(createButton(BTN_DOCUMENTS_LISTS)));
-        rowList.add(List.of(createButton(BTN_TRANSPORT_RECOMMENDATION)));
-        rowList.add(List.of(createButton(BTN_HOME_FOR_CUB)));
-        rowList.add(List.of(createButton(BTN_HOME_FOR_ADULT)));
-        rowList.add(List.of(createButton(BTN_HOME_FOR_DISABLE)));
-        rowList.add(List.of(createButton(BTN_HANDLERS_CONTACT)));
-        rowList.add(List.of(createButton(BTN_HANDLERS_TIPS), createButton(BTN_RULES_TO_MEETING)));
+        rowList.add(List.of(createButton(BTN_RULES_TO_MEETING), createButton(BTN_DOCUMENTS_LISTS)));
+        rowList.add(List.of(createButton(BTN_TRANSPORT_RECOMMENDATION), createButton(BTN_HOME_FOR_CUB)));
+        rowList.add(List.of(createButton(BTN_HOME_FOR_ADULT), createButton(BTN_HOME_FOR_DISABLE)));
+        rowList.add(List.of(createButton(BTN_HANDLERS_CONTACT), createButton(BTN_HANDLERS_TIPS)));
+        rowList.add(List.of(createButton(BTN_REFUSE_REASONS)));
         inlineKeyboardMarkup.setKeyboard(rowList); //Вносим настройки в клавиатуру
 
         msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
