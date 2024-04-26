@@ -73,47 +73,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * Метод отправляет сообщение пользователю.
-     * Создает постоянное меню.
-     *
-     * @param chatId
-     */
-    public void sendMenu(long chatId) {
-        log.info("метод отправки сообщения пользователю");
-
-        SendMessage msg = new SendMessage();
-        msg.setChatId(chatId);
-
-        //Создаем постоянную клавиатуру
-        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
-        keyboardMarkup.setResizeKeyboard(true);
-        keyboardMarkup.setOneTimeKeyboard(false);
-
-        //создаем лист рядов
-        List<KeyboardRow> keyboardRows = new ArrayList<>();
-
-        //добавляем ряд и кнопки
-        KeyboardRow row = new KeyboardRow();
-        row.add("Общая информация о приюте");
-        row.add("Оставить контакты для связи");
-        keyboardRows.add(row);
-
-        //добавляем еще ряд и кнопки
-        row = new KeyboardRow();
-        row.add("Позвать волонтера");
-        row.add("Перейти в главное меню");
-        keyboardRows.add(row);
-
-        //перегружаем в лист рядов, меняем клавиатуру
-        keyboardMarkup.setKeyboard(keyboardRows);
-        msg.setReplyMarkup(keyboardMarkup);
-
-        //Отправляем сообщение
-        sendMessage(msg);
-        //  return String.valueOf(msg);
-    }
-
-    /**
      * Метод отправляет сообщение пользователю
      * в параметр принимает класс SendMessage
      *

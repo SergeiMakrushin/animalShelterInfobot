@@ -12,7 +12,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,18 +109,46 @@ public class BotService {
             BTN_REFUSE_REASONS));
 
     /**
-     * Настройка сообщений
+     * Создаем постоянную клавиатуру
      *
      * @param chatId Id чата
      * @param text Текст сообщения
      * @return message
      */
     public SendMessage settingSendMessage(long chatId, String text) {
+        log.info("метод отправки сообщения пользователю");
+
         SendMessage msg = new SendMessage();
         msg.setParseMode("HTML");
         msg.setChatId(chatId);
         msg.setText(text);
-        return msg;
+
+        //Создаем постоянную клавиатуру
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(false);
+
+        //создаем лист рядов
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+
+        //добавляем ряд и кнопки
+        KeyboardRow row = new KeyboardRow();
+        row.add("Информация о приюте");
+        row.add("Оставить контакты");
+        keyboardRows.add(row);
+
+        //добавляем еще ряд и кнопки
+        row = new KeyboardRow();
+        row.add("Позвать волонтера");
+        row.add("На главное меню");
+        keyboardRows.add(row);
+
+        //перегружаем в лист рядов, меняем клавиатуру
+        keyboardMarkup.setKeyboard(keyboardRows);
+        msg.setReplyMarkup(keyboardMarkup);
+
+        //Отправляем сообщение
+        return (msg);
     }
 
     /**
@@ -380,8 +410,8 @@ public class BotService {
         InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton(); //Создаем кнопку
         InlineKeyboardButton inlineKeyboardButton3 = new InlineKeyboardButton(); //Создаем кнопку
 
-        inlineKeyboardButton1.setText(NAME_BUTTONS.get(0)); //Текст самой кнопки
-        inlineKeyboardButton1.setCallbackData(NAME_BUTTONS.get(0)); //Отклик на нажатие кнопки
+        inlineKeyboardButton1.setText(BTN_ADMINISTRATION); //Текст самой кнопки
+        inlineKeyboardButton1.setCallbackData(getBTN_ADMINISTRATION()); //Отклик на нажатие кнопки
         inlineKeyboardButton2.setText(NAME_BUTTONS.get(1)); //Текст самой кнопки
         inlineKeyboardButton2.setCallbackData(NAME_BUTTONS.get(1)); //Отклик на нажатие кнопки
         inlineKeyboardButton3.setText(NAME_BUTTONS.get(2)); //Текст самой кнопки
@@ -479,7 +509,7 @@ public class BotService {
         return msg; //Отправляем сообщение
     }
 
-    public SendMessage dogsAndCatMenu(long chatId) {
+    SendMessage dogsAndCatMenu(long chatId) {
         log.info("Идет инициализация меню животных... ");
 
         SendMessage msg = new SendMessage();
@@ -527,7 +557,7 @@ public class BotService {
         return msg; //Отправляем сообщение
     }
 
-    public SendMessage instructionAdoptionMenu(long chatId) {
+    SendMessage instructionAdoptionMenu(long chatId) {
         log.info("Идет инициализация меню как взять животное ... ");
 
         SendMessage msg = new SendMessage();
