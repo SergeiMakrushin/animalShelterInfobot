@@ -59,4 +59,8 @@ public class UserService {
         }
         userRepository.deleteById(userId);
     }
+
+    public List<ChatUser> getAllVolunteer() {
+    return userRepository.findAllUserByIsVolunteerTrue();
+    }
 }
