@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -26,16 +25,16 @@ import java.util.Random;
 public class BotService {
 
     private final String BTN_ADMINISTRATION = "Администрация";
-    private final String BTN_DEPARTMENT_DOGS = "Отдел собак";
-    private final String BTN_DEPARTMENT_CATS = "Отдел кошек";
-    private final String BTN_SHELTER_INFO = "Информация о приюте";
-    private final String BTN_HOURS_N_ADDRESS = "Часы работы, адрес";
+    private final String BTN_DOGS = "Отдел собак";
+    private final String BTN_CATS = "Отдел кошек";
+    private final String BTN_INFO_SHELTER = "Информация о приюте";
+    private final String BTN_LOCATION = "Часы работы, адрес";
     private final String BTN_SEND_REPORT = "Прислать отчет";
-    private final String BTN_HOW_TO_GET = "Как получить питомца";
+    private final String BTN_INFO_TAKE_ANIMAL = "Как получить питомца";
     private final String BTN_GET_PASS = "Получить пропуск";
-    private final String BTN_SAFETY_INSTRUCTIONS = "ТБ на территории";
+    private final String BTN_TB_RECOMMENDATION = "ТБ на территории";
     private final String BTN_LEAVE_CONTACTS = "Оставить контакты";
-    private final String BTN_CALL_VOLUNTEER = "позвать волонтера";
+    private final String BTN_HELP = "позвать волонтера";
     private final String BTN_MAIN_MENU = "На главное меню";
     private final String BTN_SHOW_ALL = "Показать всех";
     private final String BTN_FIND_BY_NICK = "Найти по кличке";
@@ -73,17 +72,17 @@ public class BotService {
     private final List<String> NAME_BUTTONS = new ArrayList<>(List.of(
             //Стартовое меню
             // индекс 0 - 1 - 2
-            BTN_ADMINISTRATION, BTN_DEPARTMENT_DOGS, BTN_DEPARTMENT_CATS,
+            BTN_ADMINISTRATION, BTN_DOGS, BTN_CATS,
 
             //Меню администрация
             // индекс 3 - 4
-            BTN_SHELTER_INFO, BTN_HOURS_N_ADDRESS,
+            BTN_INFO_SHELTER, BTN_LOCATION,
             // индекс 5 - 6
-            BTN_SEND_REPORT, BTN_HOW_TO_GET,
+            BTN_SEND_REPORT, BTN_INFO_TAKE_ANIMAL,
             // индекс 7 - 8
-            BTN_GET_PASS, BTN_SAFETY_INSTRUCTIONS,
+            BTN_GET_PASS, BTN_TB_RECOMMENDATION,
             // индекс 9 - 10
-            BTN_LEAVE_CONTACTS, BTN_CALL_VOLUNTEER,
+            BTN_LEAVE_CONTACTS, BTN_HELP,
             // индекс 11
             BTN_MAIN_MENU,
 
@@ -158,66 +157,38 @@ public class BotService {
      * @return сообщение для пользователя
      */
     SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
-        //проходим по индексам кнопок
-        int indexButton = -1;
-        for (int i = 0; i < NAME_BUTTONS.size(); i++) {
-            if (NAME_BUTTONS.get(i).equalsIgnoreCase(text)) {
-                indexButton = i;
-                break;
-            }
-        }
+        log.info("Нажата клавиша \"" + text + "\"");
 
-        log.info("Нажата клавиша " + indexButton);
-
-        SendMessage textToSend;
-
-        //Команды кнопок
-        textToSend = switch (indexButton) {
-            case 0 -> administrationMenu(chatId);
-            case 1, 2 -> dogsAndCatMenu(chatId);            //Настроить логику выбора (Кошки и собаки)
-            case 3 -> infoShelter(chatId);
-            case 4 -> InfoShelterTimeAndAddress(chatId);
-            case 5 -> sendReport(chatId);
-            case 6 -> instructionAdoptionMenu(chatId);
-            case 7 -> registerPass(chatId);
-            case 8 -> shelterTB(chatId);
-            case 9 -> leaveContact(chatId);
-            case 10 -> getContactVolunteer(chatId);
-            case 11 -> sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
-            case 12 -> getAllDogAndCat(chatId);
-            case 13 -> getNameDogAndCat(chatId);
-            case 14 -> getAgeDogAndCat(chatId);
-            case 15 -> getColorDogAndCat(chatId);
-            case 16 -> getBreedDogAndColor(chatId);
-            case 17 -> meetingAnimals(chatId);
-            case 18 -> listDocsDecor(chatId);
-            case 19 -> recommendationTransportAnimal(chatId);
-            case 20 -> homeForChild(chatId);
-            case 21 -> homeForAdults(chatId);
-            case 22 -> homeForLimitedOpportunities(chatId);
-            case 23 -> getContactDogHandlers(chatId);
-            case 24 -> adviceDogHandlers(chatId);
-            case 25 -> reasonsForRefusal(chatId);
+        return switch (text) {
+            case BTN_ADMINISTRATION -> administrationMenu(chatId);
+            case BTN_DOGS, BTN_CATS, CMD_DOGS, CMD_CATS -> dogsAndCatMenu(chatId);            //Настроить логику выбора (Кошки и собаки)
+            case BTN_INFO_SHELTER, CMD_INFO_SHELTER -> infoShelter(chatId);
+            case BTN_LOCATION, CMD_LOCATION -> InfoShelterTimeAndAddress(chatId);
+            case BTN_SEND_REPORT, CMD_SEND_REPORT -> sendReport(chatId);
+            case BTN_INFO_TAKE_ANIMAL, CMD_INFO_TAKE_ANIMAL -> instructionAdoptionMenu(chatId);
+            case BTN_GET_PASS, CMD_GET_PASS -> registerPass(chatId);
+            case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
+            case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId);
+            case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId);
+            case BTN_MAIN_MENU -> sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
+            case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
+            case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
+            case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
+            case BTN_FIND_BY_COLOR -> getColorDogAndCat(chatId);
+            case BTN_FIND_BY_BREED -> getBreedDogAndColor(chatId);
+            case BTN_RULES_TO_MEETING -> meetingAnimals(chatId);
+            case BTN_DOCUMENTS_LISTS -> listDocsDecor(chatId);
+            case BTN_TRANSPORT_RECOMMENDATION -> recommendationTransportAnimal(chatId);
+            case BTN_HOME_FOR_CUB -> homeForChild(chatId);
+            case BTN_HOME_FOR_ADULT -> homeForAdults(chatId);
+            case BTN_HOME_FOR_DISABLE -> homeForLimitedOpportunities(chatId);
+            case BTN_HANDLERS_CONTACT -> getContactDogHandlers(chatId);
+            case BTN_HANDLERS_TIPS -> adviceDogHandlers(chatId);
+            case BTN_REFUSE_REASONS -> reasonsForRefusal(chatId);
+            case CMD_START -> sendStartMenu(chatId, name);
             default -> settingSendMessage(chatId, "Выберите интересующую вас кнопку меню \uD83D\uDC47 \n" +
                     "Или воспользуйтесь кнопкой вызова волонтера, он вам поможет \uD83D\uDE09");
         };
-
-        // Текстовые команды
-        textToSend = switch (text) {
-            case CMD_START -> sendStartMenu(chatId, name);
-            case CMD_INFO_SHELTER -> infoShelter(chatId);
-            case CMD_INFO_TAKE_ANIMAL -> instructionAdoptionMenu(chatId);
-            case CMD_SEND_REPORT -> sendReport(chatId);
-            case CMD_LEAVE_CONTACT -> leaveContact(chatId);
-            case CMD_HELP -> getContactVolunteer(chatId);
-            case CMD_GET_PASS -> registerPass(chatId);
-            case CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
-            case CMD_LOCATION -> InfoShelterTimeAndAddress(chatId);
-            case CMD_DOGS, CMD_CATS -> dogsAndCatMenu(chatId);
-            default -> textToSend;
-        };
-
-        return textToSend;
     }
 
     private SendMessage reasonsForRefusal(long chatId) {
