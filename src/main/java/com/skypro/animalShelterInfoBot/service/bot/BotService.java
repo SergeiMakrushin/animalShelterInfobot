@@ -36,7 +36,7 @@ public class BotService {
     private static final String BTN_GET_PASS = "Получить пропуск";
     private static final String BTN_TB_RECOMMENDATION = "ТБ на территории";
     private static final String BTN_LEAVE_CONTACTS = "Оставить контакты";
-    private static final String BTN_HELP = "позвать волонтера";
+    private static final String BTN_HELP = "Позвать волонтера";
     private static final String BTN_MAIN_MENU = "На главное меню";
     private static final String BTN_SHOW_ALL = "Показать всех";
     private static final String BTN_FIND_BY_NICK = "Найти по кличке";
@@ -366,17 +366,9 @@ public class BotService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
-        List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
-        List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>();
-
-        keyboardButtonsRow1.add(createButton(BTN_ADMINISTRATION));
-        keyboardButtonsRow2.add(createButton(BTN_DOGS));
-        keyboardButtonsRow2.add(createButton(BTN_CATS));
-
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём ряд
-        rowList.add(keyboardButtonsRow1);
-        rowList.add(keyboardButtonsRow2);
-
+        rowList.add(List.of(createButton(BTN_ADMINISTRATION)));
+        rowList.add(List.of(createButton(BTN_DOGS), createButton(BTN_CATS)));
         inlineKeyboardMarkup.setKeyboard(rowList);
 
         msg.setReplyMarkup(inlineKeyboardMarkup);
@@ -399,29 +391,12 @@ public class BotService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
-        List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> keyboardButtonsRow4 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> keyboardButtonsRow5 = new ArrayList<>(); //Создаем ряд кнопок
-
-        keyboardButtonsRow1.add(createButton(BTN_INFO_SHELTER)); //Добавляем кнопки в ряд
-        keyboardButtonsRow1.add(createButton(BTN_LOCATION)); //Добавляем кнопки в ряд
-        keyboardButtonsRow2.add(createButton(BTN_SEND_REPORT)); //Добавляем кнопки в ряд
-        keyboardButtonsRow2.add(createButton(BTN_INFO_TAKE_ANIMAL)); //Добавляем кнопки в ряд
-        keyboardButtonsRow3.add(createButton(BTN_GET_PASS)); //Добавляем кнопки в ряд
-        keyboardButtonsRow3.add(createButton(BTN_TB_RECOMMENDATION)); //Добавляем кнопки в ряд
-        keyboardButtonsRow4.add(createButton(BTN_LEAVE_CONTACTS)); //Добавляем кнопки в ряд
-        keyboardButtonsRow4.add(createButton(BTN_HELP)); //Добавляем кнопки в ряд
-        keyboardButtonsRow5.add(createButton(BTN_MAIN_MENU)); //Добавляем кнопки в ряд
-
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
-        rowList.add(keyboardButtonsRow1);
-        rowList.add(keyboardButtonsRow2);
-        rowList.add(keyboardButtonsRow3);
-        rowList.add(keyboardButtonsRow4);
-        rowList.add(keyboardButtonsRow5);
-
+        rowList.add(List.of(createButton(BTN_INFO_SHELTER), createButton(BTN_LOCATION)));
+        rowList.add(List.of(createButton(BTN_SEND_REPORT), createButton(BTN_INFO_TAKE_ANIMAL)));
+        rowList.add(List.of(createButton(BTN_GET_PASS), createButton(BTN_TB_RECOMMENDATION)));
+        rowList.add(List.of(createButton(BTN_LEAVE_CONTACTS), createButton(BTN_HELP)));
+        rowList.add(List.of(createButton(BTN_MAIN_MENU)));
         inlineKeyboardMarkup.setKeyboard(rowList); //Вносим настройки в клавиатуру
 
         msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
@@ -438,21 +413,10 @@ public class BotService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
-        List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>(); //Создаем ряд кнопок
-
-        keyboardButtonsRow1.add(createButton(BTN_SHOW_ALL)); //Добавляем кнопки в ряд
-        keyboardButtonsRow2.add(createButton(BTN_FIND_BY_NICK)); //Добавляем кнопки в ряд
-        keyboardButtonsRow2.add(createButton(BTN_FIND_BY_AGE)); //Добавляем кнопки в ряд
-        keyboardButtonsRow3.add(createButton(BTN_FIND_BY_COLOR)); //Добавляем кнопки в ряд
-        keyboardButtonsRow3.add(createButton(BTN_FIND_BY_BREED)); //Добавляем кнопки в ряд
-
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
-        rowList.add(keyboardButtonsRow1);
-        rowList.add(keyboardButtonsRow2);
-        rowList.add(keyboardButtonsRow3);
-
+        rowList.add(List.of(createButton(BTN_SHOW_ALL)));
+        rowList.add(List.of(createButton(BTN_FIND_BY_NICK), createButton(BTN_FIND_BY_AGE)));
+        rowList.add(List.of(createButton(BTN_FIND_BY_COLOR), createButton(BTN_FIND_BY_BREED)));
         inlineKeyboardMarkup.setKeyboard(rowList); //Вносим настройки в клавиатуру
 
         msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
@@ -469,35 +433,15 @@ public class BotService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
-        List<InlineKeyboardButton> buttonsRow1 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> buttonsRow2 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> buttonsRow3 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> buttonsRow4 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> buttonsRow5 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> buttonsRow6 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> buttonsRow7 = new ArrayList<>(); //Создаем ряд кнопок
-        List<InlineKeyboardButton> buttonsRow8 = new ArrayList<>(); //Создаем ряд кнопок
-
-        buttonsRow1.add(createButton(BTN_RULES_TO_MEETING)); //Добавляем кнопки в ряд
-        buttonsRow2.add(createButton(BTN_DOCUMENTS_LISTS)); //Добавляем кнопки в ряд
-        buttonsRow3.add(createButton(BTN_TRANSPORT_RECOMMENDATION)); //Добавляем кнопки в ряд
-        buttonsRow4.add(createButton(BTN_HOME_FOR_CUB)); //Добавляем кнопки в ряд
-        buttonsRow5.add(createButton(BTN_HOME_FOR_ADULT)); //Добавляем кнопки в ряд
-        buttonsRow6.add(createButton(BTN_HOME_FOR_DISABLE)); //Добавляем кнопки в ряд
-        buttonsRow7.add(createButton(BTN_HANDLERS_CONTACT)); //Добавляем кнопки в ряд
-        buttonsRow8.add(createButton(BTN_HANDLERS_TIPS)); //Добавляем кнопки в ряд
-        buttonsRow8.add(createButton(BTN_REFUSE_REASONS)); //Добавляем кнопки в ряд
-
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
-        rowList.add(buttonsRow1);
-        rowList.add(buttonsRow2);
-        rowList.add(buttonsRow3);
-        rowList.add(buttonsRow4);
-        rowList.add(buttonsRow5);
-        rowList.add(buttonsRow6);
-        rowList.add(buttonsRow7);
-        rowList.add(buttonsRow8);
-
+        rowList.add(List.of(createButton(BTN_RULES_TO_MEETING)));
+        rowList.add(List.of(createButton(BTN_DOCUMENTS_LISTS)));
+        rowList.add(List.of(createButton(BTN_TRANSPORT_RECOMMENDATION)));
+        rowList.add(List.of(createButton(BTN_HOME_FOR_CUB)));
+        rowList.add(List.of(createButton(BTN_HOME_FOR_ADULT)));
+        rowList.add(List.of(createButton(BTN_HOME_FOR_DISABLE)));
+        rowList.add(List.of(createButton(BTN_HANDLERS_CONTACT)));
+        rowList.add(List.of(createButton(BTN_HANDLERS_TIPS), createButton(BTN_RULES_TO_MEETING)));
         inlineKeyboardMarkup.setKeyboard(rowList); //Вносим настройки в клавиатуру
 
         msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
