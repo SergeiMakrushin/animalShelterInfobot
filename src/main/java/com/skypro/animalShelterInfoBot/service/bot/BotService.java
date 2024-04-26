@@ -6,6 +6,7 @@ import com.skypro.animalShelterInfoBot.services.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -24,51 +25,75 @@ import java.util.Random;
 @Service
 public class BotService {
 
+    private final String BTN_ADMINISTRATION = "Администрация";
+    private final String BTN_DEPARTMENT_DOGS = "Отдел собак";
+    private final String BTN_DEPARTMENT_CATS = "Отдел кошек";
+    private final String BTN_SHELTER_INFO = "Информация о приюте";
+    private final String BTN_HOURS_N_ADDRESS = "Часы работы, адрес";
+    private final String BTN_SEND_REPORT = "Прислать отчет";
+    private final String BTN_HOW_TO_GET = "Как получить питомца";
+    private final String BTN_GET_PASS = "Получить пропуск";
+    private final String BTN_SAFETY_INSTRUCTIONS = "ТБ на территории";
+    private final String BTN_LEAVE_CONTACTS = "Оставить контакты";
+    private final String BTN_CALL_VOLUNTEER = "позвать волонтера";
+    private final String BTN_MAIN_MENU = "На главное меню";
+    private final String BTN_SHOW_ALL = "Показать всех";
+    private final String BTN_FIND_BY_NICK = "Найти по кличке";
+    private final String BTN_FIND_BY_AGE = "Найти по возрасту";
+    private final String BTN_FIND_BY_COLOR = "Найти по окрасу";
+    private final String BTN_FIND_BY_BREED = "Найти по породе";
+    private final String BTN_RULES_TO_MEETING = "Правила знакомства с животным";
+    private final String BTN_DOCUMENTS_LISTS = "Список документов для оформления";
+    private final String BTN_TRANSPORT_RECOMMENDATION = "Рекомендации транспортировки";
+    private final String BTN_HOME_FOR_CUB = "обустройство дома для детеныша";
+    private final String BTN_HOME_FOR_ADULT = "обустройство дома для взрослого питомца";
+    private final String BTN_HOME_FOR_DISABLE = "обустройство дома для питомца с огр возможностями";
+    private final String BTN_HANDLERS_CONTACT = "Получить контакты кинологов";
+    private final String BTN_HANDLERS_TIPS = "Советы кинолога";
+    private final String BTN_REFUSE_REASONS = "Причины отказа";
+
     @Autowired
     UserService userService;
-    @Value("${bot.token}")
-    private String token;
 
     /**
      * Создаем List с названием всех кнопок меню
      */
-
-    public final List<String> NAME_BUTTONS = new ArrayList<>(List.of(
+    private final List<String> NAME_BUTTONS = new ArrayList<>(List.of(
             //Стартовое меню
             // индекс 0 - 1 - 2
-            "Администрация", "Отдел собак", "Отдел кошек",
+            BTN_ADMINISTRATION, BTN_DEPARTMENT_DOGS, BTN_DEPARTMENT_CATS,
 
             //Меню администрация
             // индекс 3 - 4
-            "Информация о приюте", "Часы работы, адрес",
+            BTN_SHELTER_INFO, BTN_HOURS_N_ADDRESS,
             // индекс 5 - 6
-            "Прислать отчет", "Как получить питомца",
+            BTN_SEND_REPORT, BTN_HOW_TO_GET,
             // индекс 7 - 8
-            "Получить пропуск", "ТБ на территории",
+            BTN_GET_PASS, BTN_SAFETY_INSTRUCTIONS,
             // индекс 9 - 10
-            "Оставить контакты", "позвать волонтера",
+            BTN_LEAVE_CONTACTS, BTN_CALL_VOLUNTEER,
             // индекс 11
-            "На главное меню",
+            BTN_MAIN_MENU,
 
             //меню Отдел собак (Отдел кошек)
             // индекс 12 - 13
-            "Показать всех", "Найти по кличке",
+            BTN_SHOW_ALL, BTN_FIND_BY_NICK,
             // индекс 14 - 15
-            "Найти по возрасту", "Найти по окрасу",
+            BTN_FIND_BY_AGE, BTN_FIND_BY_COLOR,
             // индекс 16
-            "Найти по породе",
+            BTN_FIND_BY_BREED,
 
             //меню взятия животного
             // индекс 17 - 18
-            "Правила знакомства с животным", "Список документов для оформления",
+            BTN_RULES_TO_MEETING, BTN_DOCUMENTS_LISTS,
             // индекс 19 - 20
-            "Рекомендации транспортировки", "обустройство дома для детеныша",
+            BTN_TRANSPORT_RECOMMENDATION, BTN_HOME_FOR_CUB,
             // индекс 21 - 22
-            "обустройство дома для взрослого питомца", "обустройство дома для питомца с огр возможностями",
+            BTN_HOME_FOR_ADULT, BTN_HOME_FOR_DISABLE,
             // индекс 23 - 24
-            "Получить контакты кинологов", "Советы кинолога",
+            BTN_HANDLERS_CONTACT, BTN_HANDLERS_TIPS,
             // индекс 25
-            "Причины отказа"));
+            BTN_REFUSE_REASONS));
 
     /**
      * Настройка сообщений
