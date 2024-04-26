@@ -43,13 +43,13 @@ public class BotService {
     private final String BTN_FIND_BY_AGE = "Найти по возрасту";
     private final String BTN_FIND_BY_COLOR = "Найти по окрасу";
     private final String BTN_FIND_BY_BREED = "Найти по породе";
-    private final String BTN_RULES_TO_MEETING = "Правила знакомства с животным";
-    private final String BTN_DOCUMENTS_LISTS = "Список документов для оформления";
-    private final String BTN_TRANSPORT_RECOMMENDATION = "Рекомендации транспортировки";
-    private final String BTN_HOME_FOR_CUB = "обустройство дома для детеныша";
-    private final String BTN_HOME_FOR_ADULT = "обустройство дома для взрослого питомца";
-    private final String BTN_HOME_FOR_DISABLE = "обустройство дома для питомца с огр возможностями";
-    private final String BTN_HANDLERS_CONTACT = "Получить контакты кинологов";
+    private final String BTN_RULES_TO_MEETING = "Правила знакомства";
+    private final String BTN_DOCUMENTS_LISTS = "Список документов";
+    private final String BTN_TRANSPORT_RECOMMENDATION = "Как перевозить";
+    private final String BTN_HOME_FOR_CUB = "дом для малыша";
+    private final String BTN_HOME_FOR_ADULT = "дом для взрослого";
+    private final String BTN_HOME_FOR_DISABLE = "дом для инвалида";
+    private final String BTN_HANDLERS_CONTACT = "контакты кинологов";
     private final String BTN_HANDLERS_TIPS = "Советы кинолога";
     private final String BTN_REFUSE_REASONS = "Причины отказа";
 
@@ -502,7 +502,9 @@ public class BotService {
 
         msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
 
+        log.info("Меню создано, и готово к отправке");
         return msg; //Отправляем сообщение
+
     }
 
     /**
