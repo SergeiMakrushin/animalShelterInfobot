@@ -191,7 +191,7 @@ public class BotService {
     private SendMessage adviceDogHandlers(long chatId) {
         SendMessage adviceDogHandlers = new SendMessage();
         adviceDogHandlers.setChatId(chatId);
-        adviceDogHandlers.setText("Пожалуйста, обратитесь к нашим собаководам за консультацией.");
+        adviceDogHandlers.setText(ShelterInformationDirectory.DOGHANDLERADVICE);
         return adviceDogHandlers;
     }
 
@@ -220,7 +220,7 @@ public class BotService {
     private SendMessage homeForChild(long chatId) {
         SendMessage homeForChild = new SendMessage();
         homeForChild.setChatId(chatId);
-        homeForChild.setText("Если вы заинтересованы в усыновлении пушистого друга для вашего ребенка, пожалуйста, свяжитесь с нами.");
+        homeForChild.setText(ShelterInformationDirectory.HOMEFORCHILDPETS);
         return homeForChild;
     }
 
