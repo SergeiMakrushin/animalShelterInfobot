@@ -31,4 +31,4 @@ public class Avatar {
 
      @OneToOne
      private Animal animal;
- }
+}
