@@ -2,11 +2,10 @@ package com.skypro.animalShelterInfoBot.controller;
 
 
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
-import com.skypro.animalShelterInfoBot.service.bot.BotService;
+import com.skypro.animalShelterInfoBot.service.bot.BotServiceImpl;
 import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
-import com.skypro.animalShelterInfoBot.services.UserService;
+import com.skypro.animalShelterInfoBot.services.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Контроллер пользователей",
@@ -30,13 +28,13 @@ import java.util.List;
 public class UserController {
 
     private final TelegramBot telegramBot;
-    private final UserService userService;
-    private final BotService botService;
+    private final UserServiceImpl userServiceImpl;
+    private final BotServiceImpl botServiceImpl;
 
-    public UserController(TelegramBot telegramBot, UserService userService, BotService botService) {
+    public UserController(TelegramBot telegramBot, UserServiceImpl userServiceImpl, BotServiceImpl botServiceImpl) {
         this.telegramBot = telegramBot;
-        this.userService = userService;
-        this.botService = botService;
+        this.userServiceImpl = userServiceImpl;
+        this.botServiceImpl = botServiceImpl;
     }
 
     @Operation(summary = "Создание пользователя",
@@ -52,7 +50,7 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<ChatUser> createUser(@RequestBody ChatUser user) {
-        return ResponseEntity.ok(userService.createUser(user));
+        return ResponseEntity.ok(userServiceImpl.createUser(user));
     }
 
     @Operation(summary = "Редактирование пользователя",
@@ -67,7 +65,7 @@ public class UserController {
     )
     @PutMapping("/update/{id}")
     public ResponseEntity<ChatUser> editStudent(@PathVariable long id, @RequestBody ChatUser user) {
-        ChatUser updatedUser = userService.updateUser(id, user);
+        ChatUser updatedUser = userServiceImpl.updateUser(id, user);
         if (updatedUser == null) {
             return ResponseEntity.notFound().build();
         }
@@ -87,7 +85,7 @@ public class UserController {
             })
     @GetMapping("/all")
     public ResponseEntity<List<ChatUser>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        return ResponseEntity.ok(userServiceImpl.getAllUsers());
     }
 
     @Operation(summary = "Получаем пользователей из базы данных",
@@ -104,7 +102,7 @@ public class UserController {
 
     @GetMapping("/pagination")
     public ResponseEntity<List<ChatUser>> getUsersPagination(@RequestParam(required = false) Integer pageNumber, @RequestParam(required = false) Integer sizeNumber) {
-        return ResponseEntity.ok(userService.getUsersPagination(pageNumber, sizeNumber));
+        return ResponseEntity.ok(userServiceImpl.getUsersPagination(pageNumber, sizeNumber));
     }
 
     @Operation(summary = "Удаляем пользователя из базы данных",
@@ -120,7 +118,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
-        userService.deleteUserById(userId);
+        userServiceImpl.deleteUserById(userId);
         return ResponseEntity.ok().build();
     }
 

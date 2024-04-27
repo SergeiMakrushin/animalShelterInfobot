@@ -2,11 +2,10 @@ package com.skypro.animalShelterInfoBot.controller;
 
 
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
-import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 
 
 import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
-import com.skypro.animalShelterInfoBot.services.AnimalService;
+import com.skypro.animalShelterInfoBot.services.AnimalServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,11 +27,11 @@ import java.util.Collection;
 public class AnimalController {
 
     private final TelegramBot telegramBot;
-    private final AnimalService animalService;
+    private final AnimalServiceImpl animalServiceImpl;
 
-    public AnimalController( TelegramBot telegramBot,AnimalService animalService) {
+    public AnimalController(TelegramBot telegramBot, AnimalServiceImpl animalServiceImpl) {
         this.telegramBot = telegramBot;
-        this.animalService = animalService;
+        this.animalServiceImpl = animalServiceImpl;
     }
 
     @Operation(summary = "Создание животного",
@@ -47,7 +46,7 @@ public class AnimalController {
     )
     @PostMapping("/create")
     public ResponseEntity <Animal> createAnimal(@RequestBody Animal animal) {
-        return ResponseEntity.ok(animalService.createAnimal(animal));
+        return ResponseEntity.ok(animalServiceImpl.createAnimal(animal));
     }
     @Operation(summary = "Редактирование животного",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -61,7 +60,7 @@ public class AnimalController {
     )
     @PutMapping("/update/{id}")
     public ResponseEntity<Animal> editStudent(@PathVariable long id, @RequestBody Animal animal) {
-        Animal updatedAnimal = animalService.updateAnimal(id, animal);
+        Animal updatedAnimal = animalServiceImpl.updateAnimal(id, animal);
         if (updatedAnimal == null) {
             return ResponseEntity.notFound().build();
         }
@@ -82,7 +81,7 @@ public class AnimalController {
 
     @GetMapping("/findAllAnimals")
     public ResponseEntity<Collection<Animal>> getAllAnimals() {
-        return ResponseEntity.ok(animalService.getAllAnimals());
+        return ResponseEntity.ok(animalServiceImpl.getAllAnimals());
     }
 
     @Operation(summary = "получаем животных из базы данных",
@@ -99,7 +98,7 @@ public class AnimalController {
 
     @GetMapping("/pagination")
     public ResponseEntity<Object> getAnimalsPagination(@RequestParam Integer pageNumber, @RequestParam Integer sizeNumber) {
-        return ResponseEntity.ok(animalService.getAnimalsPagination(pageNumber, sizeNumber));
+        return ResponseEntity.ok(animalServiceImpl.getAnimalsPagination(pageNumber, sizeNumber));
     }
 
     @Operation(summary = "Удаляем животное из базы",
@@ -115,7 +114,7 @@ public class AnimalController {
 
     @DeleteMapping("/delete/{Id}")
     public ResponseEntity<Void> deleteAnimalById(@PathVariable Long Id) {
-        animalService.deleteAnimalById(Id);
+        animalServiceImpl.deleteAnimalById(Id);
         return ResponseEntity.ok().build();
     }
 }

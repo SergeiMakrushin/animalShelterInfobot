@@ -7,7 +7,5 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<ChatUser, Long> {
     ChatUser findUserById(long id);
-
-
     List<ChatUser> findAllUserByIsVolunteerTrue();
 }

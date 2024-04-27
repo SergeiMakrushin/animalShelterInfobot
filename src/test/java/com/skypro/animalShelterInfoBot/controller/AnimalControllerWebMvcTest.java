@@ -3,7 +3,7 @@ package com.skypro.animalShelterInfoBot.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
-import com.skypro.animalShelterInfoBot.services.AnimalService;
+import com.skypro.animalShelterInfoBot.services.AnimalServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ class AnimalControllerWebMvcTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AnimalService animalService;
+    private AnimalServiceImpl animalServiceImpl;
 
     @MockBean
     private TelegramBot telegramBot;
@@ -40,7 +40,7 @@ class AnimalControllerWebMvcTest {
     @Test
     public void testCreateAnimal() throws Exception {
         Animal animal = new Animal();
-        given(animalService.createAnimal(any(Animal.class))).willReturn(animal);
+        given(animalServiceImpl.createAnimal(any(Animal.class))).willReturn(animal);
 
         mockMvc.perform(post("/animals/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -51,7 +51,7 @@ class AnimalControllerWebMvcTest {
     @Test
     public void testUpdateAnimal() throws Exception {
         Animal animal = new Animal();
-        given(animalService.updateAnimal(anyLong(), any(Animal.class))).willReturn(animal);
+        given(animalServiceImpl.updateAnimal(anyLong(), any(Animal.class))).willReturn(animal);
 
         mockMvc.perform(put("/animals/update/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +62,7 @@ class AnimalControllerWebMvcTest {
     @Test
     public void testGetAllAnimals() throws Exception {
         List<Animal> animals = Arrays.asList(new Animal(), new Animal());
-        given(animalService.getAllAnimals()).willReturn(animals);
+        given(animalServiceImpl.getAllAnimals()).willReturn(animals);
 
         mockMvc.perform(get("/animals/findAllAnimals"))
                 .andExpect(status().isOk())
@@ -71,7 +71,7 @@ class AnimalControllerWebMvcTest {
 
     @Test
     public void testGetAnimalsPagination() throws Exception {
-        given(animalService.getAnimalsPagination(anyInt(), anyInt())).willReturn(new ArrayList<>());
+        given(animalServiceImpl.getAnimalsPagination(anyInt(), anyInt())).willReturn(new ArrayList<>());
 
         mockMvc.perform(get("/animals/pagination?pageNumber=1&sizeNumber=10"))
                 .andExpect(status().isOk())
@@ -83,6 +83,6 @@ class AnimalControllerWebMvcTest {
         mockMvc.perform(delete("/animals/delete/1"))
                 .andExpect(status().isOk());
 
-        verify(animalService).deleteAnimalById(1L);
+        verify(animalServiceImpl).deleteAnimalById(1L);
     }
 }

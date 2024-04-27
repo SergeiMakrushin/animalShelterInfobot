@@ -31,4 +31,10 @@ public class ShelterInformationDirectory {
             Обустройство жилья для котенка 🐱 : https://hvost.news/animals/kittens-care/kak-podgotovit-dom-k-poyavleniyu-kotenka/\s
             """;
 
+    public static final String CONTACTDOGHANDLERS = """
+            Представляем лучших кинологов России\s
+            Перейдите по соответствующей ссылке, для прочтения статьи \uD83D\uDC47\s
+            
+            Лучшие кинологи России 🐶: https://uslugi.yandex.ru/213-moscow/category?text=%D0%BB%D1%83%D1%87%D1%88%D0%B8%D0%B5+%D0%BA%D0%B8%D0%BD%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8/\s
+            """;
 }
