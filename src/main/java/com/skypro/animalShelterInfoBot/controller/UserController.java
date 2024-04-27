@@ -2,9 +2,9 @@ package com.skypro.animalShelterInfoBot.controller;
 
 
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
-import com.skypro.animalShelterInfoBot.service.bot.BotServiceImpl;
-import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
-import com.skypro.animalShelterInfoBot.services.UserServiceImpl;
+import com.skypro.animalShelterInfoBot.bot.BotServiceImpl;
+import com.skypro.animalShelterInfoBot.bot.TelegramBot;
+import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

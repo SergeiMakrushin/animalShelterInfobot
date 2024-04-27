@@ -1,8 +1,8 @@
-package com.skypro.animalShelterInfoBot.service.bot;
+package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
-import com.skypro.animalShelterInfoBot.services.UserServiceImpl;
+import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

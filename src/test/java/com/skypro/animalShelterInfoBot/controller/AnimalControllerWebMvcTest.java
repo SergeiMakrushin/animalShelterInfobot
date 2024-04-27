@@ -2,8 +2,8 @@ package com.skypro.animalShelterInfoBot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
-import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
-import com.skypro.animalShelterInfoBot.services.AnimalServiceImpl;
+import com.skypro.animalShelterInfoBot.bot.TelegramBot;
+import com.skypro.animalShelterInfoBot.service.AnimalServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

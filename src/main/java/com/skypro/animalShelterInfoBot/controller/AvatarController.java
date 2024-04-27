@@ -1,7 +1,7 @@
 package com.skypro.animalShelterInfoBot.controller;
 
 import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
-import com.skypro.animalShelterInfoBot.services.AvatarServiceImpl;
+import com.skypro.animalShelterInfoBot.service.AvatarServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

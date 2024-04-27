@@ -1,4 +1,4 @@
-package com.skypro.animalShelterInfoBot.service.bot;
+package com.skypro.animalShelterInfoBot.bot;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

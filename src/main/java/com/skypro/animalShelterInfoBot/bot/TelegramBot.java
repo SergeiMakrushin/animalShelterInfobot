@@ -1,4 +1,4 @@
-package com.skypro.animalShelterInfoBot.service.bot;
+package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.configuration.InfoBotConfiguration;
 import lombok.extern.slf4j.Slf4j;

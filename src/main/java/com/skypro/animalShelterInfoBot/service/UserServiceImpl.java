@@ -1,4 +1,4 @@
-package com.skypro.animalShelterInfoBot.services;
+package com.skypro.animalShelterInfoBot.service;
 
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
