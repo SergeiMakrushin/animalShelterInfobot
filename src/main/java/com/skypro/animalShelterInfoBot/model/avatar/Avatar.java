@@ -31,4 +31,8 @@ public class Avatar {
 
      @OneToOne
      private Animal animal;
+
+    public Avatar(byte[] bytes, String contentType) {
+
+    }
 }

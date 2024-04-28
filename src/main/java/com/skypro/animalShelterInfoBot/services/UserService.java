@@ -63,4 +63,8 @@ public class UserService {
     public List<ChatUser> getAllVolunteer() {
     return userRepository.findAllUserByIsVolunteerTrue();
     }
+
+    public void setUsers(List<ChatUser> userList) {
+
+    }
 }
