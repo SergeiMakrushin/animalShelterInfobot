@@ -1,4 +1,4 @@
-package com.skypro.animalShelterInfoBot.services;
+package com.skypro.animalShelterInfoBot.service;
 
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserService {
-    private  final UserRepository userRepository;
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
     private List<ChatUser> users = new ArrayList<>();
-@Autowired
-    public UserService(UserRepository userRepository) {
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -23,6 +24,7 @@ public class UserService {
         }
         return userRepository.save(user);
     }
+
     public ChatUser updateUser(long id, ChatUser user) {
         ChatUser updatedUser = userRepository.findUserById(id);
         if (updatedUser == null) {
@@ -35,9 +37,11 @@ public class UserService {
         updatedUser.setEmail(user.getEmail());
         return userRepository.save(updatedUser);
     }
+
     public List<ChatUser> getAllUsers() {
         return userRepository.findAll();
     }
+
     public List<ChatUser> getUsersPagination(Integer pageNumber, Integer sizeNumber) {
         if (pageNumber != null && sizeNumber != null) {
             int startIndex = (pageNumber - 1) * sizeNumber;
@@ -53,6 +57,7 @@ public class UserService {
         }
         return users;
     }
+
     public void deleteUserById(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new IllegalArgumentException("User not found with id: " + userId);
@@ -61,7 +66,7 @@ public class UserService {
     }
 
     public List<ChatUser> getAllVolunteer() {
-    return userRepository.findAllUserByIsVolunteerTrue();
+        return userRepository.findAllUserByIsVolunteerTrue();
     }
 
     public void setUsers(List<ChatUser> userList) {

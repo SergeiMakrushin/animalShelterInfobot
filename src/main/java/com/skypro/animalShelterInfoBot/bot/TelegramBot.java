@@ -1,4 +1,4 @@
-package com.skypro.animalShelterInfoBot.service.bot;
+package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.configuration.InfoBotConfiguration;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +9,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
@@ -20,23 +18,23 @@ import java.util.List;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     private final InfoBotConfiguration config;
-    private final BotService botService;
+    private final BotServiceImpl botServiceImpl;
 
-    public TelegramBot(InfoBotConfiguration config, BotService botService) {
+    public TelegramBot(InfoBotConfiguration config, BotServiceImpl botServiceImpl) {
         this.config = config;
-        this.botService = botService;
+        this.botServiceImpl = botServiceImpl;
         List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand(BotService.CMD_START, "Начать диалог с ботом."));
-        listOfCommands.add(new BotCommand(BotService.CMD_INFO_SHELTER, "Общая информация о приюте"));
-        listOfCommands.add(new BotCommand(BotService.CMD_INFO_TAKE_ANIMAL, "Инструкция - как приютить животное"));
-        listOfCommands.add(new BotCommand(BotService.CMD_SEND_REPORT, "прислать отчет"));
-        listOfCommands.add(new BotCommand(BotService.CMD_LEAVE_CONTACT, "Оставить контакты для связи"));
-        listOfCommands.add(new BotCommand(BotService.CMD_HELP, "Позвать волонтера"));
-        listOfCommands.add(new BotCommand(BotService.CMD_GET_PASS, "Получить контакт охраны, для регистрации пропуска"));
-        listOfCommands.add(new BotCommand(BotService.CMD_TB_RECOMMENDATIONS, "ТБ нахождения на территории приюта"));
-        listOfCommands.add(new BotCommand(BotService.CMD_LOCATION, "Расписание работы приюта, адрес и схема проезда"));
-        listOfCommands.add(new BotCommand(BotService.CMD_DOGS, "Собачий отдел"));
-        listOfCommands.add(new BotCommand(BotService.CMD_CATS, "Кошачий отдел"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_START, "Начать диалог с ботом."));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_INFO_SHELTER, "Общая информация о приюте"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_INFO_TAKE_ANIMAL, "Инструкция - как приютить животное"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_SEND_REPORT, "прислать отчет"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_LEAVE_CONTACT, "Оставить контакты для связи"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_HELP, "Позвать волонтера"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_GET_PASS, "Получить контакт охраны, для регистрации пропуска"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_TB_RECOMMENDATIONS, "ТБ нахождения на территории приюта"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_LOCATION, "Расписание работы приюта, адрес и схема проезда"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_DOGS, "Собачий отдел"));
+        listOfCommands.add(new BotCommand(BotServiceImpl.CMD_CATS, "Кошачий отдел"));
         try {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
@@ -64,7 +62,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         try {
             if (update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()) {
-                SendMessage sendMessage = botService.inputMsg(update);
+                SendMessage sendMessage = botServiceImpl.inputMsg(update);
                 sendMessage(sendMessage);
             }
         } catch (Exception e) {

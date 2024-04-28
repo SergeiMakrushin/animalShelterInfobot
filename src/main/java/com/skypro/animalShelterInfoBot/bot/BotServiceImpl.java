@@ -1,8 +1,8 @@
-package com.skypro.animalShelterInfoBot.service.bot;
+package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
-import com.skypro.animalShelterInfoBot.services.UserService;
+import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class BotService {
+public class BotServiceImpl implements BotService {
 
     private static final String BTN_ADMINISTRATION = "Администрация";
     private static final String BTN_DOGS = "Отдел собак";
@@ -66,13 +66,13 @@ public class BotService {
     static final String CMD_CATS = "/cats";
 
     @Autowired
-    UserService userService;
+    UserServiceImpl userServiceImpl;
 
     /**
      * Создаем постоянную клавиатуру
      *
      * @param chatId Id чата
-     * @param text Текст сообщения
+     * @param text   Текст сообщения
      * @return message
      */
     public SendMessage settingSendMessage(long chatId, String text) {
@@ -118,7 +118,7 @@ public class BotService {
      * @param update данные от пользователя
      * @return текст для отправки
      */
-    SendMessage inputMsg(Update update) {
+    public SendMessage inputMsg(Update update) {
         SendMessage textToSend = new SendMessage();
 
         if (update.hasCallbackQuery()) {
@@ -127,8 +127,7 @@ public class BotService {
             long chatId = callbackQuery.getMessage().getChatId();
             String name = callbackQuery.getFrom().getFirstName();
             textToSend = processingTextAndCallbackQuery(chatId, msgText, name);
-        }
-        else if (update.hasMessage() && update.getMessage().hasText()) {
+        } else if (update.hasMessage() && update.getMessage().hasText()) {
             String msgText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             String name = update.getMessage().getChat().getFirstName();
@@ -142,16 +141,17 @@ public class BotService {
      * Обработка нажатий кнопок меню
      *
      * @param chatId Id чата
-     * @param text текст, который пришел от пользователя
-     * @param name имя пользователя
+     * @param text   текст, который пришел от пользователя
+     * @param name   имя пользователя
      * @return сообщение для пользователя
      */
-    SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
+    public SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
         log.info("Нажата клавиша \"" + text + "\"");
 
         return switch (text) {
             case BTN_ADMINISTRATION -> administrationMenu(chatId);
-            case BTN_DOGS, BTN_CATS, CMD_DOGS, CMD_CATS -> dogsAndCatMenu(chatId);            //Настроить логику выбора (Кошки и собаки)
+            case BTN_DOGS, BTN_CATS, CMD_DOGS, CMD_CATS ->
+                    dogsAndCatMenu(chatId);            //Настроить логику выбора (Кошки и собаки)
             case BTN_INFO_SHELTER, CMD_INFO_SHELTER -> infoShelter(chatId);
             case BTN_LOCATION, CMD_LOCATION -> InfoShelterTimeAndAddress(chatId);
             case BTN_SEND_REPORT, CMD_SEND_REPORT -> sendReport(chatId);
@@ -160,7 +160,8 @@ public class BotService {
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
             case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId);
             case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId);
-            case BTN_MAIN_MENU -> sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
+            case BTN_MAIN_MENU ->
+                    sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
             case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
             case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
             case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
@@ -181,28 +182,28 @@ public class BotService {
         };
     }
 
-    private SendMessage reasonsForRefusal(long chatId) {
+    public SendMessage reasonsForRefusal(long chatId) {
         SendMessage reasonsForRefusal = new SendMessage();
         reasonsForRefusal.setChatId(chatId);
         reasonsForRefusal.setText("Пожалуйста, свяжитесь с нами для получения дополнительной информации о причинах отказа.");
         return reasonsForRefusal;
     }
 
-    private SendMessage adviceDogHandlers(long chatId) {
+    public SendMessage adviceDogHandlers(long chatId) {
         SendMessage adviceDogHandlers = new SendMessage();
         adviceDogHandlers.setChatId(chatId);
-        adviceDogHandlers.setText("Пожалуйста, обратитесь к нашим собаководам за консультацией.");
+        adviceDogHandlers.setText(ShelterInformationDirectory.DOGHANDLERADVICE);
         return adviceDogHandlers;
     }
 
-    private SendMessage getContactDogHandlers(long chatId) {
+    public SendMessage getContactDogHandlers(long chatId) {
         SendMessage getContactDogHandlers = new SendMessage();
         getContactDogHandlers.setChatId(chatId);
-        getContactDogHandlers.setText("Контактную информацию наших кинологов можно предоставить по запросу.");
+        getContactDogHandlers.setText(ShelterInformationDirectory.CONTACTDOGHANDLERS);
         return getContactDogHandlers;
     }
 
-    private SendMessage homeForLimitedOpportunities(long chatId) {
+    public SendMessage homeForLimitedOpportunities(long chatId) {
         SendMessage homeForLimitedOpportunities = new SendMessage();
         homeForLimitedOpportunities.setChatId(chatId);
         homeForLimitedOpportunities.setText("Наша программа по уходу за домашними животными с ограниченными" +
@@ -210,42 +211,42 @@ public class BotService {
         return homeForLimitedOpportunities;
     }
 
-    private SendMessage homeForAdults(long chatId) {
+    public SendMessage homeForAdults(long chatId) {
         SendMessage homeForAdults = new SendMessage();
         homeForAdults.setChatId(chatId);
         homeForAdults.setText("У нас есть специальная программа для взрослых животных, которые ищут постоянный дом.");
         return homeForAdults;
     }
 
-    private SendMessage homeForChild(long chatId) {
+    public SendMessage homeForChild(long chatId) {
         SendMessage homeForChild = new SendMessage();
         homeForChild.setChatId(chatId);
-        homeForChild.setText("Если вы заинтересованы в усыновлении пушистого друга для вашего ребенка, пожалуйста, свяжитесь с нами.");
+        homeForChild.setText(ShelterInformationDirectory.HOMEFORCHILDPETS);
         return homeForChild;
     }
 
-    private SendMessage recommendationTransportAnimal(long chatId) {
+    public SendMessage recommendationTransportAnimal(long chatId) {
         SendMessage transportAnimal = new SendMessage();
         transportAnimal.setChatId(chatId);
         transportAnimal.setText("Мы можем порекомендовать транспортные услуги для вашего нового питомца.");
         return transportAnimal;
     }
 
-    private SendMessage listDocsDecor(long chatId) {
+    public SendMessage listDocsDecor(long chatId) {
         SendMessage listDocsDecor = new SendMessage();
         listDocsDecor.setChatId(chatId);
         listDocsDecor.setText("Документы, необходимые для усыновления, будут предоставлены по запросу.");
         return listDocsDecor;
     }
 
-    private SendMessage meetingAnimals(long chatId) {
+    public SendMessage meetingAnimals(long chatId) {
         SendMessage shelterInfo = new SendMessage();
         shelterInfo.setChatId(chatId);
         shelterInfo.setText("Вы можете назначить встречу с нашими животными, связавшись с нами.");
         return shelterInfo;
     }
 
-    private SendMessage getBreedDogAndColor(long chatId) {
+    public SendMessage getBreedDogAndColor(long chatId) {
         SendMessage getBreedDogAndColor = new SendMessage();
         getBreedDogAndColor.setChatId(chatId);
         getBreedDogAndColor.setText("Пожалуйста, укажите породу и предпочтительный окрас собаки, которую вы ищете.");
@@ -253,28 +254,28 @@ public class BotService {
     }
 
     ///////////////
-    private SendMessage getColorDogAndCat(long chatId) {
+    public SendMessage getColorDogAndCat(long chatId) {
         SendMessage getColorDogAndCat = new SendMessage();
         getColorDogAndCat.setChatId(chatId);
         getColorDogAndCat.setText("Дайте нам знать предпочтения по цвету для собаки или кота, которого вы хотели бы усыновить.");
         return getColorDogAndCat;
     }
 
-    private SendMessage getAgeDogAndCat(long chatId) {
+    public SendMessage getAgeDogAndCat(long chatId) {
         SendMessage getAgeDogAndCat = new SendMessage();
         getAgeDogAndCat.setChatId(chatId);
         getAgeDogAndCat.setText("Какой возрастной диапазон вы ищете у собаки или кошки?");
         return getAgeDogAndCat;
     }
 
-    private SendMessage getNameDogAndCat(long chatId) {
+    public SendMessage getNameDogAndCat(long chatId) {
         SendMessage getNameDogAndCat = new SendMessage();
         getNameDogAndCat.setChatId(chatId);
         getNameDogAndCat.setText("Пожалуйста, укажите имя, которое вы хотите дать собаке или кошке, которую вы усыновляете.");
         return getNameDogAndCat;
     }
 
-    private SendMessage getAllDogAndCat(long chatId) {
+    public SendMessage getAllDogAndCat(long chatId) {
         SendMessage getAllDogAndCat = new SendMessage();
         getAllDogAndCat.setChatId(chatId);
         getAllDogAndCat.setText("У нас есть разнообразие собак и кошек, доступных для усыновления. " +
@@ -283,9 +284,9 @@ public class BotService {
     }
 
     //////////////////////
-    private SendMessage getContactVolunteer(long chatId) {
+    public SendMessage getContactVolunteer(long chatId) {
 //        Записываем в лист всех полученных волонтеров
-        List<ChatUser> volunteerList = userService.getAllVolunteer();
+        List<ChatUser> volunteerList = userServiceImpl.getAllVolunteer();
 //        Выбираем ChatId случайного волонтера
         Random rand = new Random();
         long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
@@ -306,28 +307,28 @@ public class BotService {
 
     }
 
-    private SendMessage leaveContact(long chatId) {
+    public SendMessage leaveContact(long chatId) {
         SendMessage leaveContact = new SendMessage();
         leaveContact.setChatId(chatId);
         leaveContact.setText("Пожалуйста, оставьте ваш контактную информацию, чтобы мы могли связаться с вами.");
         return leaveContact;
     }
 
-    private SendMessage shelterTB(long chatId) {
+    public SendMessage shelterTB(long chatId) {
         SendMessage shelterTB = new SendMessage();
         shelterTB.setChatId(chatId);
         shelterTB.setText("Посетите наш приют, чтобы увидеть наших пушистых друзей лично.");
         return shelterTB;
     }
 
-    private SendMessage registerPass(long chatId) {
+    public SendMessage registerPass(long chatId) {
         SendMessage registerPass = new SendMessage();
         registerPass.setChatId(chatId);
         registerPass.setText("Вы можете зарегистрироваться, чтобы получить пропуск для посещения нашего приюта.");
         return registerPass;
     }
 
-    private SendMessage sendReport(long chatId) {
+    public SendMessage sendReport(long chatId) {
         SendMessage sendReport = new SendMessage();
         sendReport.setChatId(chatId);
         sendReport.setText("Если у вас есть какие-либо вопросы или нужно сообщить о проблеме, пожалуйста, свяжитесь с нами.");
@@ -335,14 +336,14 @@ public class BotService {
     }
 
     ////////
-    private SendMessage InfoShelterTimeAndAddress(long chatId) {
+    public SendMessage InfoShelterTimeAndAddress(long chatId) {
         SendMessage timeAndAddress = new SendMessage();
         timeAndAddress.setChatId(chatId);
         timeAndAddress.setText(ShelterInformationDirectory.SHELTERADRESS + ShelterInformationDirectory.WORKTIME);
         return timeAndAddress;
     }
 
-    private SendMessage infoShelter(long chatId) {
+    public SendMessage infoShelter(long chatId) {
         SendMessage shelterInfo = new SendMessage();
         shelterInfo.setChatId(chatId);
         shelterInfo.setText(ShelterInformationDirectory.SHELTERINFO);
@@ -354,7 +355,7 @@ public class BotService {
      * Стартовое меню
      *
      * @param chatId Id чата
-     * @param name имя пользователя
+     * @param name   имя пользователя
      * @return сообщение для пользователя
      */
     public SendMessage sendStartMenu(long chatId, String name) {
@@ -382,7 +383,7 @@ public class BotService {
      * @param chatId Id чата
      * @return сообщение для администратора
      */
-    SendMessage administrationMenu(long chatId) {
+    public SendMessage administrationMenu(long chatId) {
         log.info("Идет инициализация меню администрации... ");
 
         SendMessage msg = new SendMessage();
@@ -410,7 +411,7 @@ public class BotService {
      * @param chatId идентификатор чата
      * @return отправляем ответ
      */
-    SendMessage dogsAndCatMenu(long chatId) {
+    public SendMessage dogsAndCatMenu(long chatId) {
         log.info("Идет инициализация меню животных... ");
 
         SendMessage msg = new SendMessage();
@@ -436,7 +437,7 @@ public class BotService {
      * @param chatId идентификатор чата
      * @return отправляем ответ
      */
-    SendMessage instructionAdoptionMenu(long chatId) {
+    public SendMessage instructionAdoptionMenu(long chatId) {
         log.info("Идет инициализация меню как взять животное ... ");
 
         SendMessage msg = new SendMessage();
@@ -460,10 +461,11 @@ public class BotService {
 
     /**
      * Возвращает кнопку, у которой текст и отклик совпадают
+     *
      * @param text текст и отклик кнопки
      * @return кнопка
      */
-    private InlineKeyboardButton createButton(String text) {
+    public InlineKeyboardButton createButton(String text) {
         InlineKeyboardButton btn = new InlineKeyboardButton();    //Создаем кнопку
         btn.setText(text);                                        //Текст самой кнопки
         btn.setCallbackData(text);                                //Отклик на нажатие кнопки

@@ -1,12 +1,13 @@
-package com.skypro.animalShelterInfoBot.services;
+package com.skypro.animalShelterInfoBot.service;
+
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
 import com.skypro.animalShelterInfoBot.repositories.AvatarRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -16,20 +17,22 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
+
 @Service
 @Transactional
-public class AvatarService {
+public class AvatarServiceImpl implements AvatarService {
     @Value("${path.to.avatars.folder}")
     private String avatarDir;
-    private final AnimalService animalService;
+    private final AnimalServiceImpl animalServiceImpl;
     private final AvatarRepository avatarRepository;
 
-    public AvatarService(AvatarRepository avatarRepository, AnimalService animalService) {
+    public AvatarServiceImpl(AvatarRepository avatarRepository, AnimalServiceImpl animalServiceImpl) {
         this.avatarRepository = avatarRepository;
-        this.animalService = animalService;
+        this.animalServiceImpl = animalServiceImpl;
     }
+
     public void uploadAvatar(Long animalId, MultipartFile file) throws IOException {
-        Animal animal = animalService.findAnimal(animalId);
+        Animal animal = animalServiceImpl.findAnimal(animalId);
         Path filePath = Path.of(avatarDir, animal.getNickName() + "." + getExtension(Objects.requireNonNull(file.getOriginalFilename())));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -50,15 +53,18 @@ public class AvatarService {
         avatar.setData(generateImagePreview(filePath));
         avatarRepository.save(avatar);
     }
+
     public void deleteAvatar(Long animalId) {
         avatarRepository.deleteAvatarByAnimal_Id(animalId);
 
     }
+
     public Avatar findAvatar(long animalId) {
         return avatarRepository.findAvatarByAnimal_Id(animalId).orElse(new Avatar());
 
     }
-    private byte[] generateImagePreview(Path filePath) throws IOException {
+
+    public byte[] generateImagePreview(Path filePath) throws IOException {
         try (InputStream is = Files.newInputStream(filePath);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -73,7 +79,8 @@ public class AvatarService {
             return baos.toByteArray();
         }
     }
-    private String getExtension(String filename) {
+
+    public String getExtension(String filename) {
         return filename.substring(filename.lastIndexOf(".") + 1);
     }
 }

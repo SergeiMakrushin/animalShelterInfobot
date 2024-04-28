@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class AnimalShelterInfoBotApplication {
 
 	public static void main(String[] args)throws TelegramApiException {
-		SpringApplication.run(AnimalShelterInfoBotApplication.class, args);
+		 SpringApplication.run(AnimalShelterInfoBotApplication.class, args);
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.skypro.animalShelterInfoBot.configuration;
 
-import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
+import com.skypro.animalShelterInfoBot.bot.TelegramBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.ContextRefreshedEvent;

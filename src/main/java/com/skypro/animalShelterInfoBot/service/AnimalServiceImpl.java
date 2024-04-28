@@ -1,4 +1,4 @@
-package com.skypro.animalShelterInfoBot.services;
+package com.skypro.animalShelterInfoBot.service;
 
 import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import com.skypro.animalShelterInfoBot.repositories.AnimalRepository;
@@ -9,19 +9,22 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-public class AnimalService {
+public class AnimalServiceImpl implements AnimalService {
     private final AnimalRepository animalRepository;
     private Collection<Animal> animals;
-@Autowired
-    public AnimalService(AnimalRepository animalRepository) {
+
+    @Autowired
+    public AnimalServiceImpl(AnimalRepository animalRepository) {
         this.animalRepository = animalRepository;
     }
+
     public Animal createAnimal(Animal animal) {
         if (animal == null) {
             throw new IllegalArgumentException("Animal cannot be null");
         }
         return animalRepository.save(animal);
     }
+
     public Animal updateAnimal(long id, Animal animal) {
         if (animal == null) {
             throw new IllegalArgumentException("Animal cannot be null");
@@ -37,7 +40,8 @@ public class AnimalService {
         updatedAnimal.setColor(animal.getColor());
         return animalRepository.save(updatedAnimal);
     }
-    public Object getAnimalsPagination(Integer pageNumber, Integer sizeNumber){
+
+    public Object getAnimalsPagination(Integer pageNumber, Integer sizeNumber) {
         if (pageNumber != null && sizeNumber != null) {
             int startIndex = (pageNumber - 1) * sizeNumber;
             int endIndex = Math.min(startIndex + sizeNumber, animals.size());
@@ -53,6 +57,7 @@ public class AnimalService {
 
         return animalRepository.findAll();
     }
+
     public void deleteAnimalById(Long Id) {
         if (Id == null) {
             throw new IllegalArgumentException("Id cannot be null");
