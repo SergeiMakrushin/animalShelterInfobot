@@ -1,9 +1,10 @@
 package com.skypro.animalShelterInfoBot.controller;
 
+import com.skypro.animalShelterInfoBot.bot.BotService;
+import com.skypro.animalShelterInfoBot.bot.TelegramBot;
 import com.skypro.animalShelterInfoBot.model.human.ChatUser;
-import com.skypro.animalShelterInfoBot.service.bot.BotService;
-import com.skypro.animalShelterInfoBot.service.bot.TelegramBot;
-import com.skypro.animalShelterInfoBot.services.UserService;
+import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,7 +22,7 @@ class UserControllerWebMvcTest {
     private TelegramBot telegramBot;
 
     @Mock
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Mock
     private BotService botService;
