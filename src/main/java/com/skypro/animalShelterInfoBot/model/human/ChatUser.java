@@ -51,4 +51,5 @@ public class ChatUser {
 
     @OneToMany(mappedBy = "chatUser")
     private List<Animal> animals;
+
 }

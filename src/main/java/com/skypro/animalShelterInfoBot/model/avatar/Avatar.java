@@ -4,7 +4,6 @@ import com.skypro.animalShelterInfoBot.model.animals.Animal;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 
 import java.sql.Types;
 
@@ -35,4 +34,5 @@ public class Avatar {
     public Avatar(byte[] bytes, String contentType) {
 
     }
+
 }
