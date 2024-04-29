@@ -1,6 +1,6 @@
 package com.skypro.animalShelterInfoBot.service;
 
-import com.skypro.animalShelterInfoBot.model.animals.Animal;
+import com.skypro.animalShelterInfoBot.model.Animal;
 import com.skypro.animalShelterInfoBot.repositories.AnimalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

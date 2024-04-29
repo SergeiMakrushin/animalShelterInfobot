@@ -1,6 +1,6 @@
 package com.skypro.animalShelterInfoBot.repositories;
 
-import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
+import com.skypro.animalShelterInfoBot.model.Avatar;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

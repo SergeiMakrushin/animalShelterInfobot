@@ -1,7 +1,7 @@
 package com.skypro.animalShelterInfoBot.service;
 
-import com.skypro.animalShelterInfoBot.model.animals.Animal;
-import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
+import com.skypro.animalShelterInfoBot.model.Animal;
+import com.skypro.animalShelterInfoBot.model.Avatar;
 import com.skypro.animalShelterInfoBot.repositories.AvatarRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;

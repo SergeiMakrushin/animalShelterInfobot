@@ -1,5 +1,4 @@
-package com.skypro.animalShelterInfoBot.model.human;
-import com.skypro.animalShelterInfoBot.model.animals.Animal;
+package com.skypro.animalShelterInfoBot.model;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "users_contact_info")
 @Entity
-public class ChatUser {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,6 +48,6 @@ public class ChatUser {
 
     private boolean isVolunteer;
 
-    @OneToMany(mappedBy = "chatUser")
+    @OneToMany(mappedBy = "user")
     private List<Animal> animals;
 }

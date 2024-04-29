@@ -1,6 +1,6 @@
 package com.skypro.animalShelterInfoBot.service;
 
-import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,22 +11,22 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private List<ChatUser> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public ChatUser createUser(ChatUser user) {
+    public User createUser(User user) {
         if (user == null) {
             throw new IllegalArgumentException("User cannot be null");
         }
         return userRepository.save(user);
     }
 
-    public ChatUser updateUser(long id, ChatUser user) {
-        ChatUser updatedUser = userRepository.findUserById(id);
+    public User updateUser(long id, User user) {
+        User updatedUser = userRepository.findUserById(id);
         if (updatedUser == null) {
             throw new IllegalArgumentException("User not found with id: " + id);
         }
@@ -38,11 +38,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(updatedUser);
     }
 
-    public List<ChatUser> getAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public List<ChatUser> getUsersPagination(Integer pageNumber, Integer sizeNumber) {
+    public List<User> getUsersPagination(Integer pageNumber, Integer sizeNumber) {
         if (pageNumber != null && sizeNumber != null) {
             int startIndex = (pageNumber - 1) * sizeNumber;
             int endIndex = Math.min(startIndex + sizeNumber, users.size());
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    public List<ChatUser> getAllVolunteer() {
+    public List<User> getAllVolunteer() {
         return userRepository.findAllUserByIsVolunteerTrue();
     }
 }

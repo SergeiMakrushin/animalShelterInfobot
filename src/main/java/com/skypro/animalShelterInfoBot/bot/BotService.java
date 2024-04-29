@@ -28,7 +28,7 @@ public interface BotService {
 
     SendMessage recommendationTransportAnimal(long chatId);
 
-    SendMessage listDocsDecor(long chatId);
+    SendMessage adoptionDocuments(long chatId);
 
     SendMessage meetingAnimals(long chatId);
 

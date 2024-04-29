@@ -1,7 +1,7 @@
 package com.skypro.animalShelterInfoBot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skypro.animalShelterInfoBot.model.animals.Animal;
+import com.skypro.animalShelterInfoBot.model.Animal;
 import com.skypro.animalShelterInfoBot.bot.TelegramBot;
 import com.skypro.animalShelterInfoBot.service.AnimalServiceImpl;
 import org.junit.jupiter.api.Test;

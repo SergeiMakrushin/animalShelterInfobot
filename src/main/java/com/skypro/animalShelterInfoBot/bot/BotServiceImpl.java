@@ -1,7 +1,7 @@
 package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
-import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -46,10 +46,10 @@ public class BotServiceImpl implements BotService {
     private static final String BTN_RULES_TO_MEETING = "Правила знакомства";
     private static final String BTN_DOCUMENTS_LISTS = "Список документов";
     private static final String BTN_TRANSPORT_RECOMMENDATION = "Как перевозить";
-    private static final String BTN_HOME_FOR_CUB = "дом для малыша";
-    private static final String BTN_HOME_FOR_ADULT = "дом для взрослого";
-    private static final String BTN_HOME_FOR_DISABLE = "дом для инвалида";
-    private static final String BTN_HANDLERS_CONTACT = "контакты кинологов";
+    private static final String BTN_HOME_FOR_CUB = "Дом для малыша";
+    private static final String BTN_HOME_FOR_ADULT = "Дом для взрослого";
+    private static final String BTN_HOME_FOR_DISABLE = "Дом для инвалида";
+    private static final String BTN_HANDLERS_CONTACT = "Контакты кинологов";
     private static final String BTN_HANDLERS_TIPS = "Советы кинолога";
     private static final String BTN_REFUSE_REASONS = "Причины отказа";
 
@@ -168,7 +168,7 @@ public class BotServiceImpl implements BotService {
             case BTN_FIND_BY_COLOR -> getColorDogAndCat(chatId);
             case BTN_FIND_BY_BREED -> getBreedDogAndColor(chatId);
             case BTN_RULES_TO_MEETING -> meetingAnimals(chatId);
-            case BTN_DOCUMENTS_LISTS -> listDocsDecor(chatId);
+            case BTN_DOCUMENTS_LISTS -> adoptionDocuments(chatId);
             case BTN_TRANSPORT_RECOMMENDATION -> recommendationTransportAnimal(chatId);
             case BTN_HOME_FOR_CUB -> homeForChild(chatId);
             case BTN_HOME_FOR_ADULT -> homeForAdults(chatId);
@@ -185,7 +185,7 @@ public class BotServiceImpl implements BotService {
     public SendMessage reasonsForRefusal(long chatId) {
         SendMessage reasonsForRefusal = new SendMessage();
         reasonsForRefusal.setChatId(chatId);
-        reasonsForRefusal.setText("Пожалуйста, свяжитесь с нами для получения дополнительной информации о причинах отказа.");
+        reasonsForRefusal.setText(ShelterInformationDirectory.REASONSFORREFUSAL);
         return reasonsForRefusal;
     }
 
@@ -206,15 +206,14 @@ public class BotServiceImpl implements BotService {
     public SendMessage homeForLimitedOpportunities(long chatId) {
         SendMessage homeForLimitedOpportunities = new SendMessage();
         homeForLimitedOpportunities.setChatId(chatId);
-        homeForLimitedOpportunities.setText("Наша программа по уходу за домашними животными с ограниченными" +
-                " возможностями предлагает любящую среду для животных с особыми потребностями.");
+        homeForLimitedOpportunities.setText(ShelterInformationDirectory.HOMEFORLIMITEDOPPORTUNITIES);
         return homeForLimitedOpportunities;
     }
 
     public SendMessage homeForAdults(long chatId) {
         SendMessage homeForAdults = new SendMessage();
         homeForAdults.setChatId(chatId);
-        homeForAdults.setText("У нас есть специальная программа для взрослых животных, которые ищут постоянный дом.");
+        homeForAdults.setText(ShelterInformationDirectory.HOMEFORADULTS);
         return homeForAdults;
     }
 
@@ -228,14 +227,14 @@ public class BotServiceImpl implements BotService {
     public SendMessage recommendationTransportAnimal(long chatId) {
         SendMessage transportAnimal = new SendMessage();
         transportAnimal.setChatId(chatId);
-        transportAnimal.setText("Мы можем порекомендовать транспортные услуги для вашего нового питомца.");
+        transportAnimal.setText(ShelterInformationDirectory.RECOMMENDATIONTRANSPORTANIMAL);
         return transportAnimal;
     }
 
-    public SendMessage listDocsDecor(long chatId) {
+    public SendMessage adoptionDocuments(long chatId) {
         SendMessage listDocsDecor = new SendMessage();
         listDocsDecor.setChatId(chatId);
-        listDocsDecor.setText("Документы, необходимые для усыновления, будут предоставлены по запросу.");
+        listDocsDecor.setText(ShelterInformationDirectory.LISTSDOCSDECOR);
         return listDocsDecor;
     }
 
@@ -286,7 +285,7 @@ public class BotServiceImpl implements BotService {
     //////////////////////
     public SendMessage getContactVolunteer(long chatId) {
 //        Записываем в лист всех полученных волонтеров
-        List<ChatUser> volunteerList = userServiceImpl.getAllVolunteer();
+        List<User> volunteerList = userServiceImpl.getAllVolunteer();
 //        Выбираем ChatId случайного волонтера
         Random rand = new Random();
         long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
