@@ -5,6 +5,7 @@ import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,10 @@ public class BotServiceImpl implements BotService {
 
     @Autowired
     UserServiceImpl userServiceImpl;
+
+    /** Слушатель для отправки сообщений */
+    @Setter
+    private Listener listener;
 
     /**
      * Создаем постоянную клавиатуру
@@ -145,7 +150,7 @@ public class BotServiceImpl implements BotService {
      * @param name   имя пользователя
      * @return сообщение для пользователя
      */
-    public SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
+    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
         log.info("Нажата клавиша \"" + text + "\"");
 
         return switch (text) {

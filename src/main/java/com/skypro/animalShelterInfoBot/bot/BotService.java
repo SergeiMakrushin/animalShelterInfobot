@@ -12,8 +12,6 @@ public interface BotService {
 
     SendMessage inputMsg(Update update);
 
-    SendMessage processingTextAndCallbackQuery(long chatId, String text, String name);
-
     SendMessage reasonsForRefusal(long chatId);
 
     SendMessage adviceDogHandlers(long chatId);
@@ -66,4 +64,9 @@ public interface BotService {
 
     InlineKeyboardButton createButton(String text);
 
+    void setListener(Listener listener);
+
+    interface Listener {
+        void sendMessage(SendMessage message);
+    }
 }
