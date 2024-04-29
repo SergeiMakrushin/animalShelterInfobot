@@ -69,7 +69,9 @@ public class BotServiceImpl implements BotService {
     @Autowired
     UserServiceImpl userServiceImpl;
 
-    /** Слушатель для отправки сообщений */
+    /**
+     * Слушатель для отправки сообщений
+     */
     @Setter
     private Listener listener;
 
@@ -131,12 +133,14 @@ public class BotServiceImpl implements BotService {
             String msgText = callbackQuery.getData();
             long chatId = callbackQuery.getMessage().getChatId();
             String name = callbackQuery.getFrom().getFirstName();
-            textToSend = processingTextAndCallbackQuery(chatId, msgText, name);
+            String userName = callbackQuery.getFrom().getUserName();
+            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName);
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             String msgText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             String name = update.getMessage().getChat().getFirstName();
-            textToSend = processingTextAndCallbackQuery(chatId, msgText, name);
+            String userName = update.getMessage().getChat().getUserName();
+            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName);
         }
         return textToSend;
     }
@@ -150,7 +154,7 @@ public class BotServiceImpl implements BotService {
      * @param name   имя пользователя
      * @return сообщение для пользователя
      */
-    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
+    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName) {
         log.info("Нажата клавиша \"" + text + "\"");
 
         return switch (text) {
@@ -164,7 +168,7 @@ public class BotServiceImpl implements BotService {
             case BTN_GET_PASS, CMD_GET_PASS -> registerPass(chatId);
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
             case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId);
-            case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId);
+            case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId, userName);
             case BTN_MAIN_MENU ->
                     sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
             case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
@@ -288,7 +292,7 @@ public class BotServiceImpl implements BotService {
     }
 
     //////////////////////
-    public SendMessage getContactVolunteer(long chatId) {
+    public SendMessage getContactVolunteer(long chatId, String userName) {
 //        Записываем в лист всех полученных волонтеров
         List<User> volunteerList = userServiceImpl.getAllVolunteer();
 //        Выбираем ChatId случайного волонтера
@@ -297,16 +301,14 @@ public class BotServiceImpl implements BotService {
 //        Создаем сообщение для волонтера с контактами пользователя
         SendMessage messageVolunteer = new SendMessage();
         messageVolunteer.setChatId(randomVolunteer);
-        messageVolunteer.setText("Пользователь " + chatId + " телеграмм-бота просит написать ему");
-//        Дальше надо разбираться, метод для отправки сообщений в классе TelegramBot, если на него сделать зависимость будет циклическая ссылка
-//        надо искать в этом классе, он есть, так как сообщения отправляются
-//        Должно быть что-то типа:
-//        execute(messageVolunteer);
+        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName + " телеграмм-бота просит написать ему");
+//         Отправляем сообщение волонтеру
+        listener.sendMessage(messageVolunteer);
 
         SendMessage getContactVolunteer = new SendMessage();
         getContactVolunteer.setChatId(chatId);
         getContactVolunteer.setText("Наши добровольцы скоро свяжутся с вами");
-//        getContactVolunteer.setText("Наши добровольцы готовы помочь вам. Свяжитесь с нами для возможностей добровольчества.");
+
         return getContactVolunteer;
 
     }
