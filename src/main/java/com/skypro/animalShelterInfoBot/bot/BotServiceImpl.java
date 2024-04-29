@@ -69,7 +69,9 @@ public class BotServiceImpl implements BotService {
     @Autowired
     UserServiceImpl userServiceImpl;
 
-    /** Слушатель для отправки сообщений */
+    /**
+     * Слушатель для отправки сообщений
+     */
     @Setter
     private Listener listener;
 
@@ -131,12 +133,14 @@ public class BotServiceImpl implements BotService {
             String msgText = callbackQuery.getData();
             long chatId = callbackQuery.getMessage().getChatId();
             String name = callbackQuery.getFrom().getFirstName();
-            textToSend = processingTextAndCallbackQuery(chatId, msgText, name);
+            String userName = callbackQuery.getFrom().getUserName();
+            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName);
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             String msgText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             String name = update.getMessage().getChat().getFirstName();
-            textToSend = processingTextAndCallbackQuery(chatId, msgText, name);
+            String userName = update.getMessage().getChat().getUserName();
+            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName);
         }
         return textToSend;
     }
@@ -150,7 +154,7 @@ public class BotServiceImpl implements BotService {
      * @param name   имя пользователя
      * @return сообщение для пользователя
      */
-    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name) {
+    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName) {
         log.info("Нажата клавиша \"" + text + "\"");
 
         return switch (text) {
@@ -164,7 +168,7 @@ public class BotServiceImpl implements BotService {
             case BTN_GET_PASS, CMD_GET_PASS -> registerPass(chatId);
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
             case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId);
-            case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId);
+            case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId, userName);
             case BTN_MAIN_MENU ->
                     sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
             case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
@@ -246,7 +250,7 @@ public class BotServiceImpl implements BotService {
     public SendMessage meetingAnimals(long chatId) {
         SendMessage shelterInfo = new SendMessage();
         shelterInfo.setChatId(chatId);
-        shelterInfo.setText("Вы можете назначить встречу с нашими животными, связавшись с нами.");
+        shelterInfo.setText(ShelterInformationDirectory.MEETINGANIMALS);
         return shelterInfo;
     }
 
@@ -287,26 +291,23 @@ public class BotServiceImpl implements BotService {
         return getAllDogAndCat;
     }
 
-    //////////////////////
-    public SendMessage getContactVolunteer(long chatId) {
-//        Записываем в лист всех полученных волонтеров
-        List<User> volunteerList = userServiceImpl.getAllVolunteer();
-//        Выбираем ChatId случайного волонтера
-        Random rand = new Random();
+    public SendMessage getContactVolunteer(long chatId, String userName) {
+        List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
+        Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
         long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
-//        Создаем сообщение для волонтера с контактами пользователя
-        SendMessage messageVolunteer = new SendMessage();
+
+        SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
         messageVolunteer.setChatId(randomVolunteer);
-        messageVolunteer.setText("Пользователь " + chatId + " телеграмм-бота просит написать ему");
-//        Дальше надо разбираться, метод для отправки сообщений в классе TelegramBot, если на него сделать зависимость будет циклическая ссылка
-//        надо искать в этом классе, он есть, так как сообщения отправляются
-//        Должно быть что-то типа:
-//        execute(messageVolunteer);
+        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName + " телеграмм-бота просит написать ему");
+        listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
 
         SendMessage getContactVolunteer = new SendMessage();
         getContactVolunteer.setChatId(chatId);
-        getContactVolunteer.setText("Наши добровольцы скоро свяжутся с вами");
-//        getContactVolunteer.setText("Наши добровольцы готовы помочь вам. Свяжитесь с нами для возможностей добровольчества.");
+        getContactVolunteer.setText("""
+                Наши добровольцы скоро свяжутся с вами!
+
+                отправте 'ok' для открытия дополнительного меню, что бы продолжить диалог с ботом!""");
+
         return getContactVolunteer;
 
     }
@@ -321,14 +322,14 @@ public class BotServiceImpl implements BotService {
     public SendMessage shelterTB(long chatId) {
         SendMessage shelterTB = new SendMessage();
         shelterTB.setChatId(chatId);
-        shelterTB.setText("Посетите наш приют, чтобы увидеть наших пушистых друзей лично.");
+        shelterTB.setText(ShelterInformationDirectory.TBSHELTER);
         return shelterTB;
     }
 
     public SendMessage registerPass(long chatId) {
         SendMessage registerPass = new SendMessage();
         registerPass.setChatId(chatId);
-        registerPass.setText("Вы можете зарегистрироваться, чтобы получить пропуск для посещения нашего приюта.");
+        registerPass.setText(ShelterInformationDirectory.REGISTERPASS);
         return registerPass;
     }
 
@@ -339,7 +340,6 @@ public class BotServiceImpl implements BotService {
         return sendReport;
     }
 
-    ////////
     public SendMessage InfoShelterTimeAndAddress(long chatId) {
         SendMessage timeAndAddress = new SendMessage();
         timeAndAddress.setChatId(chatId);
@@ -353,7 +353,6 @@ public class BotServiceImpl implements BotService {
         shelterInfo.setText(ShelterInformationDirectory.SHELTERINFO);
         return shelterInfo;
     }
-///////////
 
     /**
      * Стартовое меню

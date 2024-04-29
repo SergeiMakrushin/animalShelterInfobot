@@ -40,7 +40,7 @@ public interface BotService {
 
     SendMessage getAllDogAndCat(long chatId);
 
-    SendMessage getContactVolunteer(long chatId);
+    SendMessage getContactVolunteer(long chatId, String userName);
 
     SendMessage leaveContact(long chatId);
 
