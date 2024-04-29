@@ -1,26 +1,38 @@
 package com.skypro.animalShelterInfoBot.controller;
 
-import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
+import com.skypro.animalShelterInfoBot.model.Avatar;
 import com.skypro.animalShelterInfoBot.service.AvatarService;
 import org.glassfish.jersey.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import static org.mockito.Mockito.when;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(AvatarController.class)
-class AvatarControllerWebMvcTest {
+@WebMvcTest(controllers = AvatarController.class)
+public class AvatarControllerWebMvcTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,40 +42,64 @@ class AvatarControllerWebMvcTest {
 
     @Test
     public void testUploadAvatar() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("avatar", "test.jpg", "image/jpeg", "test data".getBytes());
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/avatar/1/avatar").file(file))
+        MockMultipartFile file = new MockMultipartFile("avatar", "test.png", "image/png", "avatar data".getBytes());
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/avatar/{animalId}/avatar", 1)
+                        .file(file)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
                 .andExpect(status().isOk());
+
+        verify(avatarService).uploadAvatar(eq(1L), any(MultipartFile.class));
     }
 
     @Test
     public void testDownloadPreview() throws Exception {
-        when(avatarService.findAvatar(1L)).thenReturn(new Avatar("test data".getBytes(), "image/jpeg"));
-        mockMvc.perform(get("/avatar/avatar-preview/1"))
+        Avatar preview = new Avatar();
+        preview.setData("test data".getBytes());
+        preview.setMediaType("image/jpeg");
+        when(avatarService.findAvatar(anyLong())).thenReturn(preview);
+
+        mockMvc.perform(get("/avatar/avatar-preview/{animalId}", 1))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/jpeg"));
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
+                .andExpect(content().bytes(preview.getData()));
     }
 
     @Test
-    public void testDownloadAvatarFromDb() throws Exception {
-        when(avatarService.findAvatar(1L)).thenReturn(new Avatar("test data".getBytes(), "image/jpeg"));
-        mockMvc.perform(get("/avatar/avatar-from-db/1"))
+    public void testDownloadAvatar() throws Exception {
+        Avatar avatar = new Avatar();
+        avatar.setData("test data".getBytes());
+        avatar.setMediaType("image/jpeg");
+        when(avatarService.findAvatar(anyLong())).thenReturn(avatar);
+
+        mockMvc.perform(get("/avatar/avatar-from-db/{animalId}", 1))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/jpeg"));
+                .andExpect(content().contentType(MediaType.IMAGE_JPEG))
+                .andExpect(content().bytes(avatar.getData()));
     }
 
     @Test
     public void testDownloadAvatarFromFile() throws Exception {
-        when(avatarService.findAvatar(1L)).thenReturn(new Avatar());
-        mockMvc.perform(get("/avatar/avatar-from-file/1"))
+        Avatar avatar = new Avatar();
+        avatar.setFilePath("/path/to/file");
+        avatar.setMediaType("image/jpeg");
+        avatar.setFileSize(100L);
+        when(avatarService.findAvatar(anyLong())).thenReturn(avatar);
+
+        mockMvc.perform(get("/avatar/avatar-from-file/{animalId}", 1))
                 .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/jpeg"));
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/jpeg"))
+                .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 100));
     }
+
 
     @Test
     public void testDeleteAvatar() throws Exception {
-        when(avatarService.findAvatar(1L)).thenReturn(new Avatar("test data".getBytes(), "image/jpeg"));
-        mockMvc.perform(delete("/avatar/deleteAvatar/1"))
-                .andExpect(status().isOk());
-    }
+        when(avatarService.findAvatar(1L)).thenReturn(new Avatar());
 
+        mockMvc.perform(delete("/avatar/deleteAvatar/{animalId}", 1))
+                .andExpect(status().isOk());
+
+        verify(avatarService).deleteAvatar(1L);
+    }
 }

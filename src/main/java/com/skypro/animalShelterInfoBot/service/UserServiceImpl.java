@@ -68,8 +68,4 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllVolunteer() {
         return userRepository.findAllUserByIsVolunteerTrue();
     }
-
-    public void setUsers(List<ChatUser> userList) {
-
-    }
 }

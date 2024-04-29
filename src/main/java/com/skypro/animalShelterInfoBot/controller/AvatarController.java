@@ -1,7 +1,7 @@
 package com.skypro.animalShelterInfoBot.controller;
 
 import com.skypro.animalShelterInfoBot.model.Avatar;
-import com.skypro.animalShelterInfoBot.service.AvatarServiceImpl;
+import com.skypro.animalShelterInfoBot.service.AvatarService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -31,10 +31,10 @@ import java.nio.file.Path;
 @RestController
 @RequestMapping(path = "/avatar")
 public class AvatarController {
-    private final AvatarServiceImpl avatarServiceImpl;
+    private final AvatarService avatarService;
 @Autowired
-    public AvatarController(AvatarServiceImpl avatarServiceImpl) {
-        this.avatarServiceImpl = avatarServiceImpl;
+    public AvatarController(AvatarService avatarService) {
+        this.avatarService = avatarService;
     }
     @Operation(summary = "Загрузка аватара",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -49,7 +49,7 @@ public class AvatarController {
     @PostMapping(value = "/{animalId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar
             (@PathVariable long animalId, @RequestParam MultipartFile avatar) throws IOException {
-        avatarServiceImpl.uploadAvatar(animalId, avatar);
+        avatarService.uploadAvatar(animalId, avatar);
         return ResponseEntity.ok().build();
     }
     @Operation(summary = "Скачиваем для предпросмотра аватара",
@@ -65,7 +65,7 @@ public class AvatarController {
             })
     @GetMapping("/avatar-preview/{animalId}")
     public ResponseEntity<byte[]> downloadPreview(@PathVariable Long animalId) {
-        Avatar preview = avatarServiceImpl.findAvatar(animalId);
+        Avatar preview = avatarService.findAvatar(animalId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentLength(preview.getData().length);
         headers.setContentType(MediaType.parseMediaType(preview.getMediaType()));
@@ -84,7 +84,7 @@ public class AvatarController {
             })
     @GetMapping("/avatar-from-db/{animalId}")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long animalId) {
-        Avatar avatar = avatarServiceImpl.findAvatar(animalId);
+        Avatar avatar = avatarService.findAvatar(animalId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
         headers.setContentLength(avatar.getData().length);
@@ -103,7 +103,7 @@ public class AvatarController {
             })
     @GetMapping("avatar-from-file/{animalId}")
     public void downloadAvatar(@PathVariable Long animalId, HttpServletResponse response) throws IOException {
-        Avatar avatar = avatarServiceImpl.findAvatar(animalId);
+        Avatar avatar = avatarService.findAvatar(animalId);
         Path path = Path.of(avatar.getFilePath());
         try (InputStream is = Files.newInputStream(path);
              OutputStream os = response.getOutputStream();) {
@@ -125,8 +125,8 @@ public class AvatarController {
             })
     @DeleteMapping("/deleteAvatar/{animalId}")
     public ResponseEntity<Void> deleteAvatar(@PathVariable Long animalId) {
-        if (avatarServiceImpl.findAvatar(animalId).getData()!=null) {
-            avatarServiceImpl.deleteAvatar(animalId);
+        if (avatarService.findAvatar(animalId).getData()!=null) {
+            avatarService.deleteAvatar(animalId);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();}
