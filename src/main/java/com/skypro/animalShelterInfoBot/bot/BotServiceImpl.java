@@ -250,7 +250,7 @@ public class BotServiceImpl implements BotService {
     public SendMessage meetingAnimals(long chatId) {
         SendMessage shelterInfo = new SendMessage();
         shelterInfo.setChatId(chatId);
-        shelterInfo.setText("Вы можете назначить встречу с нашими животными, связавшись с нами.");
+        shelterInfo.setText(ShelterInformationDirectory.MEETINGANIMALS);
         return shelterInfo;
     }
 
@@ -291,23 +291,22 @@ public class BotServiceImpl implements BotService {
         return getAllDogAndCat;
     }
 
-    //////////////////////
     public SendMessage getContactVolunteer(long chatId, String userName) {
-//        Записываем в лист всех полученных волонтеров
-        List<User> volunteerList = userServiceImpl.getAllVolunteer();
-//        Выбираем ChatId случайного волонтера
-        Random rand = new Random();
+        List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
+        Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
         long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
-//        Создаем сообщение для волонтера с контактами пользователя
-        SendMessage messageVolunteer = new SendMessage();
+
+        SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
         messageVolunteer.setChatId(randomVolunteer);
         messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName + " телеграмм-бота просит написать ему");
-//         Отправляем сообщение волонтеру
-        listener.sendMessage(messageVolunteer);
+        listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
 
         SendMessage getContactVolunteer = new SendMessage();
         getContactVolunteer.setChatId(chatId);
-        getContactVolunteer.setText("Наши добровольцы скоро свяжутся с вами");
+        getContactVolunteer.setText("""
+                Наши добровольцы скоро свяжутся с вами!
+
+                отправте 'ok' для открытия дополнительного меню, что бы продолжить диалог с ботом!""");
 
         return getContactVolunteer;
 
@@ -323,14 +322,14 @@ public class BotServiceImpl implements BotService {
     public SendMessage shelterTB(long chatId) {
         SendMessage shelterTB = new SendMessage();
         shelterTB.setChatId(chatId);
-        shelterTB.setText("Посетите наш приют, чтобы увидеть наших пушистых друзей лично.");
+        shelterTB.setText(ShelterInformationDirectory.TBSHELTER);
         return shelterTB;
     }
 
     public SendMessage registerPass(long chatId) {
         SendMessage registerPass = new SendMessage();
         registerPass.setChatId(chatId);
-        registerPass.setText("Вы можете зарегистрироваться, чтобы получить пропуск для посещения нашего приюта.");
+        registerPass.setText(ShelterInformationDirectory.REGISTERPASS);
         return registerPass;
     }
 
@@ -341,7 +340,6 @@ public class BotServiceImpl implements BotService {
         return sendReport;
     }
 
-    ////////
     public SendMessage InfoShelterTimeAndAddress(long chatId) {
         SendMessage timeAndAddress = new SendMessage();
         timeAndAddress.setChatId(chatId);
@@ -355,7 +353,6 @@ public class BotServiceImpl implements BotService {
         shelterInfo.setText(ShelterInformationDirectory.SHELTERINFO);
         return shelterInfo;
     }
-///////////
 
     /**
      * Стартовое меню
