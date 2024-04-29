@@ -1,6 +1,6 @@
-package com.skypro.animalShelterInfoBot.model.avatar;
+package com.skypro.animalShelterInfoBot.model;
 
-import com.skypro.animalShelterInfoBot.model.animals.Animal;
+import com.skypro.animalShelterInfoBot.model.Animal;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;

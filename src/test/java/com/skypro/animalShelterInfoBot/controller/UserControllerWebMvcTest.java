@@ -2,7 +2,7 @@ package com.skypro.animalShelterInfoBot.controller;
 
 import com.skypro.animalShelterInfoBot.bot.BotService;
 import com.skypro.animalShelterInfoBot.bot.TelegramBot;
-import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 
 import org.junit.jupiter.api.Test;
@@ -33,9 +33,11 @@ class UserControllerWebMvcTest {
 
     @Test
     public void testCreateUser() {
-        ChatUser user = new ChatUser();
+
+        User user = new User();
         when(userService.createUser(user)).thenReturn(user);
-        ResponseEntity<ChatUser> responseEntity = userController.createUser(user);
+        ResponseEntity<User> responseEntity = userController.createUser(user);
+
         assertNotNull(responseEntity);
         assertEquals(user, responseEntity.getBody());
     }
@@ -43,18 +45,22 @@ class UserControllerWebMvcTest {
     @Test
     public void testEditUser() {
         long id = 1;
-        ChatUser user = new ChatUser();
+
+        User user = new User();
         when(userService.updateUser(id, user)).thenReturn(user);
-        ResponseEntity<ChatUser> responseEntity = userController.editStudent(id, user);
+        ResponseEntity<User> responseEntity = userController.editStudent(id, user);
+
         assertNotNull(responseEntity);
         assertEquals(user, responseEntity.getBody());
     }
 
     @Test
     public void testGetAllUsers() {
-        List<ChatUser> userList = List.of(new ChatUser(), new ChatUser());
+
+        List<User> userList = List.of(new User(), new User());
         when(userService.getAllUsers()).thenReturn(userList);
-        ResponseEntity<List<ChatUser>> responseEntity = userController.getAllUsers();
+        ResponseEntity<List<User>> responseEntity = userController.getAllUsers();
+
         assertNotNull(responseEntity);
         assertEquals(userList, responseEntity.getBody());
     }
@@ -63,9 +69,11 @@ class UserControllerWebMvcTest {
     public void testGetUsersPagination() {
         Integer pageNumber = 1;
         Integer sizeNumber = 10;
-        List<ChatUser> userList = List.of(new ChatUser(), new ChatUser());
+
+        List<User> userList = List.of(new User(), new User());
         when(userService.getUsersPagination(pageNumber, sizeNumber)).thenReturn(userList);
-        ResponseEntity<List<ChatUser>> responseEntity = userController.getUsersPagination(pageNumber, sizeNumber);
+        ResponseEntity<List<User>> responseEntity = userController.getUsersPagination(pageNumber, sizeNumber);
+
         assertNotNull(responseEntity);
         assertEquals(userList, responseEntity.getBody());
     }

@@ -1,7 +1,5 @@
-package com.skypro.animalShelterInfoBot.model.animals;
+package com.skypro.animalShelterInfoBot.model;
 
-import com.skypro.animalShelterInfoBot.model.avatar.Avatar;
-import com.skypro.animalShelterInfoBot.model.human.ChatUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,6 +36,6 @@ public class Animal {
 
      @ManyToOne
      @JoinColumn(name = "chat_user_id", referencedColumnName = "id")
-     private ChatUser chatUser;
+     private User user;
 
  }

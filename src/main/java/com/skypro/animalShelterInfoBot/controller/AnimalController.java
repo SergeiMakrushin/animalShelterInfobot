@@ -1,7 +1,7 @@
 package com.skypro.animalShelterInfoBot.controller;
 
 
-import com.skypro.animalShelterInfoBot.model.animals.Animal;
+import com.skypro.animalShelterInfoBot.model.Animal;
 
 
 import com.skypro.animalShelterInfoBot.bot.TelegramBot;
@@ -96,7 +96,7 @@ public class AnimalController {
                     )
             })
 
-    @GetMapping("/pagination")
+    @GetMapping ("/pagination")
     public ResponseEntity<Object> getAnimalsPagination(@RequestParam Integer pageNumber, @RequestParam Integer sizeNumber) {
         return ResponseEntity.ok(animalServiceImpl.getAnimalsPagination(pageNumber, sizeNumber));
     }

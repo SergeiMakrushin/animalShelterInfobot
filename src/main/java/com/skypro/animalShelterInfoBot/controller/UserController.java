@@ -1,7 +1,7 @@
 package com.skypro.animalShelterInfoBot.controller;
 
 
-import com.skypro.animalShelterInfoBot.model.human.ChatUser;
+import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.bot.BotServiceImpl;
 import com.skypro.animalShelterInfoBot.bot.TelegramBot;
 import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
@@ -43,13 +43,13 @@ public class UserController {
 
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ChatUser.class)
+                            schema = @Schema(implementation = User.class)
                     )
             )
     )
 
     @PostMapping("/create")
-    public ResponseEntity<ChatUser> createUser(@RequestBody ChatUser user) {
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.ok(userServiceImpl.createUser(user));
     }
 
@@ -59,13 +59,13 @@ public class UserController {
 
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ChatUser.class)
+                            schema = @Schema(implementation = User.class)
                     )
             )
     )
     @PutMapping("/update/{id}")
-    public ResponseEntity<ChatUser> editStudent(@PathVariable long id, @RequestBody ChatUser user) {
-        ChatUser updatedUser = userServiceImpl.updateUser(id, user);
+    public ResponseEntity<User> editStudent(@PathVariable long id, @RequestBody User user) {
+        User updatedUser = userServiceImpl.updateUser(id, user);
         if (updatedUser == null) {
             return ResponseEntity.notFound().build();
         }
@@ -79,12 +79,12 @@ public class UserController {
                             description = "найденные ползователи",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = ChatUser.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = User.class))
                             )
                     )
             })
     @GetMapping("/all")
-    public ResponseEntity<List<ChatUser>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userServiceImpl.getAllUsers());
     }
 
@@ -95,13 +95,13 @@ public class UserController {
                             description = "найденные ползователи",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = ChatUser.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = User.class))
                             )
                     )
             })
 
     @GetMapping("/pagination")
-    public ResponseEntity<List<ChatUser>> getUsersPagination(@RequestParam(required = false) Integer pageNumber, @RequestParam(required = false) Integer sizeNumber) {
+    public ResponseEntity<List<User>> getUsersPagination(@RequestParam(required = false) Integer pageNumber, @RequestParam(required = false) Integer sizeNumber) {
         return ResponseEntity.ok(userServiceImpl.getUsersPagination(pageNumber, sizeNumber));
     }
 
@@ -111,7 +111,7 @@ public class UserController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ChatUser.class)
+                                    schema = @Schema(implementation = User.class)
                             )
                     )
             })
@@ -128,7 +128,7 @@ public class UserController {
                             responseCode = "200",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array = @ArraySchema(schema = @Schema(implementation = ChatUser.class))
+                                    array = @ArraySchema(schema = @Schema(implementation = User.class))
                             )
                     )
             })
@@ -147,8 +147,8 @@ public class UserController {
     @PutMapping("/turn_newsletter")
     public ResponseEntity<String> turnOffTheNewsletter(@RequestParam(name = "chatId пользователя") Long chatId) {
         //        в chatUserResponse будет записываться ответ от сервиса
-        ChatUser chatUserResponse = new ChatUser();
+        User userResponse = new User();
         return ResponseEntity.ok("Отключение рассылки сообщений для пользователя: "
-                + chatUserResponse.getName() + " " + chatUserResponse.getChatId());
+                + userResponse.getName() + " " + userResponse.getChatId());
     }
 }
