@@ -16,13 +16,16 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class TelegramBot extends TelegramLongPollingBot {
+public class TelegramBot extends TelegramLongPollingBot implements BotService.Listener {
     private final InfoBotConfiguration config;
-    private final BotServiceImpl botServiceImpl;
+    private final BotService botService;
 
-    public TelegramBot(InfoBotConfiguration config, BotServiceImpl botServiceImpl) {
+    public TelegramBot(InfoBotConfiguration config, BotService botService) {
         this.config = config;
-        this.botServiceImpl = botServiceImpl;
+        this.botService = botService;
+
+        botService.setListener(this);
+
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand(BotServiceImpl.CMD_START, "Начать диалог с ботом."));
         listOfCommands.add(new BotCommand(BotServiceImpl.CMD_INFO_SHELTER, "Общая информация о приюте"));
@@ -62,7 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         try {
             if (update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()) {
-                SendMessage sendMessage = botServiceImpl.inputMsg(update);
+                SendMessage sendMessage = botService.inputMsg(update);
                 sendMessage(sendMessage);
             }
         } catch (Exception e) {
