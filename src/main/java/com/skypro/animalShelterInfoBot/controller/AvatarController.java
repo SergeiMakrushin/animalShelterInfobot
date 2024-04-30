@@ -125,7 +125,7 @@ public class AvatarController {
             })
     @DeleteMapping("/deleteAvatar/{animalId}")
     public ResponseEntity<Void> deleteAvatar(@PathVariable Long animalId) {
-        if (avatarService.findAvatar(animalId).getData()!=null) {
+        if (avatarService.findAvatar(animalId) != null) {
             avatarService.deleteAvatar(animalId);
             return ResponseEntity.ok().build();
         }
