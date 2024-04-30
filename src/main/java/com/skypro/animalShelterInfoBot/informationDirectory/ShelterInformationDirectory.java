@@ -63,4 +63,26 @@ public class ShelterInformationDirectory {
             
             Условия усыновления : https://zovpredkov.net/kak-vzyat-sobaku-iz-priyuta/\s
             """;
+
+    public static final String TBSHELTER = """
+            Основные правила нахождения на территории приюта.\s
+            Перейдите по соответствующей ссылке ниже, для прочтения \uD83D\uDC47\s
+            
+            ТБ на территории приюта : https://baikalvet.com/index.php/uslugi/priyut-dlya-koshek-i-sobak/uslugi-3""";
+
+    public static final String MEETINGANIMALS = """
+            С чего начинать знакомство с новым другом:\s
+            Перейдите по соответствующей ссылке ниже, для прочтения \uD83D\uDC47\s
+
+            Как знакомиться с собакой 🐶 : https://adoption.pedigree.ru/articles/kak-pravilno-vybrat-sobaku-v-priyute\s
+            Как знакомиться с кошкой 🐱 : https://pets.mail.ru/how-to/pervoe-vpechatlenie-pervoe-znakomstvo-s-koshkoj/""";
+
+    public static final String REGISTERPASS = """
+            Свяжитесь с охраной для регистрации пропуска на территорию приюта \uD83D\uDC6E\u200D♂️\s
+
+            ФИО: Иванов Иван Иванович\s
+            Телефон: 7-390-517-00-00\s
+            Email: vasya.security@shelter.ru\s
+            """;
+
 }
