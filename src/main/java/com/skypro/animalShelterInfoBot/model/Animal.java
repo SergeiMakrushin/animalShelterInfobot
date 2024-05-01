@@ -14,6 +14,10 @@ import lombok.*;
 @Entity
 public class Animal {
 
+     public Animal(String dog, String buddy, String goldenRetriever, int i, String golden) {
+
+     }
+
      public enum TapeOfAnimal {DOG, CAT}
 
     @Id
