@@ -24,7 +24,7 @@ public class User {
     private Long id;
 
     @Column(name = "chat_id")
-    private long chatId;
+    private Long chatId;
 
     @Column(name = "name")
     private String name;
@@ -33,7 +33,7 @@ public class User {
     private String surname;
 
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
      /**
      * На первом этапе бот тоже может записать данные пользователя.
@@ -41,12 +41,12 @@ public class User {
      */
 
     @Column(name = "phone")
-    private long phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "email")
     private String email;
 
-    private boolean isVolunteer;
+    private Boolean isVolunteer;
 
     @OneToMany(mappedBy = "user")
     private List<Animal> animals;

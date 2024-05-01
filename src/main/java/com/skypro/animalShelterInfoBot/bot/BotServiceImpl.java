@@ -1,7 +1,10 @@
 package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
+import com.skypro.animalShelterInfoBot.model.Animal;
 import com.skypro.animalShelterInfoBot.model.User;
+import com.skypro.animalShelterInfoBot.repositories.UserRepository;
+import com.skypro.animalShelterInfoBot.service.AnimalServiceImpl;
 import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Getter
 @RequiredArgsConstructor
@@ -68,6 +73,12 @@ public class BotServiceImpl implements BotService {
 
     @Autowired
     UserServiceImpl userServiceImpl;
+
+    @Autowired
+    AnimalServiceImpl animalServiceImpl;
+
+    @Autowired
+    UserRepository userRepository;
 
     /**
      * Слушатель для отправки сообщений
@@ -167,7 +178,7 @@ public class BotServiceImpl implements BotService {
             case BTN_INFO_TAKE_ANIMAL, CMD_INFO_TAKE_ANIMAL -> instructionAdoptionMenu(chatId);
             case BTN_GET_PASS, CMD_GET_PASS -> registerPass(chatId);
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
-            case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId);
+            case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId, text);
             case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId, userName);
             case BTN_MAIN_MENU ->
                     sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
@@ -284,10 +295,11 @@ public class BotServiceImpl implements BotService {
     }
 
     public SendMessage getAllDogAndCat(long chatId) {
+        List<Animal> animalList = animalServiceImpl.getAllAnimals();
         SendMessage getAllDogAndCat = new SendMessage();
         getAllDogAndCat.setChatId(chatId);
-        getAllDogAndCat.setText("У нас есть разнообразие собак и кошек, доступных для усыновления. " +
-                "Свяжитесь с нами для получения более подробной информации.");
+        getAllDogAndCat.setText("У нас есть разнообразие собак и кошек," +
+                " доступных для усыновления: " + animalList);
         return getAllDogAndCat;
     }
 
@@ -312,11 +324,25 @@ public class BotServiceImpl implements BotService {
 
     }
 
-    public SendMessage leaveContact(long chatId) {
+    public SendMessage leaveContact(long chatId, String text) {
+        /*log.info("метод получения и обработки сообщения");
         SendMessage leaveContact = new SendMessage();
         leaveContact.setChatId(chatId);
         leaveContact.setText("Пожалуйста, оставьте ваш контактную информацию, чтобы мы могли связаться с вами.");
-        return leaveContact;
+        listener.sendMessage(leaveContact);
+        SendMessage saveContactMail = new SendMessage();
+        saveContactMail.setChatId(chatId);
+        saveContactMail.setText(text);
+        Matcher matcher = CONTACT_PATTERN.matcher(text);
+        if (matcher.matches()) {
+            String phoneNumber = matcher.group(1);
+            String mailContact = matcher.group(3);
+            userRepository.save(new User(null, chatId, null, null,
+                    null, phoneNumber, mailContact, null, null));
+        } else {
+
+        }*/
+        return null;
     }
 
     public SendMessage shelterTB(long chatId) {
