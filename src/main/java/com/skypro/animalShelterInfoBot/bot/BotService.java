@@ -42,7 +42,7 @@ public interface BotService {
 
     SendMessage getContactVolunteer(long chatId, String userName);
 
-    SendMessage leaveContact(long chatId);
+    SendMessage leaveContact(long chatId, String text);
 
     SendMessage shelterTB(long chatId);
 

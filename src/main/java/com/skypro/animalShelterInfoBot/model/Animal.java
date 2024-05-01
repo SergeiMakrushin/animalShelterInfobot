@@ -13,6 +13,7 @@ import lombok.*;
 @Getter
 @Entity
 public class Animal {
+
      public enum TapeOfAnimal {DOG, CAT}
 
     @Id
@@ -38,4 +39,11 @@ public class Animal {
      @JoinColumn(name = "chat_user_id", referencedColumnName = "id")
      private User user;
 
+     @Override
+     public String toString() {
+         return  "Кличка " + nickName +
+                 ", Порода " + breed +
+                 ", Возраст " + age +
+                 ", Цвет шёрстки " + color;
+     }
  }
