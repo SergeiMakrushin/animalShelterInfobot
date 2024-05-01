@@ -85,4 +85,18 @@ public class ShelterInformationDirectory {
             Email: vasya.security@shelter.ru\s
             """;
 
+    public static final String LEAVECONTACT = """
+            Пожалуйста, оставьте вашу контактную информацию, чтобы мы могли связаться с вами.
+            Отправте контакты в формате XXX-XXX-XX-XX test@gmail.com
+            """;
+
+    public static final String REPLYTOCONTACT = "Контактные данные успешно сохранены!\n" +
+            "В ближайшее время с вами свяжутся наши специалисты.";
+
+    public static final String NOTFOUNDTEXT = """
+            Я не разобрал ваше сообщение, попробуйте еще раз или\s
+            Выберите интересующую вас кнопку меню \uD83D\uDC47\s
+            Или воспользуйтесь кнопкой вызова волонтера, он вам поможет \uD83D\uDE09""";
+
+
 }
