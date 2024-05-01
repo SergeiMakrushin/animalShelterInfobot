@@ -201,7 +201,7 @@ public class BotServiceImpl implements BotService {
             case BTN_HANDLERS_TIPS -> adviceDogHandlers(chatId);
             case BTN_REFUSE_REASONS -> reasonsForRefusal(chatId);
             case CMD_START -> sendStartMenu(chatId, name);
-            default -> checkingTextForContacts(chatId, text, name, surname);
+            default -> checkingTextForContacts(chatId, text, name, surname, userName);
         };
     }
 
@@ -216,7 +216,7 @@ public class BotServiceImpl implements BotService {
      * @param surname фамилия отправителя
      * @return отправка ответа
      */
-    public SendMessage checkingTextForContacts(long chatId, String text, String name, String surname) {
+    public SendMessage checkingTextForContacts(long chatId, String text, String name, String surname, String userName) {
         log.info("метод обработки и сохранения в бд запущен");
         Matcher phoneMatcher = PHONE_NUMBER_PATTERN.matcher(text);
         Matcher emailMatcher = EMAIL_PATTERN.matcher(text);
@@ -227,7 +227,9 @@ public class BotServiceImpl implements BotService {
                      /*ToDo- после создания метода "сохранение в БД всех пришедших пользователей" - изменить userRepository.save
                         на update, что бы обновлялись данные пользователя*/
             userRepository.save(new User(null, chatId, name, surname, null, phoneNumber, email, false, null));
-            log.info("Данные сохранены");
+            getContactVolunteer(chatId, userName);
+            log.info("Данные сохранены, и отправлены волонтеру");
+
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
             sendMessage.setText(ShelterInformationDirectory.REPLYTOCONTACT);
@@ -343,7 +345,8 @@ public class BotServiceImpl implements BotService {
 
         SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
         messageVolunteer.setChatId(randomVolunteer);
-        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName + " телеграмм-бота просит написать ему");
+        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
+                + " телеграмм-бота хочет связаться с вами или оставил контактные данные и ждет звонка!");
         listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
 
         SendMessage getContactVolunteer = new SendMessage();
