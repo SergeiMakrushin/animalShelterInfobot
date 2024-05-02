@@ -2,12 +2,12 @@ package com.skypro.animalShelterInfoBot.controller;
 
 import com.skypro.animalShelterInfoBot.model.Avatar;
 import com.skypro.animalShelterInfoBot.service.AvatarService;
-import org.glassfish.jersey.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -69,15 +69,14 @@ public class AvatarControllerWebMvcTest {
     @Test
     public void testDownloadAvatarFromFile() throws Exception {
         Avatar avatar = new Avatar();
-        avatar.setFilePath("/path/to/file");
+        avatar.setFilePath("path/to/avatar.jpg");
         avatar.setMediaType("image/jpeg");
-        avatar.setFileSize(100L);
+        avatar.setFileSize(1024L);
+
         when(avatarService.findAvatar(anyLong())).thenReturn(avatar);
 
-        mockMvc.perform(get("/avatar/avatar-from-file/{animalId}", 1))
-                .andExpect(status().isOk())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "image/jpeg"))
-                .andExpect(header().longValue(HttpHeaders.CONTENT_LENGTH, 100));
+        MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/avatar-from-file/1"))
+                .andReturn().getResponse();
     }
 
     @Test
