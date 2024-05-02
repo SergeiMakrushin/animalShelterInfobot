@@ -70,6 +70,8 @@ public class BotServiceImpl implements BotService {
     static final String CMD_LOCATION = "/location";
     static final String CMD_DOGS = "/dogs";
     static final String CMD_CATS = "/cats";
+    static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\d{3}-\\d{3}-\\d{2}-\\d{2}");
+    static final Pattern EMAIL_PATTERN = Pattern.compile("([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4})");
 
     @Autowired
     UserServiceImpl userServiceImpl;
@@ -145,13 +147,15 @@ public class BotServiceImpl implements BotService {
             long chatId = callbackQuery.getMessage().getChatId();
             String name = callbackQuery.getFrom().getFirstName();
             String userName = callbackQuery.getFrom().getUserName();
-            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName);
+            String surname = callbackQuery.getFrom().getLastName();
+            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname);
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             String msgText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             String name = update.getMessage().getChat().getFirstName();
             String userName = update.getMessage().getChat().getUserName();
-            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName);
+            String surname = update.getMessage().getChat().getLastName();
+            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname);
         }
         return textToSend;
     }
@@ -165,7 +169,7 @@ public class BotServiceImpl implements BotService {
      * @param name   имя пользователя
      * @return сообщение для пользователя
      */
-    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName) {
+    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName, String surname) {
         log.info("Нажата клавиша \"" + text + "\"");
 
         return switch (text) {
@@ -197,9 +201,41 @@ public class BotServiceImpl implements BotService {
             case BTN_HANDLERS_TIPS -> adviceDogHandlers(chatId);
             case BTN_REFUSE_REASONS -> reasonsForRefusal(chatId);
             case CMD_START -> sendStartMenu(chatId, name);
-            default -> settingSendMessage(chatId, "Выберите интересующую вас кнопку меню \uD83D\uDC47 \n" +
-                    "Или воспользуйтесь кнопкой вызова волонтера, он вам поможет \uD83D\uDE09");
+            default -> checkingTextForContacts(chatId, text, name, surname, userName);
         };
+    }
+
+    /**
+     * Метод обрабатывает незнакомое сообщение
+     * если сообщение соответствует номеру телефона и емайл адресу
+     * то сохраняет пользователя в базу данных
+     *
+     * @param chatId идентификатор чата
+     * @param text текст сообщения
+     * @param name имя отправителя
+     * @param surname фамилия отправителя
+     * @return отправка ответа
+     */
+    public SendMessage checkingTextForContacts(long chatId, String text, String name, String surname, String userName) {
+        log.info("метод обработки и сохранения в бд запущен");
+        Matcher phoneMatcher = PHONE_NUMBER_PATTERN.matcher(text);
+        Matcher emailMatcher = EMAIL_PATTERN.matcher(text);
+
+        if (phoneMatcher.find() && emailMatcher.find()) {
+            String phoneNumber = phoneMatcher.group();
+            String email = emailMatcher.group(1);
+                     /*ToDo- после создания метода "сохранение в БД всех пришедших пользователей" - изменить userRepository.save
+                        на update, что бы обновлялись данные пользователя*/
+            userRepository.save(new User(null, chatId, name, surname, null, phoneNumber, email, false, null));
+            getContactVolunteer(chatId, userName);
+            log.info("Данные сохранены, и отправлены волонтеру");
+
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.setChatId(chatId);
+            sendMessage.setText(ShelterInformationDirectory.REPLYTOCONTACT);
+            return sendMessage;
+        }
+        return settingSendMessage(chatId, ShelterInformationDirectory.NOTFOUNDTEXT);
     }
 
     public SendMessage reasonsForRefusal(long chatId) {
@@ -272,7 +308,6 @@ public class BotServiceImpl implements BotService {
         return getBreedDogAndColor;
     }
 
-    ///////////////
     public SendMessage getColorDogAndCat(long chatId) {
         SendMessage getColorDogAndCat = new SendMessage();
         getColorDogAndCat.setChatId(chatId);
@@ -310,7 +345,8 @@ public class BotServiceImpl implements BotService {
 
         SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
         messageVolunteer.setChatId(randomVolunteer);
-        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName + " телеграмм-бота просит написать ему");
+        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
+                + " телеграмм-бота хочет связаться с вами или оставил контактные данные и ждет звонка!");
         listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
 
         SendMessage getContactVolunteer = new SendMessage();
@@ -325,24 +361,11 @@ public class BotServiceImpl implements BotService {
     }
 
     public SendMessage leaveContact(long chatId, String text) {
-        /*log.info("метод получения и обработки сообщения");
+        log.info("метод получения и обработки сообщения");
         SendMessage leaveContact = new SendMessage();
         leaveContact.setChatId(chatId);
-        leaveContact.setText("Пожалуйста, оставьте ваш контактную информацию, чтобы мы могли связаться с вами.");
-        listener.sendMessage(leaveContact);
-        SendMessage saveContactMail = new SendMessage();
-        saveContactMail.setChatId(chatId);
-        saveContactMail.setText(text);
-        Matcher matcher = CONTACT_PATTERN.matcher(text);
-        if (matcher.matches()) {
-            String phoneNumber = matcher.group(1);
-            String mailContact = matcher.group(3);
-            userRepository.save(new User(null, chatId, null, null,
-                    null, phoneNumber, mailContact, null, null));
-        } else {
-
-        }*/
-        return null;
+        leaveContact.setText(ShelterInformationDirectory.LEAVECONTACT);
+        return leaveContact;
     }
 
     public SendMessage shelterTB(long chatId) {
