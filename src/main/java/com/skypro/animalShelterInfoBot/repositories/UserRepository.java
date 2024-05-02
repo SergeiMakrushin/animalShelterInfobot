@@ -8,4 +8,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findUserById(long id);
     List<User> findAllUserByIsVolunteerTrue();
+
+    User findUserByChatId(long id);
 }

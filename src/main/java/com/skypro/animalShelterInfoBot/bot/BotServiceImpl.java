@@ -164,9 +164,11 @@ public class BotServiceImpl implements BotService {
      * Обработка входящих сообщений
      * Обработка нажатий кнопок меню
      *
-     * @param chatId Id чата
-     * @param text   текст, который пришел от пользователя
-     * @param name   имя пользователя
+     * @param chatId   Id чата
+     * @param text     текст, который пришел от пользователя
+     * @param name     имя пользователя
+     * @param userName Ник пользователя
+     * @param surname  Фамилия пользователя
      * @return сообщение для пользователя
      */
     private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName, String surname) {
@@ -185,7 +187,7 @@ public class BotServiceImpl implements BotService {
             case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId, text);
             case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId, userName);
             case BTN_MAIN_MENU ->
-                    sendStartMenu(chatId, name);         //Написать логику, если пользователь уже есть в БД - не приветствовать
+                    sendStartMenu(chatId, name, surname);         //Написать логику, если пользователь уже есть в БД - не приветствовать
             case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
             case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
             case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
@@ -200,7 +202,7 @@ public class BotServiceImpl implements BotService {
             case BTN_HANDLERS_CONTACT -> getContactDogHandlers(chatId);
             case BTN_HANDLERS_TIPS -> adviceDogHandlers(chatId);
             case BTN_REFUSE_REASONS -> reasonsForRefusal(chatId);
-            case CMD_START -> sendStartMenu(chatId, name);
+            case CMD_START -> sendStartMenu(chatId, name, surname);
             default -> checkingTextForContacts(chatId, text, name, surname, userName);
         };
     }
@@ -210,9 +212,9 @@ public class BotServiceImpl implements BotService {
      * если сообщение соответствует номеру телефона и емайл адресу
      * то сохраняет пользователя в базу данных
      *
-     * @param chatId идентификатор чата
-     * @param text текст сообщения
-     * @param name имя отправителя
+     * @param chatId  идентификатор чата
+     * @param text    текст сообщения
+     * @param name    имя отправителя
      * @param surname фамилия отправителя
      * @return отправка ответа
      */
@@ -410,12 +412,14 @@ public class BotServiceImpl implements BotService {
      * @param name   имя пользователя
      * @return сообщение для пользователя
      */
-    public SendMessage sendStartMenu(long chatId, String name) {
+    public SendMessage sendStartMenu(long chatId, String name, String surname) {
         log.info("Идет инициализация стартового меню... ");
+        registerUserAndWelcome(chatId, name, surname);
 
         SendMessage msg = new SendMessage();
         msg.setChatId(chatId);
-        msg.setText("Привет " + name + "! Добро пожаловать в приют пушистых друзей! \n" + "Я помогу вам найти верного друга!\n\n" + "Выберите интересующую вас кнопку меню \uD83D\uDC47");
+        msg.setText("Вы в главном меню!\n" +
+                "Выберите интересующую вас кнопку \uD83D\uDC47");
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
@@ -427,6 +431,34 @@ public class BotServiceImpl implements BotService {
         msg.setReplyMarkup(inlineKeyboardMarkup);
 
         return msg;
+    }
+
+    /**
+     * Проверяем наличие пользователя в БД
+     * Если нет, сохраняем и приветствуем
+     * Если да, то метод ничего не возвращает
+     *
+     * @param chatId идентификатор чата
+     * @param name имя пользователя
+     * @param surname фамилия пользователя
+     * @return отправляем сообщение или не отправляем
+     */
+    public SendMessage registerUserAndWelcome(long chatId, String name, String surname) {
+        log.info("Проверяется наличие пользователя в БД");
+
+        if (userRepository.findUserByChatId(chatId) == null) {
+            log.info("Пользователя нет, сохраняем его");
+            userRepository.save(new User(null, chatId, name, surname, null, null, null, false, null));
+            SendMessage msg = new SendMessage();
+            msg.setChatId(chatId);
+            msg.setText("Привет " + name + "! Добро пожаловать в приют пушистых друзей! \n"
+                    + "Я помогу вам найти верного друга!");
+            listener.sendMessage(msg);
+            return msg;
+        } else {
+            log.info("Пользователь уже есть, ничего не возвращается");
+            return null;
+        }
     }
 
     /**

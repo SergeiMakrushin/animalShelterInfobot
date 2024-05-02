@@ -10,6 +10,10 @@ public interface BotService {
 
     SendMessage settingSendMessage(long chatId, String text);
 
+    SendMessage registerUserAndWelcome(long chatId, String name, String surname);
+
+    SendMessage checkingTextForContacts(long chatId, String text, String name, String surname, String userName);
+
     SendMessage inputMsg(Update update);
 
     SendMessage reasonsForRefusal(long chatId);
@@ -54,7 +58,7 @@ public interface BotService {
 
     SendMessage infoShelter(long chatId);
 
-    SendMessage sendStartMenu(long chatId, String name);
+    SendMessage sendStartMenu(long chatId, String name, String surname);
 
     SendMessage administrationMenu(long chatId);
 
