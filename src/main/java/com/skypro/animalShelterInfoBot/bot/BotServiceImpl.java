@@ -226,7 +226,8 @@ public class BotServiceImpl implements BotService {
             String email = emailMatcher.group(1);
                      /*ToDo- после создания метода "сохранение в БД всех пришедших пользователей" - изменить userRepository.save
                         на update, что бы обновлялись данные пользователя*/
-            userRepository.save(new User(null, chatId, name, surname, null, phoneNumber, email, false, null));
+            userServiceImpl.updateUser(chatId,new User(null, chatId, name, surname, null, phoneNumber, email, false, null));
+
             getContactVolunteer(chatId, userName);
             log.info("Данные сохранены, и отправлены волонтеру");
 

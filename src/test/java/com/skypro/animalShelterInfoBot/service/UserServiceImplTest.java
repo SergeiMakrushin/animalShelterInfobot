@@ -34,16 +34,18 @@ class UserServiceImplTest {
     void testUpdateUser() {
         User existingUser = new User();
         existingUser.setId(1L);
+        existingUser.setChatId(11111111L);
         existingUser.setName("John");
 
         User updatedUser = new User();
         updatedUser.setId(1L);
+        updatedUser.setChatId(11111111L);
         updatedUser.setName("Doe");
 
-        Mockito.when(userRepository.findUserById(1L)).thenReturn(existingUser);
+        Mockito.when(userRepository.findUserByChatId(11111111L)).thenReturn(existingUser);
         Mockito.when(userRepository.save(existingUser)).thenReturn(updatedUser);
 
-        User result = userService.updateUser(1L, updatedUser);
+        User result = userService.updateUser(11111111L, updatedUser);
 
         assertEquals(updatedUser.getName(), result.getName());
     }

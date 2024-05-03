@@ -25,10 +25,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(long id, User user) {
-        User updatedUser = userRepository.findUserById(id);
+    public User updateUser(long chatid, User user) {
+        User updatedUser = userRepository.findUserByChatId(chatid);
         if (updatedUser == null) {
-            throw new IllegalArgumentException("User not found with id: " + id);
+            throw new IllegalArgumentException("User not found with id: " + chatid);
         }
         updatedUser.setName(user.getName());
         updatedUser.setSurname(user.getSurname());
