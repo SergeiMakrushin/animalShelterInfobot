@@ -24,10 +24,6 @@ import java.util.regex.Pattern;
 public class TelegramBot extends TelegramLongPollingBot implements BotService.Listener {
     private final InfoBotConfiguration config;
     private final BotService botService;
-    @Autowired
-    UserRepository userRepository;
-
-
 
     public TelegramBot(InfoBotConfiguration config, BotService botService) {
         this.config = config;
@@ -55,9 +51,6 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
         }
     }
 
-    private static final Pattern CONTACT_PATTERN = Pattern.compile("(\"^(\\\\+7)([0-9]{10})$\")");
-
-
     @Override
     public String getBotUsername() {
         return config.getBotName();
@@ -75,23 +68,11 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
     @Override
     public void onUpdateReceived(Update update) {
         log.info("метод получения и обработки сообщения");
-        Long chatId = update.getMessage().getChatId();
-        String text = update.getMessage().getText();
-        Matcher matcher = CONTACT_PATTERN.matcher(text);
         try {
             if (update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()) {
                 SendMessage sendMessage = botService.inputMsg(update);
                 sendMessage(sendMessage);
-            } else if (matcher.matches()) {
-                String phoneNumber = matcher.group(1);
-                userRepository.save(new User(null, chatId, null, null,
-                        null, phoneNumber, null, null, null));
-                log.info("положили");
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setText("Контакты сохранены");
-                execute(sendMessage);
             }
-
         } catch (Exception e) {
             log.error("Ошибка в методе onUpdateReceived: " + e.getMessage());
         }
