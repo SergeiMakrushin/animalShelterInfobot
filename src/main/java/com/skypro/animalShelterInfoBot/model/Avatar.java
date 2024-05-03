@@ -1,5 +1,6 @@
 package com.skypro.animalShelterInfoBot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -28,9 +29,7 @@ public class Avatar {
     private byte[] data;
 
      @OneToOne
+     @JsonIgnore
      private Animal animal;
 
-    public Avatar(long l, byte[] bytes, String contentType) {
-
-    }
 }

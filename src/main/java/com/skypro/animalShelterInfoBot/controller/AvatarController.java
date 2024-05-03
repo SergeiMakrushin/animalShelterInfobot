@@ -32,23 +32,24 @@ import java.nio.file.Path;
 @RequestMapping(path = "/avatar")
 public class AvatarController {
     private final AvatarService avatarService;
-@Autowired
+
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
-    @Operation(summary = "Загрузка аватара",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Загрузить аватар",
+//    @Operation(summary = "Загрузка аватара",
+//            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+//                    description = "Загрузить аватар",
+//
+//                    content = @Content(
+//                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+//                            schema = @Schema(implementation = Avatar.class)
+//                    )
+//            )
+//    )
 
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Avatar.class)
-                    )
-            )
-    )
+
     @PostMapping(value = "/{animalId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar
-            (@PathVariable long animalId, @RequestParam MultipartFile avatar) throws IOException {
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long animalId, @RequestParam MultipartFile avatar) throws IOException {
         avatarService.uploadAvatar(animalId, avatar);
         return ResponseEntity.ok().build();
     }

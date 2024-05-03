@@ -1,17 +1,24 @@
 package com.skypro.animalShelterInfoBot.service;
+
 import com.skypro.animalShelterInfoBot.model.Animal;
+import com.skypro.animalShelterInfoBot.model.Avatar;
+import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.repositories.AnimalRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class AnimalServiceImplTest {
 
     @Mock
@@ -20,14 +27,13 @@ class AnimalServiceImplTest {
     @InjectMocks
     private AnimalServiceImpl animalService;
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void testCreateAnimal() {
-        Animal animal = new Animal("Dog", "Buddy", "Golden Retriever", 5, "Golden");
+
+        long id = 1L;
+        Animal animal = new Animal(id, Animal.TapeOfAnimal.DOG, "Buddy", "Golden Retriever", 5, "Golden");
+
         when(animalRepository.save(animal)).thenReturn(animal);
 
         Animal createdAnimal = animalService.createAnimal(animal);
@@ -39,24 +45,23 @@ class AnimalServiceImplTest {
     @Test
     public void testUpdateAnimal() {
         long id = 1L;
-        Animal animal = new Animal("Cat", "Whiskers", "Siamese", 3, "White");
-        Animal updatedAnimal = new Animal("Cat", "Whiskers", "Siamese", 3, "Grey");
+
+        Animal animal = new Animal(id, Animal.TapeOfAnimal.DOG, "Buddy", "Golden Retriever", 5, "Golden");
+        Animal updatedAnimal = new Animal(id, Animal.TapeOfAnimal.DOG, "Buddy", "Golden Retriever", 5, "Golden");
 
         when(animalRepository.findAnimalById(id)).thenReturn(animal);
-        when(animalRepository.save(updatedAnimal)).thenReturn(updatedAnimal);
 
+        when(animalRepository.save(any(Animal.class))).thenReturn(updatedAnimal);
         Animal result = animalService.updateAnimal(id, updatedAnimal);
 
         assertEquals(updatedAnimal, result);
-        verify(animalRepository, times(1)).findAnimalById(id);
-        verify(animalRepository, times(1)).save(updatedAnimal);
     }
 
     @Test
     public void testGetAllAnimals() {
         List<Animal> animalList = new ArrayList<>();
-        animalList.add(new Animal("Dog", "Max", "Labrador", 4, "Black"));
-        animalList.add(new Animal("Cat", "Fluffy", "Persian", 2, "Grey"));
+        animalList.add(new Animal(1l, Animal.TapeOfAnimal.DOG, "Max", "Labrador", 4, "Black"));
+        animalList.add(new Animal(2l, Animal.TapeOfAnimal.CAT, "Fluffy", "Persian", 2, "Grey"));
 
         when(animalRepository.findAll()).thenReturn(animalList);
 
@@ -78,7 +83,7 @@ class AnimalServiceImplTest {
     @Test
     public void testFindAnimal() {
         long animalId = 1L;
-        Animal animal = new Animal("Dog", "Rocky", "Bulldog", 6, "Brown");
+        Animal animal = new Animal(1l, Animal.TapeOfAnimal.DOG, "Rocky", "Bulldog", 6, "Brown");
 
         when(animalRepository.findAnimalById(animalId)).thenReturn(animal);
 

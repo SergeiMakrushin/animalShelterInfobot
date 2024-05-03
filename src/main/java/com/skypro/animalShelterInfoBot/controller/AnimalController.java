@@ -15,7 +15,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Collection;
 
 @Tag(name = "Контроллер животных",
@@ -44,6 +46,8 @@ public class AnimalController {
                     )
             )
     )
+
+
     @PostMapping("/create")
     public ResponseEntity <Animal> createAnimal(@RequestBody Animal animal) {
         return ResponseEntity.ok(animalServiceImpl.createAnimal(animal));
