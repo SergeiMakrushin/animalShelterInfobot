@@ -63,9 +63,9 @@ public class UserController {
                     )
             )
     )
-    @PutMapping("/update/{id}")
-    public ResponseEntity<User> editStudent(@PathVariable long id, @RequestBody User user) {
-        User updatedUser = userServiceImpl.updateUser(id, user);
+    @PutMapping("/update/{chatId}")
+    public ResponseEntity<User> editStudent(@PathVariable long chatId, @RequestBody User user) {
+        User updatedUser = userServiceImpl.updateUser(chatId, user);
         if (updatedUser == null) {
             return ResponseEntity.notFound().build();
         }
