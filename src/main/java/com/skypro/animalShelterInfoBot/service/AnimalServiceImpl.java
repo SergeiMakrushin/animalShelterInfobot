@@ -13,7 +13,7 @@ public class AnimalServiceImpl implements AnimalService {
     private final AnimalRepository animalRepository;
     private Collection<Animal> animals;
 
-    @Autowired
+
     public AnimalServiceImpl(AnimalRepository animalRepository) {
         this.animalRepository = animalRepository;
     }
