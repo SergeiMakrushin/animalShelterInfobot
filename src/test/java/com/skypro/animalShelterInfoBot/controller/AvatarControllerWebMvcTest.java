@@ -53,6 +53,7 @@ public class AvatarControllerWebMvcTest {
                 .andExpect(content().bytes(preview.getData()));
     }
 
+
     @Test
     public void testDownloadAvatar() throws Exception {
         Avatar avatar = new Avatar();
