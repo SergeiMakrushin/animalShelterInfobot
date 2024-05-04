@@ -1,20 +1,20 @@
 package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
-import com.skypro.animalShelterInfoBot.model.Animal;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
-import com.skypro.animalShelterInfoBot.service.AnimalService;
 import com.skypro.animalShelterInfoBot.service.UserService;
 import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 @ExtendWith(MockitoExtension.class)
 public class BotServiceImplTest {
@@ -25,6 +25,35 @@ public class BotServiceImplTest {
 
     private final long chatIdExample = 1234567890;
 
+    @Test
+    void testSettingSendMessage() {
+        long chatId = 123456;
+        String text = "Test message";
+
+        SendMessage expectedMessage = new SendMessage();
+        expectedMessage.setParseMode("HTML");
+        expectedMessage.setChatId(chatId);
+        expectedMessage.setText(text);
+
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup();
+        keyboardMarkup.setResizeKeyboard(true);
+        keyboardMarkup.setOneTimeKeyboard(false);
+
+        List<KeyboardRow> keyboardRows = new ArrayList<>();
+        KeyboardRow row = new KeyboardRow();
+        row.add("Информация о приюте");
+        row.add("Оставить контакты");
+        keyboardRows.add(row);
+
+        keyboardMarkup.setKeyboard(keyboardRows);
+        expectedMessage.setReplyMarkup(keyboardMarkup);
+
+        SendMessage resultMessage = botService.settingSendMessage(chatId, text);
+
+        assertEquals(expectedMessage.getParseMode(), resultMessage.getParseMode());
+        assertEquals(expectedMessage.getChatId(), resultMessage.getChatId());
+        assertEquals(expectedMessage.getText(), resultMessage.getText());
+    }
     @Test
     public void reasonsForRefusal() {
         SendMessage reasonsForRefusal = botService.reasonsForRefusal(chatIdExample);
