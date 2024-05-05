@@ -556,5 +556,17 @@ public class BotServiceImpl implements BotService {
         btn.setCallbackData(text);                                //Отклик на нажатие кнопки
         return btn;
     }
+
+    public void setUserServiceImpl(UserServiceImpl mock) {
+
+    }
+
+    public void setAnimalServiceImpl(Object mock) {
+
+    }
+
+    public void setUserRepository(UserRepository mock) {
+
+    }
 }
 

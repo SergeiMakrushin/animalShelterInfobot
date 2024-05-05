@@ -2,6 +2,7 @@ package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
+import com.skypro.animalShelterInfoBot.service.AnimalServiceImpl;
 import com.skypro.animalShelterInfoBot.service.UserService;
 import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -9,12 +10,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class BotServiceImplTest {
@@ -54,6 +58,43 @@ public class BotServiceImplTest {
         assertEquals(expectedMessage.getChatId(), resultMessage.getChatId());
         assertEquals(expectedMessage.getText(), resultMessage.getText());
     }
+    @Test
+    void testInputMsg() {
+        Update update = new Update();
+        SendMessage sendMessage = botService.inputMsg(update);
+        assertEquals(new SendMessage(), sendMessage);
+    }
+    @Test
+    public void testProcessingTextAndCallbackQuery_AdministrationMenu() {
+        long chatId = 123456;
+        String text = "BTN_ADMINISTRATION";
+        String name = "John";
+        String userName = "john_doe";
+        String surname = "Doe";
+
+        SendMessage result = botService.checkingTextForContacts(chatId, text, name, userName, surname);
+
+        assertNotNull(result);
+    }
+    @Test
+    public void testCheckingTextForContacts() {
+        BotServiceImpl botService = new BotServiceImpl();
+        botService.setUserServiceImpl(mock(UserServiceImpl.class));
+        botService.setAnimalServiceImpl(mock(String.valueOf(AnimalServiceImpl.class)));
+        botService.setUserRepository(mock(UserRepository.class));
+        botService.setListener(mock(BotService.Listener.class));
+
+        long chatId = 123456789;
+        String text = "Contact info: +1234567890, email@example.com";
+        String name = "John";
+        String surname = "Doe";
+        String userName = "John Doe";
+
+        SendMessage result = botService.checkingTextForContacts(chatId, text, name, surname, userName);
+
+        assertNotNull(result);
+    }
+
     @Test
     public void reasonsForRefusal() {
         SendMessage reasonsForRefusal = botService.reasonsForRefusal(chatIdExample);
