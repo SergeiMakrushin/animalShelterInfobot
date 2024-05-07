@@ -3,6 +3,7 @@ package com.skypro.animalShelterInfoBot.bot;
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
 import com.skypro.animalShelterInfoBot.model.Animal;
 import com.skypro.animalShelterInfoBot.model.User;
+import com.skypro.animalShelterInfoBot.repositories.AnimalRepository;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
 import com.skypro.animalShelterInfoBot.service.AnimalServiceImpl;
 import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -72,6 +74,9 @@ public class BotServiceImpl implements BotService {
     static final String CMD_CATS = "/cats";
     static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\d{3}-\\d{3}-\\d{2}-\\d{2}");
     static final Pattern EMAIL_PATTERN = Pattern.compile("([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4})");
+    static final Pattern COLOR_PATTERN = Pattern.compile("\\w*белый|серый|черный|рыжий|оранжевый|зеленый|красный|желтый|синий\\w*");
+    private boolean isDog;
+
 
     @Autowired
     UserServiceImpl userServiceImpl;
@@ -81,6 +86,9 @@ public class BotServiceImpl implements BotService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    AnimalRepository animalRepository;
 
     /**
      * Слушатель для отправки сообщений
@@ -174,10 +182,16 @@ public class BotServiceImpl implements BotService {
     private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName, String surname) {
         log.info("Нажата клавиша \"" + text + "\"");
 
+        if (BTN_DOGS.equals(text) || CMD_DOGS.equals(text)) {
+            isDog = true;
+            return dogsAndCatMenu(chatId);
+        } else if (BTN_CATS.equals(text) || CMD_CATS.equals(text)) {
+            isDog = false;
+            return dogsAndCatMenu(chatId);
+        }
+
         return switch (text) {
             case BTN_ADMINISTRATION -> administrationMenu(chatId);
-            case BTN_DOGS, BTN_CATS, CMD_DOGS, CMD_CATS ->
-                    dogsAndCatMenu(chatId);            //Настроить логику выбора (Кошки и собаки)
             case BTN_INFO_SHELTER, CMD_INFO_SHELTER -> infoShelter(chatId);
             case BTN_LOCATION, CMD_LOCATION -> InfoShelterTimeAndAddress(chatId);
             case BTN_SEND_REPORT, CMD_SEND_REPORT -> sendReport(chatId);
@@ -186,8 +200,6 @@ public class BotServiceImpl implements BotService {
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
             case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId, text);
             case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId, userName);
-            case BTN_MAIN_MENU ->
-                    sendStartMenu(chatId, name, surname);         //Написать логику, если пользователь уже есть в БД - не приветствовать
             case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
             case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
             case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
@@ -202,7 +214,7 @@ public class BotServiceImpl implements BotService {
             case BTN_HANDLERS_CONTACT -> getContactDogHandlers(chatId);
             case BTN_HANDLERS_TIPS -> adviceDogHandlers(chatId);
             case BTN_REFUSE_REASONS -> reasonsForRefusal(chatId);
-            case CMD_START -> sendStartMenu(chatId, name, surname);
+            case BTN_MAIN_MENU, CMD_START -> sendStartMenu(chatId, name, surname);
             default -> checkingTextForContacts(chatId, text, name, surname, userName);
         };
     }
@@ -211,12 +223,14 @@ public class BotServiceImpl implements BotService {
      * Метод обрабатывает незнакомое сообщение
      * если сообщение соответствует номеру телефона и емайл адресу
      * то сохраняет пользователя в базу данных
+     * если не соответствует, используется внешний метод обработки
+     * который ищет соответствие с цветом
      *
      * @param chatId  идентификатор чата
      * @param text    текст сообщения
      * @param name    имя отправителя
      * @param surname фамилия отправителя
-     * @return отправка ответа
+     * @return переход обработки на другой метод
      */
     public SendMessage checkingTextForContacts(long chatId, String text, String name, String surname, String userName) {
         log.info("метод обработки и сохранения в бд запущен");
@@ -226,9 +240,7 @@ public class BotServiceImpl implements BotService {
         if (phoneMatcher.find() && emailMatcher.find()) {
             String phoneNumber = phoneMatcher.group();
             String email = emailMatcher.group(1);
-                     /*ToDo- после создания метода "сохранение в БД всех пришедших пользователей" - изменить userRepository.save
-                        на update, что бы обновлялись данные пользователя*/
-            userServiceImpl.updateUser(chatId,new User(null, chatId, name, surname, null, phoneNumber, email, false, null));
+            userServiceImpl.updateUser(chatId, new User(null, chatId, name, surname, null, phoneNumber, email, false, null));
 
             getContactVolunteer(chatId, userName);
             log.info("Данные сохранены, и отправлены волонтеру");
@@ -238,6 +250,49 @@ public class BotServiceImpl implements BotService {
             sendMessage.setText(ShelterInformationDirectory.REPLYTOCONTACT);
             return sendMessage;
         }
+        log.info("В тексте не найдено совподения с номером телефона и емайл почтой, переход на внешний обработчик");
+        return checkingTextForColor(chatId, text);
+    }
+
+    /**
+     * метод обрабатывает незнакомое сообщение от пользователя
+     * ищет соответствие с цветом животного и отвечает
+     * информацией о животных с введенным цветом
+     * если сообщение не соответствует паттерну цветов
+     * программа отправляет NOTFOUNDTEXT пользователю
+     *
+     * @param chatId идентификатор чата
+     * @param text текст сообщения
+     * @return отправка ответа
+     */
+    public SendMessage checkingTextForColor(long chatId, String text) {
+        log.info("Метод обработки и поиска животного по цвету запущен");
+        Matcher colorPets = COLOR_PATTERN.matcher(text);
+        SendMessage getColorDogAndCat = new SendMessage();
+        getColorDogAndCat.setChatId(chatId);
+
+        if (isDog && colorPets.find()) {
+            String color = colorPets.group();
+            List<Animal> dogByColor = animalServiceImpl.findDogByColor(color);
+            if (dogByColor.isEmpty()) {
+                getColorDogAndCat.setText("Собаки с таким цветом не найдены!");
+                return getColorDogAndCat;
+            }
+            getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: " + dogByColor);
+            log.info("Все собаки найдены");
+            return getColorDogAndCat;
+        } else if (!isDog && colorPets.find()) {
+            String color = colorPets.group();
+            List<Animal> catByColor = animalServiceImpl.findCatByColor(color);
+            if (catByColor.isEmpty()) {
+                getColorDogAndCat.setText("Кошек с таким цветом не найдено!");
+                return getColorDogAndCat;
+            }
+            getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: " + catByColor);
+            log.info("Все кошки найдены");
+            return getColorDogAndCat;
+        } else
+            log.info("В тексте не найдено совпадения с цветом животного");
         return settingSendMessage(chatId, ShelterInformationDirectory.NOTFOUNDTEXT);
     }
 
@@ -314,7 +369,11 @@ public class BotServiceImpl implements BotService {
     public SendMessage getColorDogAndCat(long chatId) {
         SendMessage getColorDogAndCat = new SendMessage();
         getColorDogAndCat.setChatId(chatId);
-        getColorDogAndCat.setText("Дайте нам знать предпочтения по цвету для собаки или кота, которого вы хотели бы усыновить.");
+        if (isDog) {
+            getColorDogAndCat.setText("Напишите, какой цвет собаки вас интересует\uD83D\uDC36");
+        } else if (!isDog) {
+            getColorDogAndCat.setText("Напишите, какой цвет кошки вас интересует\uD83D\uDE3A");
+        }
         return getColorDogAndCat;
     }
 
@@ -333,11 +392,15 @@ public class BotServiceImpl implements BotService {
     }
 
     public SendMessage getAllDogAndCat(long chatId) {
-        List<Animal> animalList = animalServiceImpl.getAllAnimals();
         SendMessage getAllDogAndCat = new SendMessage();
         getAllDogAndCat.setChatId(chatId);
-        getAllDogAndCat.setText("У нас есть разнообразие собак и кошек," +
-                " доступных для усыновления: " + animalList);
+        if (isDog) {
+            List<Animal> dogs = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.DOG);
+            getAllDogAndCat.setText(dogs.toString());
+        } else {
+            List<Animal> cats = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.CAT);
+            getAllDogAndCat.setText(cats.toString());
+        }
         return getAllDogAndCat;
     }
 
@@ -439,12 +502,11 @@ public class BotServiceImpl implements BotService {
      * Если нет, сохраняем и приветствуем
      * Если да, то метод ничего не возвращает
      *
-     * @param chatId идентификатор чата
-     * @param name имя пользователя
+     * @param chatId  идентификатор чата
+     * @param name    имя пользователя
      * @param surname фамилия пользователя
-     * @return отправляем сообщение или не отправляем
      */
-    public SendMessage registerUserAndWelcome(long chatId, String name, String surname) {
+    public void registerUserAndWelcome(long chatId, String name, String surname) {
         log.info("Проверяется наличие пользователя в БД");
 
         if (userRepository.findUserByChatId(chatId) == null) {
@@ -455,10 +517,8 @@ public class BotServiceImpl implements BotService {
             msg.setText("Привет " + name + "! Добро пожаловать в приют пушистых друзей! \n"
                     + "Я помогу вам найти верного друга!");
             listener.sendMessage(msg);
-            return msg;
         } else {
             log.info("Пользователь уже есть, ничего не возвращается");
-            return null;
         }
     }
 

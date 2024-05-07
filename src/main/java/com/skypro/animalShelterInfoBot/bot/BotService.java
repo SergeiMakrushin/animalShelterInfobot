@@ -10,9 +10,11 @@ public interface BotService {
 
     SendMessage settingSendMessage(long chatId, String text);
 
-    SendMessage registerUserAndWelcome(long chatId, String name, String surname);
+    void registerUserAndWelcome(long chatId, String name, String surname);
 
     SendMessage checkingTextForContacts(long chatId, String text, String name, String surname, String userName);
+
+    SendMessage checkingTextForColor(long chatId, String text);
 
     SendMessage inputMsg(Update update);
 
