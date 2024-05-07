@@ -1,6 +1,7 @@
 package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
+import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
 import com.skypro.animalShelterInfoBot.service.AnimalServiceImpl;
 import com.skypro.animalShelterInfoBot.service.UserService;
@@ -341,6 +342,37 @@ public class BotServiceImplTest {
         String callbackData = botService.createButton(buttonText).getCallbackData();
 
         assertEquals(buttonText, callbackData);
+    }
+    @Test
+    public void testAdministrationMenu() {
+        long chatId = 123456789;
+
+        assertNotNull(botService.administrationMenu(chatId));
+    }
+    @Test
+    void testDogsAndCatMenu() {
+        long chatId = 12345;
+        SendMessage expectedMessage = new SendMessage();
+        expectedMessage.setChatId(chatId);
+        expectedMessage.setText("Вы вошли в меню поиска друга, давайте вместе подберем.");
+
+        SendMessage actualMessage = botService.dogsAndCatMenu(chatId);
+
+        assertEquals(expectedMessage.getChatId(), actualMessage.getChatId());
+        assertEquals(expectedMessage.getText(), actualMessage.getText());
+    }
+
+    @Test
+    void testInstructionAdoptionMenu() {
+        long chatId = 54321;
+        SendMessage expectedMessage = new SendMessage();
+        expectedMessage.setChatId(chatId);
+        expectedMessage.setText("Здесь находится вся информация о усыновлении животных. ");
+
+        SendMessage actualMessage = botService.instructionAdoptionMenu(chatId);
+
+        assertEquals(expectedMessage.getChatId(), actualMessage.getChatId());
+        assertEquals(expectedMessage.getText(), actualMessage.getText());
     }
 }
 
