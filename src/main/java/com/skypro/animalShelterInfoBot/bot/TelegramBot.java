@@ -1,10 +1,7 @@
 package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.configuration.InfoBotConfiguration;
-import com.skypro.animalShelterInfoBot.model.User;
-import com.skypro.animalShelterInfoBot.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -16,8 +13,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Slf4j
 @Component
