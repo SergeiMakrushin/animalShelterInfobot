@@ -15,10 +15,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BotServiceImplTest {
@@ -28,6 +27,7 @@ public class BotServiceImplTest {
     BotService botService = new BotServiceImpl();
 
     private final long chatIdExample = 1234567890;
+    private BotService.Listener listener;
 
     @Test
     void testSettingSendMessage() {
@@ -332,6 +332,15 @@ public class BotServiceImplTest {
         String expectedText = ShelterInformationDirectory.SHELTERINFO;
 
         assertEquals(expectedText, actualText);
+    }
+
+    @Test
+    public void testCreateButton() {
+        String buttonText = "Test Button";
+        botService.setListener(listener);
+        String callbackData = botService.createButton(buttonText).getCallbackData();
+
+        assertEquals(buttonText, callbackData);
     }
 }
 
