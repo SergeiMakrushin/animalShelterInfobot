@@ -2,11 +2,13 @@ package com.skypro.animalShelterInfoBot.service;
 
 import com.skypro.animalShelterInfoBot.model.Animal;
 import com.skypro.animalShelterInfoBot.repositories.AnimalRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimalServiceImpl implements AnimalService {
@@ -67,5 +69,21 @@ public class AnimalServiceImpl implements AnimalService {
 
     public Animal findAnimal(Long animalId) {
         return animalRepository.findAnimalById(animalId);
+    }
+
+    public List<Animal> findDogByColor(String color) {
+        List<Animal> dogList = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.DOG);
+        return dogList.stream()
+                .filter(animal -> animal.getColor()
+                .equalsIgnoreCase(color))
+                .collect(Collectors.toList());
+    }
+
+    public List<Animal> findCatByColor(String color) {
+        List<Animal> catList = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.CAT);
+        return catList.stream()
+                .filter(animal -> animal.getColor()
+                .equalsIgnoreCase(color))
+                .collect(Collectors.toList());
     }
 }
