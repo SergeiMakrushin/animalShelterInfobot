@@ -1,7 +1,6 @@
 package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
-import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
 import com.skypro.animalShelterInfoBot.service.AnimalServiceImpl;
 import com.skypro.animalShelterInfoBot.service.UserService;

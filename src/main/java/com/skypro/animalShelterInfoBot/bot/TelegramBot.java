@@ -89,4 +89,7 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
         }
     }
 
+    public void info(String процессИнициализации) {
+
+    }
 }

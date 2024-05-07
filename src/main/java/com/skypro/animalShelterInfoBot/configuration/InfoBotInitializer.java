@@ -26,7 +26,7 @@ public class InfoBotInitializer {
      * @throws TelegramApiException
      */
     @EventListener({ContextRefreshedEvent.class})
-    public void init() throws TelegramApiException {
+    public void init(ContextRefreshedEvent event) throws TelegramApiException {
         logger.info("Процесс инициализации ");
         TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
         try {
