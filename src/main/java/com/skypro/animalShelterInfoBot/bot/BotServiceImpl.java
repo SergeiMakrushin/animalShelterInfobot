@@ -273,22 +273,22 @@ public class BotServiceImpl implements BotService {
 
         if (isDog && colorPets.find()) {
             String color = colorPets.group();
-            List<Animal> dogByColor = animalServiceImpl.findDogByColor(color);
+            String dogByColor = animalServiceImpl.findDogByColor(color);
             if (dogByColor.isEmpty()) {
                 getColorDogAndCat.setText("Собаки с таким цветом не найдены!");
                 return getColorDogAndCat;
             }
-            getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: " + dogByColor);
+            getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: \n\n" + dogByColor);
             log.info("Все собаки найдены");
             return getColorDogAndCat;
         } else if (!isDog && colorPets.find()) {
             String color = colorPets.group();
-            List<Animal> catByColor = animalServiceImpl.findCatByColor(color);
+            String catByColor = animalServiceImpl.findCatByColor(color);
             if (catByColor.isEmpty()) {
                 getColorDogAndCat.setText("Кошек с таким цветом не найдено!");
                 return getColorDogAndCat;
             }
-            getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: " + catByColor);
+            getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: \n\n" + catByColor);
             log.info("Все кошки найдены");
             return getColorDogAndCat;
         } else
@@ -396,10 +396,10 @@ public class BotServiceImpl implements BotService {
         getAllDogAndCat.setChatId(chatId);
         if (isDog) {
             List<Animal> dogs = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.DOG);
-            getAllDogAndCat.setText(dogs.toString());
+            getAllDogAndCat.setText(dogs.toString().replace("[", "").replace("]", "").replace(",", ""));
         } else {
             List<Animal> cats = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.CAT);
-            getAllDogAndCat.setText(cats.toString());
+            getAllDogAndCat.setText(cats.toString().replace("[", "").replace("]", "").replace(",", ""));
         }
         return getAllDogAndCat;
     }
