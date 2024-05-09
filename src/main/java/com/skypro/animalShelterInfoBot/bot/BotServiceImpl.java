@@ -194,17 +194,22 @@ public class BotServiceImpl implements BotService {
             case BTN_ADMINISTRATION -> administrationMenu(chatId);
             case BTN_INFO_SHELTER, CMD_INFO_SHELTER -> infoShelter(chatId);
             case BTN_LOCATION, CMD_LOCATION -> InfoShelterTimeAndAddress(chatId);
+// не сделан
             case BTN_SEND_REPORT, CMD_SEND_REPORT -> sendReport(chatId);
+            case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
+            case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
+            case BTN_FIND_BY_COLOR -> getColorDogAndCat(chatId);
+            case BTN_FIND_BY_BREED -> getBreedDogAndColor(chatId);
+
+
+
+
             case BTN_INFO_TAKE_ANIMAL, CMD_INFO_TAKE_ANIMAL -> instructionAdoptionMenu(chatId);
             case BTN_GET_PASS, CMD_GET_PASS -> registerPass(chatId);
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
             case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId, text);
             case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId, userName);
             case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
-            case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
-            case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
-            case BTN_FIND_BY_COLOR -> getColorDogAndCat(chatId);
-            case BTN_FIND_BY_BREED -> getBreedDogAndColor(chatId);
             case BTN_RULES_TO_MEETING -> meetingAnimals(chatId);
             case BTN_DOCUMENTS_LISTS -> adoptionDocuments(chatId);
             case BTN_TRANSPORT_RECOMMENDATION -> recommendationTransportAnimal(chatId);
