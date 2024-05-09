@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -75,6 +74,7 @@ public class BotServiceImpl implements BotService {
     static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\d{3}-\\d{3}-\\d{2}-\\d{2}");
     static final Pattern EMAIL_PATTERN = Pattern.compile("([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4})");
     static final Pattern COLOR_PATTERN = Pattern.compile("\\w*белый|серый|черный|рыжий|оранжевый|зеленый|красный|желтый|синий\\w*");
+    static final Pattern MIN_MAX_PATTERN = Pattern.compile("\\b(\\d+)\\b");
     private boolean isDog;
 
 
@@ -204,7 +204,7 @@ public class BotServiceImpl implements BotService {
             case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
             case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
             case BTN_FIND_BY_COLOR -> getColorDogAndCat(chatId);
-            case BTN_FIND_BY_BREED -> getBreedDogAndColor(chatId);
+            case BTN_FIND_BY_BREED -> getBreedDogAndCat(chatId);
             case BTN_RULES_TO_MEETING -> meetingAnimals(chatId);
             case BTN_DOCUMENTS_LISTS -> adoptionDocuments(chatId);
             case BTN_TRANSPORT_RECOMMENDATION -> recommendationTransportAnimal(chatId);
@@ -258,11 +258,11 @@ public class BotServiceImpl implements BotService {
      * метод обрабатывает незнакомое сообщение от пользователя
      * ищет соответствие с цветом животного и отвечает
      * информацией о животных с введенным цветом
-     * если сообщение не соответствует паттерну цветов
-     * программа отправляет NOTFOUNDTEXT пользователю
+     * если не соответствует, используется внешний метод обработки
+     * который ищет соответствие с возрастным диапозоном
      *
      * @param chatId идентификатор чата
-     * @param text текст сообщения
+     * @param text   текст сообщения
      * @return отправка ответа
      */
     public SendMessage checkingTextForColor(long chatId, String text) {
@@ -293,6 +293,58 @@ public class BotServiceImpl implements BotService {
             return getColorDogAndCat;
         } else
             log.info("В тексте не найдено совпадения с цветом животного");
+        return checkingTextForAgeBetween(chatId, text);
+    }
+
+    /**
+     * метод обрабатывает незнакомое сообщение от пользователя
+     * ищет соответствие с минимальными цифрами и максимальными
+     * в соответствии с полученными данными, отправляется список
+     * животных которые по возрасту входят в этот диапазон
+     * если сообщение не соответствует паттерну чисел
+     * программа отправляет NOTFOUNDTEXT пользователю
+     *
+     * @param chatId идентификатор чата
+     * @param text текст сообщения
+     * @return отправка ответа
+     */
+    public SendMessage checkingTextForAgeBetween(long chatId, String text) {
+        log.info("Метод обработки и поиска животного по возрасту запущен");
+        Matcher agePets = MIN_MAX_PATTERN.matcher(text);
+        int minAge = Integer.MAX_VALUE;
+        int maxAge = Integer.MIN_VALUE;
+        while (agePets.find()) {
+            int age = Integer.parseInt(agePets.group());
+            if (age < minAge) {
+                minAge = age;
+            }
+            if (age > maxAge) {
+                maxAge = age;
+            }
+        }
+        log.info("значение minAge = " + minAge + " Значение maxAge = " + maxAge);
+
+        SendMessage getAgeBetweenDogAndCat = new SendMessage();
+        getAgeBetweenDogAndCat.setChatId(chatId);
+
+        if (isDog) {
+            String dogByAgeBetween = animalServiceImpl.findDogByAgeBetween(minAge, maxAge);
+            if (dogByAgeBetween.isEmpty()) {
+                getAgeBetweenDogAndCat.setText("В данном диапазоне собак не найдено!");
+                return getAgeBetweenDogAndCat;
+            }
+            getAgeBetweenDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: \n\n" + dogByAgeBetween);
+            return getAgeBetweenDogAndCat;
+        } else if (!isDog) {
+            String catByAgeBetween = animalServiceImpl.findCatByAgeBetween(minAge, maxAge);
+            if (catByAgeBetween.isEmpty()) {
+                getAgeBetweenDogAndCat.setText("В данном диапазоне кошек не найдено!");
+                return getAgeBetweenDogAndCat;
+            }
+            getAgeBetweenDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: \n\n" + catByAgeBetween);
+            return getAgeBetweenDogAndCat;
+        } else
+            log.info("В тексте не найдено совпадений с диапазоном возраста");
         return settingSendMessage(chatId, ShelterInformationDirectory.NOTFOUNDTEXT);
     }
 
@@ -359,10 +411,10 @@ public class BotServiceImpl implements BotService {
         return shelterInfo;
     }
 
-    public SendMessage getBreedDogAndColor(long chatId) {
+    public SendMessage getBreedDogAndCat(long chatId) {
         SendMessage getBreedDogAndColor = new SendMessage();
         getBreedDogAndColor.setChatId(chatId);
-        getBreedDogAndColor.setText("Пожалуйста, укажите породу и предпочтительный окрас собаки, которую вы ищете.");
+        getBreedDogAndColor.setText("Пожалуйста, укажите породу которую вы ищете.");
         return getBreedDogAndColor;
     }
 
@@ -380,7 +432,13 @@ public class BotServiceImpl implements BotService {
     public SendMessage getAgeDogAndCat(long chatId) {
         SendMessage getAgeDogAndCat = new SendMessage();
         getAgeDogAndCat.setChatId(chatId);
-        getAgeDogAndCat.setText("Какой возрастной диапазон вы ищете у собаки или кошки?");
+        if (isDog) {
+            getAgeDogAndCat.setText("В каком возрастном диапазоне вы ищете собак?\n" +
+                    "Напишите диапозон поиска, например от 5 до 12 ⬇\uFE0F");
+        } else if (!isDog) {
+            getAgeDogAndCat.setText("В каком возрастном диапазоне вы ищете кошек?\n" +
+                    "Напишите диапозон поиска, например от 5 до 12 ⬇\uFE0F");
+        }
         return getAgeDogAndCat;
     }
 

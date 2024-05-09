@@ -52,9 +52,9 @@ public class Animal {
 
     @Override
     public String toString() {
-        return "Кличка: " + nickName + "\n" +
-                "Порода " + breed + "\n" +
-                "Возраст " + age + "\n" +
-                "Цвет шёрстки " + color + "\n\n";
+        return "Кличка - " + nickName + "\n" +
+                "Порода - " + breed + "\n" +
+                "Возраст - " + age + "\n" +
+                "Цвет шёрстки - " + color + "\n\n";
     }
 }
