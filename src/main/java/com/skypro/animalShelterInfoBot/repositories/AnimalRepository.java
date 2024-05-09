@@ -12,5 +12,6 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
    @Query("SELECT a FROM Animal a WHERE  a.catOrDog=:catOrDog")
    List<Animal> findByCatOrDog(Animal.TapeOfAnimal catOrDog);
 
-   List<Animal> findAllByColorContainingIgnoreCase(String color);
+   List<Animal> findAllByAgeBetween(float age, float age2);
+
 }

@@ -36,7 +36,7 @@ public interface BotService {
 
     SendMessage meetingAnimals(long chatId);
 
-    SendMessage getBreedDogAndColor(long chatId);
+    SendMessage getBreedDogAndCat(long chatId);
 
     SendMessage getColorDogAndCat(long chatId);
 
