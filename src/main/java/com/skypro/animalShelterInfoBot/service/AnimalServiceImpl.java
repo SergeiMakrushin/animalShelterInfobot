@@ -97,4 +97,19 @@ public class AnimalServiceImpl implements AnimalService {
                 .filter(animal -> animal.getAge() >= age && animal.getAge() <= age2)
                 .toList().toString().replace("[", "").replace("]", "").replace(",", "");
     }
+    public String findCatByBreed(String breed) {
+        List<Animal> catList = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.CAT);
+        return catList.stream()
+                .filter(animal -> animal.getBreed()
+                        .equalsIgnoreCase(breed))
+                .toList().toString().replace("[", "").replace("]", "").replace(",", "");
+    }
+    public String findDogByBreed(String breed) {
+        List<Animal> dogList = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.DOG);
+        return dogList.stream()
+                .filter(animal -> animal.getBreed()
+                        .equalsIgnoreCase(breed))
+                .toList().toString().replace("[", "").replace("]", "").replace(",", "");
+    }
+
 }
