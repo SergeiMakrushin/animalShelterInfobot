@@ -74,6 +74,7 @@ public class BotServiceImpl implements BotService {
     static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\d{3}-\\d{3}-\\d{2}-\\d{2}");
     static final Pattern EMAIL_PATTERN = Pattern.compile("([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4})");
     static final Pattern COLOR_PATTERN = Pattern.compile("\\w*белый|серый|черный|рыжий|оранжевый|зеленый|красный|желтый|синий\\w*");
+    static final Pattern BREED_PATTERN = Pattern.compile("\\w*шпиц|дог|пудель|чихуахуа|хаски|мейн-кун|сфинкс|сиамская|британец\\w*");
     static final Pattern MIN_MAX_PATTERN = Pattern.compile("\\b(\\d+)\\b");
     private boolean isDog;
 
@@ -265,6 +266,37 @@ public class BotServiceImpl implements BotService {
      * @param text   текст сообщения
      * @return отправка ответа
      */
+    public SendMessage checkingTextForBreed(long chatId, String text) {
+        log.info("Метод обработки и поиска животного по породе запущен");
+        Matcher breedPets = BREED_PATTERN.matcher(text);
+        SendMessage getBreedDogAndCat = new SendMessage();
+        getBreedDogAndCat.setChatId(chatId);
+
+        if (isDog && breedPets.find()) {
+            String breed = breedPets.group();
+            String dogByBreed = animalServiceImpl.findDogByBreed(breed);
+            if (dogByBreed.isEmpty()) {
+                getBreedDogAndCat.setText("Собаки с такой породой не найдены!");
+                return getBreedDogAndCat;
+            }
+            getBreedDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: \n\n" + dogByBreed);
+            log.info("Все собаки найдены");
+            return getBreedDogAndCat;
+        } else if (!isDog && breedPets.find()) {
+            String breed = breedPets.group();
+            String catByBreed = animalServiceImpl.findCatByBreed(breed);
+            if (catByBreed.isEmpty()) {
+                getBreedDogAndCat.setText("Кошек с такой породой не найдено!");
+                return getBreedDogAndCat;
+            }
+            getBreedDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: \n\n" + catByBreed);
+            log.info("Все кошки найдены");
+            return getBreedDogAndCat;
+        } else
+            log.info("В тексте не найдено совпадения с породой животного");
+        return settingSendMessage(chatId, ShelterInformationDirectory.NOTFOUNDTEXT);
+    }
+
     public SendMessage checkingTextForColor(long chatId, String text) {
         log.info("Метод обработки и поиска животного по цвету запущен");
         Matcher colorPets = COLOR_PATTERN.matcher(text);
@@ -305,7 +337,7 @@ public class BotServiceImpl implements BotService {
      * программа отправляет NOTFOUNDTEXT пользователю
      *
      * @param chatId идентификатор чата
-     * @param text текст сообщения
+     * @param text   текст сообщения
      * @return отправка ответа
      */
     public SendMessage checkingTextForAgeBetween(long chatId, String text) {
@@ -345,7 +377,7 @@ public class BotServiceImpl implements BotService {
             return getAgeBetweenDogAndCat;
         } else
             log.info("В тексте не найдено совпадений с диапазоном возраста");
-        return settingSendMessage(chatId, ShelterInformationDirectory.NOTFOUNDTEXT);
+        return checkingTextForBreed(chatId,text);
     }
 
     public SendMessage reasonsForRefusal(long chatId) {
@@ -412,10 +444,14 @@ public class BotServiceImpl implements BotService {
     }
 
     public SendMessage getBreedDogAndCat(long chatId) {
-        SendMessage getBreedDogAndColor = new SendMessage();
-        getBreedDogAndColor.setChatId(chatId);
-        getBreedDogAndColor.setText("Пожалуйста, укажите породу которую вы ищете.");
-        return getBreedDogAndColor;
+        SendMessage getBreedDogAndCat = new SendMessage();
+        getBreedDogAndCat.setChatId(chatId);
+        if (isDog) {
+            getBreedDogAndCat.setText("Напишите, какая порода собаки вас интересует\uD83D\uDC36");
+        } else if (!isDog) {
+            getBreedDogAndCat.setText("Напишите, какая порода кошки вас интересует\uD83D\uDC36");
+        }
+        return getBreedDogAndCat;
     }
 
     public SendMessage getColorDogAndCat(long chatId) {
