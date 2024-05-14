@@ -7,10 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
-   Animal findAnimalById(long id);
+    Animal findAnimalById(long id);
 
-   @Query("SELECT a FROM Animal a WHERE  a.catOrDog=:catOrDog")
-   List<Animal> findByCatOrDog(Animal.TapeOfAnimal catOrDog);
+    @Query("SELECT a FROM Animal a WHERE  a.catOrDog=:catOrDog")
+    List<Animal> findByCatOrDog(Animal.TapeOfAnimal catOrDog);
 
-   List<Animal> findAllByColorContainingIgnoreCase(String color);
+    /*@Query("SELECT a FROM Animal a WHERE a.breed=:breed")
+    List<Animal> findAnimalByBreed(String breed);*/
+
 }
