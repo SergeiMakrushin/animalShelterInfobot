@@ -74,8 +74,6 @@ public class BotServiceImpl implements BotService {
 
     static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\d{3}-\\d{3}-\\d{2}-\\d{2}");
     static final Pattern EMAIL_PATTERN = Pattern.compile("([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4})");
-    static final Pattern COLOR_PATTERN = Pattern.compile("\\w*белый|серый|черный|рыжий|оранжевый|зеленый|красный|желтый|синий\\w*");
-    static final Pattern BREED_PATTERN = Pattern.compile("\\w*шпиц|дог|пудель|чихуахуа|хаски|мейн-кун|сфинкс|сиамская|британская|египетская|бенгальская\\w*");
     static final Pattern MIN_MAX_PATTERN = Pattern.compile("\\b\\d+\\b");
 
     private boolean isDog;
@@ -267,10 +265,10 @@ public class BotServiceImpl implements BotService {
 
     /**
      * метод обрабатывает сообщение если была нажата кнопка "найти по цвету"
-     * ищет соответствие с цветом животного и отвечает
-     * информацией о животных с введенным цветом
-     * если не соответствует, используется внешний метод обработки
-     * который ищет соответствие с возрастным диапозоном
+     * ищет животное по введенному цвету,
+     * если находит животных - выводит информацию по ним
+     * если не находит животных - пишет что в таком цвете не найдено животных
+     * если не была нажата кнопка "поиск по окрасу" - возвращает метод "checkingTextForAgeBetween"
      *
      * @param chatId идентификатор чата
      * @param text   текст сообщения
@@ -278,32 +276,28 @@ public class BotServiceImpl implements BotService {
      */
     public SendMessage checkingTextForColor(long chatId, String text) {
         log.info("Метод обработки и поиска животного по цвету запущен");
-        Matcher colorPets = COLOR_PATTERN.matcher(text);
         SendMessage getColorDogAndCat = new SendMessage();
         getColorDogAndCat.setChatId(chatId);
 
-        if (isDog && colorPets.find() && isCheckColor) {
-            String color = colorPets.group();
-            String dogByColor = animalServiceImpl.findDogByColor(color);
+        if (isDog && isCheckColor) {
+            String dogByColor = animalServiceImpl.findDogByColor(text);
             if (dogByColor.isEmpty()) {
-                getColorDogAndCat.setText("Собаки с таким цветом не найдены!");
+                getColorDogAndCat.setText("Собаки с цветом \"" + text + "\" не найдены!");
                 return getColorDogAndCat;
             }
             getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: \n\n" + dogByColor);
             log.info("Все собаки найдены");
             return getColorDogAndCat;
-        } else if (!isDog && colorPets.find() && isCheckColor) {
-            String color = colorPets.group();
-            String catByColor = animalServiceImpl.findCatByColor(color);
+        } else if (!isDog && isCheckColor) {
+            String catByColor = animalServiceImpl.findCatByColor(text);
             if (catByColor.isEmpty()) {
-                getColorDogAndCat.setText("Кошек с таким цветом не найдено!");
+                getColorDogAndCat.setText("Кошек с цветом \"" + text + "\" не найдено!");
                 return getColorDogAndCat;
             }
             getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: \n\n" + catByColor);
             log.info("Все кошки найдены");
             return getColorDogAndCat;
         } else
-            log.info("В тексте не найдено совпадения с цветом животного");
         return checkingTextForAgeBetween(chatId, text);
     }
 
@@ -362,10 +356,10 @@ public class BotServiceImpl implements BotService {
 
     /**
      * метод обрабатывает сообщение если была нажата кнопка "найти по породе"
-     * ищет соответствие с породой животного и отвечает
-     * информацией о животных с введенной породой
-     * если не соответствует, вызывается метод
-     * с дефолтным ответом
+     * ищет животное по введенной породе,
+     * если находит животных - выводит информацию по ним
+     * если не находит животных - пишет что с такой породой не найдено животных
+     * если не была нажата кнопка "поиск по породе" - возвращает метод "settingSendMessage"
      *
      * @param chatId идентификатор чата
      * @param text   текст сообщения
@@ -373,32 +367,28 @@ public class BotServiceImpl implements BotService {
      */
     public SendMessage checkingTextForBreed(long chatId, String text) {
         log.info("Метод обработки и поиска животного по породе запущен");
-        Matcher breedPets = BREED_PATTERN.matcher(text);
         SendMessage getBreedDogAndCat = new SendMessage();
         getBreedDogAndCat.setChatId(chatId);
 
-        if (isDog && breedPets.find() && isCheckBreed) {
-            String breed = breedPets.group();
-            String dogByBreed = animalServiceImpl.findDogByBreed(breed);
+        if (isDog && isCheckBreed) {
+            String dogByBreed = animalServiceImpl.findDogByBreed(text);
             if (dogByBreed.isEmpty()) {
-                getBreedDogAndCat.setText("Собаки с такой породой не найдены!");
+                getBreedDogAndCat.setText("Собаки с породой \"" + text + "\" не найдены!");
                 return getBreedDogAndCat;
             }
             getBreedDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: \n\n" + dogByBreed);
             log.info("Все собаки найдены");
             return getBreedDogAndCat;
-        } else if (!isDog && breedPets.find() && isCheckBreed) {
-            String breed = breedPets.group();
-            String catByBreed = animalServiceImpl.findCatByBreed(breed);
+        } else if (!isDog && isCheckBreed) {
+            String catByBreed = animalServiceImpl.findCatByBreed(text);
             if (catByBreed.isEmpty()) {
-                getBreedDogAndCat.setText("Кошек с такой породой не найдено!");
+                getBreedDogAndCat.setText("Кошек с породой \"" + text + "\" не найдено!");
                 return getBreedDogAndCat;
             }
             getBreedDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: \n\n" + catByBreed);
             log.info("Все кошки найдены");
             return getBreedDogAndCat;
         } else
-            log.info("В тексте не найдено совпадения с породой животного");
         return settingSendMessage(chatId, ShelterInformationDirectory.NOTFOUNDTEXT);
     }
 
