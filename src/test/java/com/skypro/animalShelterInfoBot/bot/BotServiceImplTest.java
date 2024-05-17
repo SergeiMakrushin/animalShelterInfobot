@@ -298,8 +298,8 @@ public class BotServiceImplTest {
     }
 
     @Test
-    public void InfoShelterTimeAndAddress() {
-        SendMessage InfoShelterTimeAndAddress = botService.InfoShelterTimeAndAddress(chatIdExample);
+    public void infoShelterTimeAndAddress() {
+        SendMessage InfoShelterTimeAndAddress = botService.infoShelterTimeAndAddress(chatIdExample);
         long actualChatId = 0;
         try {
             actualChatId = Long.parseLong(InfoShelterTimeAndAddress.getChatId());

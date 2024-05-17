@@ -159,7 +159,30 @@ public class BotServiceImpl implements BotService {
      * @return текст для отправки
      */
     public SendMessage inputMsg(Update update) {
+        log.info("метод получения и обработки сообщения в БотСервисе");
         SendMessage textToSend = new SendMessage();
+
+//        if (!(update.getMessage().getPhoto().get(update.getMessage().getPhoto().size() - 1) ==null) ||!(update.getMessage().getPhoto().isEmpty())) {
+//            if (update.hasCallbackQuery()) {
+//                CallbackQuery callbackQuery = update.getCallbackQuery();
+//                String msgText = callbackQuery.getData();
+//                long chatId = callbackQuery.getMessage().getChatId();
+//                String name = callbackQuery.getFrom().getFirstName();
+//                String userName = callbackQuery.getFrom().getUserName();
+//                String surname = callbackQuery.getFrom().getLastName();
+//            PhotoSize photo = update.getMessage().getPhoto().get(update.getMessage().getPhoto().size() - 1);
+//
+//            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname, photo);
+//            }            else if ((update.hasMessage() && update.getMessage().hasText()) ){
+//                String msgText = update.getMessage().getText();
+//                long chatId = update.getMessage().getChatId();
+//                String name = update.getMessage().getChat().getFirstName();
+//                String userName = update.getMessage().getChat().getUserName();
+//                String surname = update.getMessage().getChat().getLastName();
+//                PhotoSize photo = update.getMessage().getPhoto().get(update.getMessage().getPhoto().size() - 1);
+//                textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname, photo);
+//            }
+//        }
 
         if (update.hasCallbackQuery()) {
             isCheckContact = false;
@@ -173,9 +196,7 @@ public class BotServiceImpl implements BotService {
             String userName = callbackQuery.getFrom().getUserName();
             String surname = callbackQuery.getFrom().getLastName();
 
-            PhotoSize photo = update.getMessage().getPhoto().get(update.getMessage().getPhoto().size() - 1);
-
-            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname, photo);
+            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname);
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             String msgText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
@@ -183,9 +204,25 @@ public class BotServiceImpl implements BotService {
             String userName = update.getMessage().getChat().getUserName();
             String surname = update.getMessage().getChat().getLastName();
 
-            PhotoSize photo = update.getMessage().getPhoto().get(update.getMessage().getPhoto().size() - 1);
 
-            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname, photo);
+                Message message = update.getMessage();
+
+
+            if (message.hasPhoto()) {
+
+
+
+                PhotoSize photo = update.getMessage().getPhoto().get(message.getPhoto().size() - 1);
+                textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname, photo);
+            } else {
+                textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname);
+            }
+
+
+
+
+
+
         }
         return textToSend;
     }
@@ -201,7 +238,17 @@ public class BotServiceImpl implements BotService {
      * @param surname  Фамилия пользователя
      * @return сообщение для пользователя
      */
+
     private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName, String surname, PhotoSize photoSize) {
+
+        return switch (text) {
+            case  CMD_SEND_REPORT ->sendReport(chatId, text, name, userName,surname, photoSize);
+            default -> checkingTextForContacts(chatId, text, name, surname, userName);
+        };
+
+    }
+
+    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName, String surname) {
         log.info("Нажата клавиша \"" + text + "\"");
 
         if (BTN_DOGS.equals(text) || CMD_DOGS.equals(text)) {
@@ -215,10 +262,10 @@ public class BotServiceImpl implements BotService {
         return switch (text) {
             case BTN_ADMINISTRATION -> administrationMenu(chatId);
             case BTN_INFO_SHELTER, CMD_INFO_SHELTER -> infoShelter(chatId);
-            case BTN_LOCATION, CMD_LOCATION -> InfoShelterTimeAndAddress(chatId);
-//            не сделан
-            case BTN_SEND_REPORT, CMD_SEND_REPORT -> sendReport(chatId, userName, photoSize, text);
-////////////////
+            case BTN_LOCATION, CMD_LOCATION -> infoShelterTimeAndAddress(chatId);
+
+            case BTN_SEND_REPORT->returnReportMessage(chatId,text);
+
             case BTN_INFO_TAKE_ANIMAL, CMD_INFO_TAKE_ANIMAL -> instructionAdoptionMenu(chatId);
             case BTN_GET_PASS, CMD_GET_PASS -> registerPass(chatId);
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
@@ -584,15 +631,24 @@ public class BotServiceImpl implements BotService {
 
     }
 
+    public SendMessage returnReportMessage(long chatId, String text) {
+        log.info("метод ответа на кнопку отчет");
+        SendMessage returnReportMessage= new SendMessage();
+        returnReportMessage.setChatId(chatId);
+        returnReportMessage.setText("Отправьте фото питомца");
+        return returnReportMessage;
+    }
+
     /////////////////////////////////
-    public SendMessage sendReport(long chatId, String userName, PhotoSize photo, String text) {
+    public SendMessage sendReport(long chatId, String text, String name, String userName, String surname, PhotoSize photo) {
+        log.info("метод сохранение  отчета");
         List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
         Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
         long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
 
         SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
         messageVolunteer.setChatId(randomVolunteer);
-        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
+        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName+" "+name+" "+surname
                 + " отправил отчет о питомце " + text);
         listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
 
@@ -611,7 +667,7 @@ public class BotServiceImpl implements BotService {
 
 //сохраняем в базу в виде массива байт
 
-        listener.savingDatabase(photo,chatId,text);
+        listener.savingDatabase(photo,chatId,text,name,userName,surname);
 
 
 
@@ -623,7 +679,7 @@ public class BotServiceImpl implements BotService {
     }
 
     ////////////////////////////////
-    public SendMessage InfoShelterTimeAndAddress(long chatId) {
+    public SendMessage infoShelterTimeAndAddress(long chatId) {
         SendMessage timeAndAddress = new SendMessage();
         timeAndAddress.setChatId(chatId);
         timeAndAddress.setText(ShelterInformationDirectory.SHELTERADRESS + ShelterInformationDirectory.WORKTIME);

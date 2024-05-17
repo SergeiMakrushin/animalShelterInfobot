@@ -77,7 +77,8 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
     public void onUpdateReceived(Update update) {
         log.info("метод получения и обработки сообщения");
         try {
-            if (update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()) {
+//            update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()||
+            if (update.getMessage().hasPhoto()) {
                 log.info("проверка на пустоту");
                 SendMessage sendMessage = botService.inputMsg(update);
                 log.info("получение ответа от ботсервиса");
@@ -113,7 +114,7 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
             e.printStackTrace();
         }
     }
-    public void savingDatabase (PhotoSize photo,Long chatId, String messagePet) {
+    public void savingDatabase (PhotoSize photo,Long chatId, String messagePet,String name, String userName, String surname) {
         GetFile getFile = new GetFile(photo.getFileId());
         try {
             File file = execute(getFile); //tg file obj
@@ -139,7 +140,7 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
             }
             System.out.println("bytes = " + bytes);
 
-            PetReport petReport=new PetReport(1,bytes,chatId,messagePet);
+            PetReport petReport=new PetReport(1,bytes,chatId,messagePet,name,userName,surname);
             petReportRepository.save(petReport);
         } catch (TelegramApiException | IOException e) {
             e.printStackTrace();

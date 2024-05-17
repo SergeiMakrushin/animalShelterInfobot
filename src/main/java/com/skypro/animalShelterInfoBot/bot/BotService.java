@@ -56,9 +56,9 @@ public interface BotService {
 
     SendMessage registerPass(long chatId);
 
-    SendMessage sendReport(long chatId,String userName, PhotoSize photo, String text);
+    SendMessage sendReport(long chatId, String text, String name, String userName, String surname, PhotoSize photoSize);
 
-    SendMessage InfoShelterTimeAndAddress(long chatId);
+    SendMessage infoShelterTimeAndAddress(long chatId);
 
     SendMessage infoShelter(long chatId);
 
@@ -78,6 +78,6 @@ public interface BotService {
         void sendMessage(SendMessage message);
         void sendMessage (SendPhoto sendPhoto);
 
-         void savingDatabase (PhotoSize photo,Long chatId, String messagePet);
+        void savingDatabase (PhotoSize photo,Long chatId, String messagePet,String name, String userName, String surname);
     }
 }
