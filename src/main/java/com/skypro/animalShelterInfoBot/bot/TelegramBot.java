@@ -77,8 +77,8 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
     public void onUpdateReceived(Update update) {
         log.info("метод получения и обработки сообщения");
         try {
-//            update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()||
-            if (update.getMessage().hasPhoto()) {
+//
+            if (update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()||update.getMessage().hasPhoto()) {
                 log.info("проверка на пустоту");
                 SendMessage sendMessage = botService.inputMsg(update);
                 log.info("получение ответа от ботсервиса");

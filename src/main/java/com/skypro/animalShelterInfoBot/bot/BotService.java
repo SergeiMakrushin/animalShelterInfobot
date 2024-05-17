@@ -55,9 +55,11 @@ public interface BotService {
     SendMessage shelterTB(long chatId);
 
     SendMessage registerPass(long chatId);
+    //////////////////////////////
 
-    SendMessage sendReport(long chatId, String text, String name, String userName, String surname, PhotoSize photoSize);
-
+    //    SendMessage sendReport(long chatId, String text, String name, String userName, String surname, PhotoSize photoSize);
+    SendMessage sendReport(long chatId, PhotoSize photoSize);
+/////////////////////////////////////
     SendMessage infoShelterTimeAndAddress(long chatId);
 
     SendMessage infoShelter(long chatId);
@@ -76,8 +78,9 @@ public interface BotService {
 
     interface Listener {
         void sendMessage(SendMessage message);
-        void sendMessage (SendPhoto sendPhoto);
 
-        void savingDatabase (PhotoSize photo,Long chatId, String messagePet,String name, String userName, String surname);
+        void sendMessage(SendPhoto sendPhoto);
+
+        void savingDatabase(PhotoSize photo, Long chatId, String messagePet, String name, String userName, String surname);
     }
 }
