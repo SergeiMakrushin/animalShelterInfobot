@@ -1,16 +1,26 @@
 package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.configuration.InfoBotConfiguration;
+import com.skypro.animalShelterInfoBot.model.PetReport;
+import com.skypro.animalShelterInfoBot.repositories.PetReportRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.File;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +30,12 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
     private final InfoBotConfiguration config;
     private final BotService botService;
 
-    public TelegramBot(InfoBotConfiguration config, BotService botService) {
+    private final PetReportRepository petReportRepository;
+
+    public TelegramBot(InfoBotConfiguration config, BotService botService,PetReportRepository petReportRepository) {
         this.config = config;
         this.botService = botService;
+        this.petReportRepository=petReportRepository;
 
 
         botService.setListener(this);
@@ -65,7 +78,9 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
         log.info("метод получения и обработки сообщения");
         try {
             if (update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()) {
+                log.info("проверка на пустоту");
                 SendMessage sendMessage = botService.inputMsg(update);
+                log.info("получение ответа от ботсервиса");
                 sendMessage(sendMessage);
             }
         } catch (Exception e) {
@@ -89,7 +104,49 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
         }
     }
 
-    public void info(String процессИнициализации) {
+    public void sendMessage(SendPhoto sendPhoto) {
 
+        try {
+
+            execute(sendPhoto); // Call method to send the photo with caption
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
+    public void savingDatabase (PhotoSize photo,Long chatId, String messagePet) {
+        GetFile getFile = new GetFile(photo.getFileId());
+        try {
+            File file = execute(getFile); //tg file obj
+            System.out.println("file = " + file);
+            System.out.println("file.getFilePath() = " + file.getFilePath());
+
+//            получение массива байт и сохраняем в базу
+            java.io.File file1=downloadFile(file.getFilePath());
+
+            byte[] bytes = new byte[(int) file1.length()];
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(file1);
+                fis.read(bytes);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                if (fis != null) {
+                    fis.close();
+                }
+            }
+            System.out.println("bytes = " + bytes);
+
+            PetReport petReport=new PetReport(1,bytes,chatId,messagePet);
+            petReportRepository.save(petReport);
+        } catch (TelegramApiException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    public void info(String процессИнициализации) {
+//
+//    }
 }

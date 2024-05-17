@@ -2,6 +2,8 @@ package com.skypro.animalShelterInfoBot.bot;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -54,7 +56,7 @@ public interface BotService {
 
     SendMessage registerPass(long chatId);
 
-    SendMessage sendReport(long chatId);
+    SendMessage sendReport(long chatId,String userName, PhotoSize photo, String text);
 
     SendMessage InfoShelterTimeAndAddress(long chatId);
 
@@ -74,5 +76,8 @@ public interface BotService {
 
     interface Listener {
         void sendMessage(SendMessage message);
+        void sendMessage (SendPhoto sendPhoto);
+
+         void savingDatabase (PhotoSize photo,Long chatId, String messagePet);
     }
 }
