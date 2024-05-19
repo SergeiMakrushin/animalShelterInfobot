@@ -48,7 +48,6 @@ public class User {
 
     private Boolean isVolunteer;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<Animal> animals;
-
 }

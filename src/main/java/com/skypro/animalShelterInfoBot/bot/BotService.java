@@ -16,6 +16,10 @@ public interface BotService {
 
     SendMessage checkingTextForColor(long chatId, String text);
 
+    SendMessage checkingTextForAgeBetween(long chatId, String text);
+
+    SendMessage checkingTextForBreed(long chatId, String text);
+
     SendMessage inputMsg(Update update);
 
     SendMessage reasonsForRefusal(long chatId);
@@ -41,8 +45,6 @@ public interface BotService {
     SendMessage getColorDogAndCat(long chatId);
 
     SendMessage getAgeDogAndCat(long chatId);
-
-    SendMessage getNameDogAndCat(long chatId);
 
     SendMessage getAllDogAndCat(long chatId);
 

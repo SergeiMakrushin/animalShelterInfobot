@@ -1,5 +1,6 @@
 package com.skypro.animalShelterInfoBot.service;
 
+import com.skypro.animalShelterInfoBot.model.Animal;
 import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    public User findUserByChatId(long chatId) {
+        return userRepository.findUserByChatId(chatId);
+    }
+
     public User updateUser(long id, User user) {
         User updatedUser = userRepository.findUserById(id);
         if (updatedUser == null) {
@@ -35,6 +40,7 @@ public class UserServiceImpl implements UserService {
         updatedUser.setAge(user.getAge());
         updatedUser.setPhoneNumber(user.getPhoneNumber());
         updatedUser.setEmail(user.getEmail());
+        updatedUser.setAnimals(user.getAnimals());
         return userRepository.save(updatedUser);
     }
 
