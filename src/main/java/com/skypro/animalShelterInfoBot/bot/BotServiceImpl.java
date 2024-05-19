@@ -46,7 +46,6 @@ public class BotServiceImpl implements BotService {
     private static final String BTN_HELP = "Позвать волонтера";
     private static final String BTN_MAIN_MENU = "На главное меню";
     private static final String BTN_SHOW_ALL = "Показать всех";
-    private static final String BTN_FIND_BY_NICK = "Найти по кличке";
     private static final String BTN_FIND_BY_AGE = "Найти по возрасту";
     private static final String BTN_FIND_BY_COLOR = "Найти по окрасу";
     private static final String BTN_FIND_BY_BREED = "Найти по породе";
@@ -59,6 +58,7 @@ public class BotServiceImpl implements BotService {
     private static final String BTN_HANDLERS_CONTACT = "Контакты кинологов";
     private static final String BTN_HANDLERS_TIPS = "Советы кинолога";
     private static final String BTN_REFUSE_REASONS = "Причины отказа";
+    private static final String BTN_RESERVATION = "Забронировать";
 
     static final String CMD_START = "/start";
     static final String CMD_INFO_SHELTER = "/info_shelter";
@@ -81,6 +81,8 @@ public class BotServiceImpl implements BotService {
     private boolean isCheckColor;
     private boolean isCheckBreed;
     private boolean isCheckContact;
+    private boolean isCheckReservation;
+    private boolean isTextForVolunteer;
 
 
     @Autowired
@@ -94,6 +96,12 @@ public class BotServiceImpl implements BotService {
 
     @Autowired
     AnimalRepository animalRepository;
+
+    Animal animal;
+
+    User user;
+
+    InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
     /**
      * Слушатель для отправки сообщений
@@ -159,6 +167,7 @@ public class BotServiceImpl implements BotService {
             isCheckColor = false;
             isCheckAge = false;
             isCheckBreed = false;
+            isCheckReservation = false;
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String msgText = callbackQuery.getData();
             long chatId = callbackQuery.getMessage().getChatId();
@@ -210,7 +219,6 @@ public class BotServiceImpl implements BotService {
             case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId, text);
             case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId, userName);
             case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
-            case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
             case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
             case BTN_FIND_BY_COLOR -> getColorDogAndCat(chatId);
             case BTN_FIND_BY_BREED -> getBreedDogAndCat(chatId);
@@ -223,6 +231,7 @@ public class BotServiceImpl implements BotService {
             case BTN_HANDLERS_CONTACT -> getContactDogHandlers(chatId);
             case BTN_HANDLERS_TIPS -> adviceDogHandlers(chatId);
             case BTN_REFUSE_REASONS -> reasonsForRefusal(chatId);
+            case BTN_RESERVATION -> reservationAnimal(chatId);
             case BTN_MAIN_MENU, CMD_START -> sendStartMenu(chatId, name, surname);
             default -> checkingTextForContacts(chatId, text, name, surname, userName);
         };
@@ -286,6 +295,7 @@ public class BotServiceImpl implements BotService {
                 return getColorDogAndCat;
             }
             getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: \n\n" + dogByColor);
+            reservationButton(getColorDogAndCat);
             log.info("Все собаки найдены");
             return getColorDogAndCat;
         } else if (!isDog && isCheckColor) {
@@ -295,10 +305,11 @@ public class BotServiceImpl implements BotService {
                 return getColorDogAndCat;
             }
             getColorDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: \n\n" + catByColor);
+            reservationButton(getColorDogAndCat);
             log.info("Все кошки найдены");
             return getColorDogAndCat;
         } else
-        return checkingTextForAgeBetween(chatId, text);
+            return checkingTextForAgeBetween(chatId, text);
     }
 
     /**
@@ -340,6 +351,7 @@ public class BotServiceImpl implements BotService {
                 return getAgeBetweenDogAndCat;
             }
             getAgeBetweenDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: \n\n" + dogByAgeBetween);
+            reservationButton(getAgeBetweenDogAndCat);
             return getAgeBetweenDogAndCat;
         } else if (!isDog && isCheckAge) {
             String catByAgeBetween = animalServiceImpl.findCatByAgeBetween(minAge, maxAge);
@@ -348,10 +360,11 @@ public class BotServiceImpl implements BotService {
                 return getAgeBetweenDogAndCat;
             }
             getAgeBetweenDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: \n\n" + catByAgeBetween);
+            reservationButton(getAgeBetweenDogAndCat);
             return getAgeBetweenDogAndCat;
         } else
             log.info("В тексте не найдено совпадений с диапазоном возраста");
-        return checkingTextForBreed(chatId,text);
+        return checkingTextForBreed(chatId, text);
     }
 
     /**
@@ -377,6 +390,7 @@ public class BotServiceImpl implements BotService {
                 return getBreedDogAndCat;
             }
             getBreedDogAndCat.setText("Вот кого удалось найти\uD83D\uDC36: \n\n" + dogByBreed);
+            reservationButton(getBreedDogAndCat);
             log.info("Все собаки найдены");
             return getBreedDogAndCat;
         } else if (!isDog && isCheckBreed) {
@@ -386,9 +400,47 @@ public class BotServiceImpl implements BotService {
                 return getBreedDogAndCat;
             }
             getBreedDogAndCat.setText("Вот кого удалось найти\uD83D\uDE3A: \n\n" + catByBreed);
+            reservationButton(getBreedDogAndCat);
             log.info("Все кошки найдены");
             return getBreedDogAndCat;
         } else
+            return checkingTextForIdAnimalsAndMerge(chatId, text);
+    }
+
+    public SendMessage checkingTextForIdAnimalsAndMerge(long chatId, String text) {
+        log.info("Метод получения id животного и присваивания животного - пользователю... запущен");
+        Matcher numId = MIN_MAX_PATTERN.matcher(text);
+
+        SendMessage mergeAnimal = new SendMessage();
+        mergeAnimal.setChatId(chatId);
+
+        if (isCheckReservation && numId.find()) {
+            long animalId = Long.parseLong(numId.group());
+
+            Animal animal = animalServiceImpl.findAnimal(animalId);
+            User user = userServiceImpl.findUserByChatId(chatId);
+            log.info("пользователь найден - " + user.getName());
+            log.info("id - " + animalId);
+
+            animal.setId(user.getId());
+            animalServiceImpl.updateAnimalForUser(animalId, animal, user);
+
+            List<Animal> userAnimals = user.getAnimals();
+            if (userAnimals == null) {
+                userAnimals = new ArrayList<>();
+                log.info("животных нет, создается новый список");
+            }
+            userAnimals.add(animal);
+            user.setAnimals(userAnimals);
+            userServiceImpl.updateUser(user.getId(), user);
+
+            mergeAnimal.setText("Животное зарезервировано за пользователем " + user.getName() + "\n " +
+                    "Поздравляем, в скором времени с вами свяжется волонтер\uD83E\uDD73");
+            isTextForVolunteer = true;
+            getContactVolunteer(chatId, user.getSurname()); //отправляем сообщение волонтеру
+            log.info("Данные в БД обновлены - животное присвоено пользователю");
+            return mergeAnimal;
+        }
         return settingSendMessage(chatId, ShelterInformationDirectory.NOTFOUNDTEXT);
     }
 
@@ -493,22 +545,17 @@ public class BotServiceImpl implements BotService {
         return getAgeDogAndCat;
     }
 
-    public SendMessage getNameDogAndCat(long chatId) {
-        SendMessage getNameDogAndCat = new SendMessage();
-        getNameDogAndCat.setChatId(chatId);
-        getNameDogAndCat.setText("Пожалуйста, укажите имя, которое вы хотите дать собаке или кошке, которую вы усыновляете.");
-        return getNameDogAndCat;
-    }
-
     public SendMessage getAllDogAndCat(long chatId) {
         SendMessage getAllDogAndCat = new SendMessage();
         getAllDogAndCat.setChatId(chatId);
         if (isDog) {
             List<Animal> dogs = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.DOG);
             getAllDogAndCat.setText(dogs.toString().replace("[", "").replace("]", "").replace(",", ""));
+            reservationButton(getAllDogAndCat);
         } else {
             List<Animal> cats = animalRepository.findByCatOrDog(Animal.TapeOfAnimal.CAT);
             getAllDogAndCat.setText(cats.toString().replace("[", "").replace("]", "").replace(",", ""));
+            reservationButton(getAllDogAndCat);
         }
         return getAllDogAndCat;
     }
@@ -520,8 +567,13 @@ public class BotServiceImpl implements BotService {
 
         SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
         messageVolunteer.setChatId(randomVolunteer);
-        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
-                + " телеграмм-бота хочет связаться с вами или оставил контактные данные и ждет звонка!");
+        if (isTextForVolunteer) {
+            messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
+                    + " телеграмм-бота забронировал животное, свяжитесь и назначте дату и время визита в приют!");
+        } else {
+            messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
+                    + " телеграмм-бота хочет связаться с вами или оставил контактные данные и ждет звонка!");
+        }
         listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
 
         SendMessage getContactVolunteer = new SendMessage();
@@ -579,6 +631,14 @@ public class BotServiceImpl implements BotService {
         return shelterInfo;
     }
 
+    public SendMessage reservationAnimal(long chatId) {
+        isCheckReservation = true;
+        SendMessage reservation = new SendMessage();
+        reservation.setChatId(chatId);
+        reservation.setText(ShelterInformationDirectory.RESERVATIONTEXT);
+        return reservation;
+    }
+
     /**
      * Стартовое меню
      *
@@ -594,8 +654,6 @@ public class BotServiceImpl implements BotService {
         msg.setChatId(chatId);
         msg.setText("Вы в главном меню!\n" +
                 "Выберите интересующую вас кнопку \uD83D\uDC47");
-
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём ряд
         rowList.add(List.of(createButton(BTN_ADMINISTRATION)));
@@ -645,19 +703,15 @@ public class BotServiceImpl implements BotService {
         msg.setChatId(chatId);
         msg.setText("Вы вошли в администрацию, что вас интересует? \n");
 
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
-
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
-        rowList.add(List.of(createButton(BTN_INFO_SHELTER), createButton(BTN_LOCATION)));
-        rowList.add(List.of(createButton(BTN_SEND_REPORT), createButton(BTN_INFO_TAKE_ANIMAL)));
-        rowList.add(List.of(createButton(BTN_GET_PASS), createButton(BTN_TB_RECOMMENDATION)));
-        rowList.add(List.of(createButton(BTN_LEAVE_CONTACTS), createButton(BTN_HELP)));
-        rowList.add(List.of(createButton(BTN_MAIN_MENU)));
-        inlineKeyboardMarkup.setKeyboard(rowList); //Вносим настройки в клавиатуру
-
-        msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
-
-        return msg; //Отправляем сообщение
+        return adminMenuAndAdoptionMenu(msg, BTN_INFO_SHELTER
+                , BTN_LOCATION
+                , BTN_SEND_REPORT
+                , BTN_INFO_TAKE_ANIMAL
+                , BTN_GET_PASS
+                , BTN_TB_RECOMMENDATION
+                , BTN_LEAVE_CONTACTS
+                , BTN_HELP
+                , BTN_MAIN_MENU);
     }
 
     /**
@@ -673,11 +727,9 @@ public class BotServiceImpl implements BotService {
         msg.setChatId(chatId);
         msg.setText("Вы вошли в меню поиска друга, давайте вместе подберем.");
 
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
-
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
         rowList.add(List.of(createButton(BTN_SHOW_ALL)));
-        rowList.add(List.of(createButton(BTN_FIND_BY_NICK), createButton(BTN_FIND_BY_AGE)));
+        rowList.add(List.of(createButton(BTN_FIND_BY_AGE)));
         rowList.add(List.of(createButton(BTN_FIND_BY_COLOR), createButton(BTN_FIND_BY_BREED)));
         inlineKeyboardMarkup.setKeyboard(rowList); //Вносим настройки в клавиатуру
 
@@ -690,7 +742,7 @@ public class BotServiceImpl implements BotService {
      * Создаем меню что нужно знать для взятия животного
      *
      * @param chatId идентификатор чата
-     * @return отправляем ответ
+     * @return используем метод расположения кнопок и отправки сообщения
      */
     public SendMessage instructionAdoptionMenu(long chatId) {
         log.info("Идет инициализация меню как взять животное ... ");
@@ -699,19 +751,15 @@ public class BotServiceImpl implements BotService {
         msg.setChatId(chatId);
         msg.setText("Здесь находится вся информация о усыновлении животных. ");
 
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup(); //Создаем объект разметки клавиатуры
-
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
-        rowList.add(List.of(createButton(BTN_RULES_TO_MEETING), createButton(BTN_DOCUMENTS_LISTS)));
-        rowList.add(List.of(createButton(BTN_TRANSPORT_RECOMMENDATION), createButton(BTN_HOME_FOR_CUB)));
-        rowList.add(List.of(createButton(BTN_HOME_FOR_ADULT), createButton(BTN_HOME_FOR_DISABLE)));
-        rowList.add(List.of(createButton(BTN_HANDLERS_CONTACT), createButton(BTN_HANDLERS_TIPS)));
-        rowList.add(List.of(createButton(BTN_REFUSE_REASONS)));
-        inlineKeyboardMarkup.setKeyboard(rowList); //Вносим настройки в клавиатуру
-
-        msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
-
-        return msg; //Отправляем сообщение
+        return adminMenuAndAdoptionMenu(msg, BTN_RULES_TO_MEETING
+                , BTN_DOCUMENTS_LISTS
+                , BTN_TRANSPORT_RECOMMENDATION
+                , BTN_HOME_FOR_CUB
+                , BTN_HOME_FOR_ADULT
+                , BTN_HOME_FOR_DISABLE
+                , BTN_HANDLERS_CONTACT
+                , BTN_HANDLERS_TIPS
+                , BTN_REFUSE_REASONS);
     }
 
     /**
@@ -725,6 +773,57 @@ public class BotServiceImpl implements BotService {
         btn.setText(text);                                        //Текст самой кнопки
         btn.setCallbackData(text);                                //Отклик на нажатие кнопки
         return btn;
+    }
+
+    /**
+     * Метод принимает сообщение и кнопку
+     * присваивает кнопку клавиатуре и сообщению
+     * возвращает настройки сообщения
+     *
+     * @param msg сообщение
+     */
+    private void reservationButton(SendMessage msg) {
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        rowList.add(List.of(createButton(BTN_RESERVATION)));
+        inlineKeyboardMarkup.setKeyboard(rowList);
+        msg.setReplyMarkup(inlineKeyboardMarkup);
+    }
+
+    /**
+     * Метод с одинаковым расположением кнопок
+     * для меню Администрация
+     * для меню Как получить питомца
+     *
+     * @param msg                 сообщение
+     * @param btnInfoShelter      кнопка "информация о приюте"
+     * @param btnLocation         кнопка "часы работы, адрес"
+     * @param btnSendReport       кнопка "прислать отчет"
+     * @param btnInfoTakeAnimal   кнопка "как получить питомца"
+     * @param btnGetPass          кнопка "получить пропуск"
+     * @param btnTbRecommendation кнопка "ТБ на территории"
+     * @param btnLeaveContacts    кнопка "оставить контакты"
+     * @param btnHelp             кнопка "позвать волонтера"
+     * @param btnMainMenu         кнопка "на главное меню"
+     * @return отправляем сообщение
+     */
+    private SendMessage adminMenuAndAdoptionMenu(SendMessage msg, String btnInfoShelter
+            , String btnLocation, String btnSendReport
+            , String btnInfoTakeAnimal, String btnGetPass
+            , String btnTbRecommendation, String btnLeaveContacts
+            , String btnHelp, String btnMainMenu) {
+
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>(); //Создаём лист листов и закидываем списки рядов
+
+        rowList.add(List.of(createButton(btnInfoShelter), createButton(btnLocation)));
+        rowList.add(List.of(createButton(btnSendReport), createButton(btnInfoTakeAnimal)));
+        rowList.add(List.of(createButton(btnGetPass), createButton(btnTbRecommendation)));
+        rowList.add(List.of(createButton(btnLeaveContacts), createButton(btnHelp)));
+        rowList.add(List.of(createButton(btnMainMenu)));
+        inlineKeyboardMarkup.setKeyboard(rowList); //Вносим настройки в клавиатуру
+
+        msg.setReplyMarkup(inlineKeyboardMarkup); //Изменяем клавиатуру
+
+        return msg; //Отправляем сообщение
     }
 
     public void setUserServiceImpl(UserServiceImpl mock) {

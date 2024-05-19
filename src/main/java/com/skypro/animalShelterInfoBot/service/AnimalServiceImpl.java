@@ -1,6 +1,7 @@
 package com.skypro.animalShelterInfoBot.service;
 
 import com.skypro.animalShelterInfoBot.model.Animal;
+import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.repositories.AnimalRepository;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,18 @@ public class AnimalServiceImpl implements AnimalService {
         updatedAnimal.setAge(animal.getAge());
         updatedAnimal.setColor(animal.getColor());
         return animalRepository.save(updatedAnimal);
+    }
+
+    public Animal updateAnimalForUser(long id, Animal animal, User user) {
+        if (animal == null) {
+            throw new IllegalArgumentException("Animal cannot be null");
+        }
+        Animal updatedAnimalForUser = animalRepository.findAnimalById(id);
+        if (updatedAnimalForUser == null) {
+            throw new IllegalArgumentException("Animal with id " + id + " not found");
+        }
+        updatedAnimalForUser.setUser(user);
+        return animalRepository.save(updatedAnimalForUser);
     }
 
     public Object getAnimalsPagination(Integer pageNumber, Integer sizeNumber) {

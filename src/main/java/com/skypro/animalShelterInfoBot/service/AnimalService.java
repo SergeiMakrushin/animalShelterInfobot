@@ -1,6 +1,7 @@
 package com.skypro.animalShelterInfoBot.service;
 
 import com.skypro.animalShelterInfoBot.model.Animal;
+import com.skypro.animalShelterInfoBot.model.User;
 
 import java.util.List;
 

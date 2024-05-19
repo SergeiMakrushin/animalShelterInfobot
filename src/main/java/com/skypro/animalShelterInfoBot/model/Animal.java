@@ -24,7 +24,6 @@ public class Animal {
         this.color = color;
     }
 
-
     public enum TapeOfAnimal {DOG, CAT}
 
     @Id
@@ -47,12 +46,13 @@ public class Animal {
     private Avatar avatar;
 
     @ManyToOne
-    @JoinColumn(name = "chat_user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @Override
     public String toString() {
-        return "Кличка - " + nickName + "\n" +
+        return "id животного - " + id + "\n" +
+                "Кличка - " + nickName + "\n" +
                 "Порода - " + breed + "\n" +
                 "Возраст - " + age + "\n" +
                 "Цвет шёрстки - " + color + "\n\n";
