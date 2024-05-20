@@ -9,31 +9,23 @@ import java.util.Objects;
 
 @Entity
 public class PetReport {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Lob
-  @JdbcTypeCode(Types.LONGVARBINARY)
-    private byte[] bytes;
-
     private Long chatId;
-    private String messagePet;
-    private String name;
-    private String userName;
-    private String surname;
+//    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] data;
 
     public PetReport() {
     }
 
-    public PetReport(Integer id, byte[] bytes, Long chatId, String messagePet, String name, String userName, String surname) {
+    public PetReport(Integer id, Long chatId, byte[] data) {
         this.id = id;
-        this.bytes = bytes;
         this.chatId = chatId;
-        this.messagePet = messagePet;
-        this.name = name;
-        this.userName = userName;
-        this.surname = surname;
+        this.data = data;
     }
 
     public Integer getId() {
@@ -44,14 +36,6 @@ public class PetReport {
         this.id = id;
     }
 
-    public byte[] getBytes() {
-        return bytes;
-    }
-
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
-    }
-
     public Long getChatId() {
         return chatId;
     }
@@ -60,36 +44,12 @@ public class PetReport {
         this.chatId = chatId;
     }
 
-    public String getMessagePet() {
-        return messagePet;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setMessagePet(String messagePet) {
-        this.messagePet = messagePet;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setData(byte[] data) {
+        this.data = data;
     }
 
     @Override
@@ -97,13 +57,13 @@ public class PetReport {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PetReport petReport = (PetReport) o;
-        return Objects.equals(id, petReport.id) && Arrays.equals(bytes, petReport.bytes) && Objects.equals(chatId, petReport.chatId) && Objects.equals(messagePet, petReport.messagePet) && Objects.equals(name, petReport.name) && Objects.equals(userName, petReport.userName) && Objects.equals(surname, petReport.surname);
+        return Objects.equals(id, petReport.id) && Objects.equals(chatId, petReport.chatId) && Arrays.equals(data, petReport.data);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, chatId, messagePet, name, userName, surname);
-        result = 31 * result + Arrays.hashCode(bytes);
+        int result = Objects.hash(id, chatId);
+        result = 31 * result + Arrays.hashCode(data);
         return result;
     }
 
@@ -111,12 +71,8 @@ public class PetReport {
     public String toString() {
         return "PetReport{" +
                 "id=" + id +
-                ", bytes=" + Arrays.toString(bytes) +
                 ", chatId=" + chatId +
-                ", messagePet='" + messagePet + '\'' +
-                ", name='" + name + '\'' +
-                ", userName='" + userName + '\'' +
-                ", surname='" + surname + '\'' +
+                ", data=" + Arrays.toString(data) +
                 '}';
     }
 }

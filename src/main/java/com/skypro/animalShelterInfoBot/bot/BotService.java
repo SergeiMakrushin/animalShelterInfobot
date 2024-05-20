@@ -81,6 +81,7 @@ public interface BotService {
 
         void sendMessage(SendPhoto sendPhoto);
 
-        void savingDatabase(PhotoSize photo, Long chatId, String messagePet, String name, String userName, String surname);
+//        void savingDatabase(PhotoSize photo, Long chatId, String messagePet, String name, String userName, String surname);
+        void savingDatabase(PhotoSize photo, Long chatId);
     }
 }

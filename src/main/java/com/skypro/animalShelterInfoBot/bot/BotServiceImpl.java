@@ -162,28 +162,6 @@ public class BotServiceImpl implements BotService {
         log.info("метод получения и обработки сообщения в БотСервисе");
         SendMessage textToSend = new SendMessage();
 
-//        if (!(update.getMessage().getPhoto().get(update.getMessage().getPhoto().size() - 1) ==null) ||!(update.getMessage().getPhoto().isEmpty())) {
-//            if (update.hasCallbackQuery()) {
-//                CallbackQuery callbackQuery = update.getCallbackQuery();
-//                String msgText = callbackQuery.getData();
-//                long chatId = callbackQuery.getMessage().getChatId();
-//                String name = callbackQuery.getFrom().getFirstName();
-//                String userName = callbackQuery.getFrom().getUserName();
-//                String surname = callbackQuery.getFrom().getLastName();
-//            PhotoSize photo = update.getMessage().getPhoto().get(update.getMessage().getPhoto().size() - 1);
-//
-//            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname, photo);
-//            }            else if ((update.hasMessage() && update.getMessage().hasText()) ){
-//                String msgText = update.getMessage().getText();
-//                long chatId = update.getMessage().getChatId();
-//                String name = update.getMessage().getChat().getFirstName();
-//                String userName = update.getMessage().getChat().getUserName();
-//                String surname = update.getMessage().getChat().getLastName();
-//                PhotoSize photo = update.getMessage().getPhoto().get(update.getMessage().getPhoto().size() - 1);
-//                textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname, photo);
-//            }
-//        }
-
         if (update.hasCallbackQuery()) {
             isCheckContact = false;
             isCheckColor = false;
@@ -645,14 +623,15 @@ public class BotServiceImpl implements BotService {
 
     public SendMessage sendReport(long chatId, PhotoSize photo) {
         log.info("метод сохранение  отчета");
-        log.info("что пришло"+chatId);
+        log.info("что пришло в sendReport "+chatId+" "+photo);
         List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
         Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
         long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
-
+//        long randomVolunteer=5286947855l;
+        log.info("chatId волонтера 1 "+randomVolunteer);
         SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
         messageVolunteer.setChatId(randomVolunteer);
-        log.info("chatId волонтера"+randomVolunteer);
+        log.info("chatId волонтера 2 "+randomVolunteer);
         messageVolunteer.setText("Пользователь tg://resolve?domain=" + chatId
                 + " отправил отчет о питомце ");
         listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
@@ -671,12 +650,12 @@ public class BotServiceImpl implements BotService {
         listener.sendMessage(msg);     // Отправляем сообщение волонтеру
 
 //сохраняем в базу в виде массива байт
-        String text = "fgf";
-        String name = "vf";
-        String userName = "ds";
-        String surname = "da";
-        listener.savingDatabase(photo, chatId, text, name, userName, surname);
-
+//        String text = "fgf";
+//        String name = "vf";
+//        String userName = "ds";
+//        String surname = "da";
+//        listener.savingDatabase(photo, chatId, text, name, userName, surname);
+        listener.savingDatabase(photo, chatId);
 
         ////////////////
         SendMessage sendReport = new SendMessage();
