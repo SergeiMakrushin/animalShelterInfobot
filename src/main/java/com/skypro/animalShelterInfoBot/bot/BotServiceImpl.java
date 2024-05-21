@@ -636,35 +636,6 @@ public class BotServiceImpl implements BotService {
     }
 
 
-    /**
-     * Метод выполняется если нажата кнопка "Позвать волонтера"
-     * Выбирает волонтера из бд и отправляет ему контактную информацию пользователя
-
-     * @param chatId  идентификатор чата
-     * @param userName    имя отправителя
-     * @return отправка сообщения пользователю
-     */
-    public SendMessage getContactVolunteer(long chatId, String userName) {
-        List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
-        Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
-        long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
-
-        SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
-        messageVolunteer.setChatId(randomVolunteer);
-        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
-                + " телеграмм-бота хочет связаться с вами или оставил контактные данные и ждет звонка!");
-        listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
-
-        SendMessage getContactVolunteer = new SendMessage();
-        getContactVolunteer.setChatId(chatId);
-        getContactVolunteer.setText("""
-                Наши добровольцы скоро свяжутся с вами!
-
-                отправте что нибудь боту, для открытия дополнительного меню, что бы продолжить диалог с ботом!""");
-
-        return getContactVolunteer;
-
-    }
 
     /**
      * Метод отправляет сообщение если была нажата кнопка "отправить отчет"

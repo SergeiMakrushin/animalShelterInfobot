@@ -119,8 +119,6 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
         GetFile getFile = new GetFile(photo.getFileId());
         try {
             File file = execute(getFile); //tg file obj
-            System.out.println("file = " + file);
-            System.out.println("file.getFilePath() = " + file.getFilePath());
 
 //            получение массива байт и сохраняем в базу
             java.io.File file1 = downloadFile(file.getFilePath());
