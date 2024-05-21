@@ -31,10 +31,10 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
 
     private final PetReportRepository petReportRepository;
 
-    public TelegramBot(InfoBotConfiguration config, BotService botService,PetReportRepository petReportRepository) {
+    public TelegramBot(InfoBotConfiguration config, BotService botService, PetReportRepository petReportRepository) {
         this.config = config;
         this.botService = botService;
-        this.petReportRepository=petReportRepository;
+        this.petReportRepository = petReportRepository;
 
 
         botService.setListener(this);
@@ -77,7 +77,7 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
         log.info("метод получения и обработки сообщения");
         try {
 //
-            if (update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery()||update.getMessage().hasPhoto()) {
+            if (update.hasMessage() && update.getMessage().hasText() || update.hasCallbackQuery() || update.getMessage().hasPhoto()) {
                 log.info("проверка на пустоту");
                 SendMessage sendMessage = botService.inputMsg(update);
                 log.info("получение ответа от ботсервиса");
@@ -113,39 +113,9 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
             e.printStackTrace();
         }
     }
-//    public void savingDatabase (PhotoSize photo,Long chatId, String messagePet,String name, String userName, String surname) {
-//        GetFile getFile = new GetFile(photo.getFileId());
-//        try {
-//            File file = execute(getFile); //tg file obj
-//            System.out.println("file = " + file);
-//            System.out.println("file.getFilePath() = " + file.getFilePath());
-//
-////            получение массива байт и сохраняем в базу
-//            java.io.File file1=downloadFile(file.getFilePath());
-//
-//            byte[] bytes = new byte[(int) file1.length()];
-//            FileInputStream fis = null;
-//            try {
-//                fis = new FileInputStream(file1);
-//                fis.read(bytes);
-//            } catch (FileNotFoundException e) {
-//                throw new RuntimeException(e);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            } finally {
-//                if (fis != null) {
-//                    fis.close();
-//                }
-//            }
-//            System.out.println("bytes = " + bytes);
-//
-//            PetReport petReport=new PetReport(1,bytes,chatId,messagePet,name,userName,surname);
-//            petReportRepository.save(petReport);
-//        } catch (TelegramApiException | IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-    public void savingDatabase (PhotoSize photo,Long chatId) {
+
+
+    public void savingDatabase(PhotoSize photo, Long chatId, String messagePet, String userName) {
         GetFile getFile = new GetFile(photo.getFileId());
         try {
             File file = execute(getFile); //tg file obj
@@ -153,7 +123,7 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
             System.out.println("file.getFilePath() = " + file.getFilePath());
 
 //            получение массива байт и сохраняем в базу
-            java.io.File file1=downloadFile(file.getFilePath());
+            java.io.File file1 = downloadFile(file.getFilePath());
 
             byte[] bytes = new byte[(int) file1.length()];
             FileInputStream fis = null;
@@ -169,18 +139,17 @@ public class TelegramBot extends TelegramLongPollingBot implements BotService.Li
                     fis.close();
                 }
             }
-            System.out.println("bytes = " + bytes);
 
-            PetReport petReport=new PetReport();
-petReport.setData(bytes);
-petReport.setChatId(chatId);
-//            (1,bytes,chatId);
+            PetReport petReport = new PetReport();
+            petReport.setData(bytes);
+            petReport.setUserChatId(chatId);
+            petReport.setMessagePet(messagePet);
+            petReport.setUserName(userName);
+
             petReportRepository.save(petReport);
         } catch (TelegramApiException | IOException e) {
             e.printStackTrace();
         }
     }
-//    public void info(String процессИнициализации) {
-//
-//    }
+
 }

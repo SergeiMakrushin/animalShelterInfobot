@@ -6,7 +6,9 @@ import org.hibernate.annotations.JdbcTypeCode;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Objects;
-
+/**
+ * Сущность Отчета
+ */
 @Entity
 public class PetReport {
 
@@ -14,7 +16,10 @@ public class PetReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Long chatId;
+    private Long userChatId;
+
+   private String messagePet;
+    private String userName;
 //    @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] data;
@@ -22,9 +27,11 @@ public class PetReport {
     public PetReport() {
     }
 
-    public PetReport(Integer id, Long chatId, byte[] data) {
+    public PetReport(Integer id, Long userChatId, String messagePet, String userName, byte[] data) {
         this.id = id;
-        this.chatId = chatId;
+        this.userChatId = userChatId;
+        this.messagePet = messagePet;
+        this.userName = userName;
         this.data = data;
     }
 
@@ -36,12 +43,28 @@ public class PetReport {
         this.id = id;
     }
 
-    public Long getChatId() {
-        return chatId;
+    public Long getUserChatId() {
+        return userChatId;
     }
 
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
+    public void setUserChatId(Long userChatId) {
+        this.userChatId = userChatId;
+    }
+
+    public String getMessagePet() {
+        return messagePet;
+    }
+
+    public void setMessagePet(String messagePet) {
+        this.messagePet = messagePet;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public byte[] getData() {
@@ -57,12 +80,12 @@ public class PetReport {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PetReport petReport = (PetReport) o;
-        return Objects.equals(id, petReport.id) && Objects.equals(chatId, petReport.chatId) && Arrays.equals(data, petReport.data);
+        return Objects.equals(id, petReport.id) && Objects.equals(userChatId, petReport.userChatId) && Objects.equals(messagePet, petReport.messagePet) && Objects.equals(userName, petReport.userName) && Arrays.equals(data, petReport.data);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, chatId);
+        int result = Objects.hash(id, userChatId, messagePet, userName);
         result = 31 * result + Arrays.hashCode(data);
         return result;
     }
@@ -71,7 +94,9 @@ public class PetReport {
     public String toString() {
         return "PetReport{" +
                 "id=" + id +
-                ", chatId=" + chatId +
+                ", userChatId=" + userChatId +
+                ", messagePet='" + messagePet + '\'' +
+                ", userName='" + userName + '\'' +
                 ", data=" + Arrays.toString(data) +
                 '}';
     }

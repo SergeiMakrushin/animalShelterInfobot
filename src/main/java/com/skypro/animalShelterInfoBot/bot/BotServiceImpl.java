@@ -159,7 +159,7 @@ public class BotServiceImpl implements BotService {
      * @return текст для отправки
      */
     public SendMessage inputMsg(Update update) {
-        log.info("метод получения и обработки сообщения в БотСервисе");
+        log.info("метод получения и обработки сообщения в BotService");
         SendMessage textToSend = new SendMessage();
 
         if (update.hasCallbackQuery()) {
@@ -186,36 +186,23 @@ public class BotServiceImpl implements BotService {
         } else if (update.getMessage().hasPhoto()) {
 
             Message message = update.getMessage();
+
             long chatId = update.getMessage().getChatId();
-
-
+            String userName = update.getMessage().getChat().getUserName();
+            String textReport = update.getMessage().getCaption();
             PhotoSize photo = update.getMessage().getPhoto().get(message.getPhoto().size() - 1);
-            textToSend = processingTextAndCallbackQuery(chatId, photo);
-//            textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname, photo);
+            textToSend = processingPhoto(photo, chatId, textReport, userName);
 
         }
-
 
         return textToSend;
     }
 
 
-
-    private SendMessage processingTextAndCallbackQuery(long chatId, PhotoSize photoSize) {
-
-        return sendReport(chatId, photoSize);
-
+    private SendMessage processingPhoto(PhotoSize photo, long chatId, String textReport, String userName) {
+        return sendReport(photo, chatId, textReport, userName);
     }
 
-
-//    private SendMessage processingTextAndCallbackQuery(long chatId, String text, String name, String userName, String surname, PhotoSize photoSize) {
-//
-//        return switch (text) {
-//            case  CMD_SEND_REPORT ->sendReport(chatId, text, name, userName,surname, photoSize);
-//            default -> checkingTextForContacts(chatId, text, name, surname, userName);
-//        };
-//
-//    }
 
     /**
      * Обработка входящих сообщений
@@ -243,18 +230,14 @@ public class BotServiceImpl implements BotService {
             case BTN_ADMINISTRATION -> administrationMenu(chatId);
             case BTN_INFO_SHELTER, CMD_INFO_SHELTER -> infoShelter(chatId);
             case BTN_LOCATION, CMD_LOCATION -> infoShelterTimeAndAddress(chatId);
-
             case BTN_SEND_REPORT -> returnReportMessage(chatId, text);
-
             case BTN_INFO_TAKE_ANIMAL, CMD_INFO_TAKE_ANIMAL -> instructionAdoptionMenu(chatId);
             case BTN_GET_PASS, CMD_GET_PASS -> registerPass(chatId);
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
             case BTN_LEAVE_CONTACTS, CMD_LEAVE_CONTACT -> leaveContact(chatId, text);
             case BTN_HELP, CMD_HELP -> getContactVolunteer(chatId, userName);
             case BTN_SHOW_ALL -> getAllDogAndCat(chatId);
-            ////////////
             case BTN_FIND_BY_NICK -> getNameDogAndCat(chatId);
-            //////////
             case BTN_FIND_BY_AGE -> getAgeDogAndCat(chatId);
             case BTN_FIND_BY_COLOR -> getColorDogAndCat(chatId);
             case BTN_FIND_BY_BREED -> getBreedDogAndCat(chatId);
@@ -589,6 +572,15 @@ public class BotServiceImpl implements BotService {
         return registerPass;
     }
 
+
+    /**
+     * Метод выполняется если нажата кнопка "Позвать волонтера"
+     * Выбирает волонтера из бд и отправляет ему контактную информацию пользователя
+
+     * @param chatId  идентификатор чата
+     * @param userName    имя отправителя
+     * @return отправка сообщения пользователю
+     */
     public SendMessage getContactVolunteer(long chatId, String userName) {
         List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
         Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
@@ -611,100 +603,64 @@ public class BotServiceImpl implements BotService {
 
     }
 
+    /**
+     * Метод отправляет сообщение если была нажата кнопка "отправить отчет"
+     * @param chatId  идентификатор чата
+     * @param text   текст сообщения если команда отправленна текстом через //
+     * @return отправка сообщения пользователю
+     */
     public SendMessage returnReportMessage(long chatId, String text) {
         log.info("метод ответа на кнопку отчет");
         SendMessage returnReportMessage = new SendMessage();
         returnReportMessage.setChatId(chatId);
-        returnReportMessage.setText("Отправьте фото питомца");
+        returnReportMessage.setText("Отправьте фото питомца с текстом сообщения");
         return returnReportMessage;
     }
 
-    /////////////////////////////////
 
-    public SendMessage sendReport(long chatId, PhotoSize photo) {
-        log.info("метод сохранение  отчета");
-        log.info("что пришло в sendReport "+chatId+" "+photo);
+    /**
+     * Метод обрабатывает отчет клиента в формате фото+сообщение
+     * И отправляет на проверку волонтеру, сохраняет отчет в бд
+
+     * @param chatId  идентификатор чата
+     * @param textReport    текст сообщения
+     * @param userName    имя отправителя
+     * @param photo данные для получения фото с сервера Telegram
+     * @return отправка сообщения пользователю
+     */
+    public SendMessage sendReport(PhotoSize photo, long chatId, String textReport, String userName) {
+        log.info("метод  отправления отчета волонтеру и сохранения в бд");
+
         List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
         Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
         long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
-//        long randomVolunteer=5286947855l;
-        log.info("chatId волонтера 1 "+randomVolunteer);
+
         SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
         messageVolunteer.setChatId(randomVolunteer);
-        log.info("chatId волонтера 2 "+randomVolunteer);
-        messageVolunteer.setText("Пользователь tg://resolve?domain=" + chatId
-                + " отправил отчет о питомце ");
+        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
+                + " отправил отчет о питомце: "+textReport);
         listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
 
 //        отправляем фото волонтеру
         String f_id = photo.getFileId();
-        int f_width = photo.getWidth();
-        int f_height = photo.getHeight();
-        String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: " + Integer.toString(f_height);
+
         SendPhoto msg = SendPhoto
                 .builder()
                 .chatId(randomVolunteer)
                 .photo(new InputFile(f_id))
-                .caption(caption)
                 .build();
         listener.sendMessage(msg);     // Отправляем сообщение волонтеру
 
-//сохраняем в базу в виде массива байт
-//        String text = "fgf";
-//        String name = "vf";
-//        String userName = "ds";
-//        String surname = "da";
-//        listener.savingDatabase(photo, chatId, text, name, userName, surname);
-        listener.savingDatabase(photo, chatId);
+//       сохраняем в бд в виде массива байт
+        listener.savingDatabase(photo, chatId, textReport, userName);
 
-        ////////////////
         SendMessage sendReport = new SendMessage();
         sendReport.setChatId(chatId);
-        sendReport.setText("Отчет на проверке.");
+        sendReport.setText("Сейчас отчет на проверке, позже вам придет уведомление или волонтер напишет вам для уточнения деталей.");
         return sendReport;
     }
 
 
-//    public SendMessage sendReport(long chatId, String text, String name, String userName, String surname, PhotoSize photo) {
-//        log.info("метод сохранение  отчета");
-//        List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
-//        Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
-//        long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
-//
-//        SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
-//        messageVolunteer.setChatId(randomVolunteer);
-//        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName+" "+name+" "+surname
-//                + " отправил отчет о питомце " + text);
-//        listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
-//
-////        отправляем фото волонтеру
-//        String f_id = photo.getFileId();
-//        int f_width = photo.getWidth();
-//        int f_height = photo.getHeight();
-//        String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: " + Integer.toString(f_height);
-//        SendPhoto msg = SendPhoto
-//                .builder()
-//                .chatId(randomVolunteer)
-//                .photo(new InputFile(f_id))
-//                .caption(caption)
-//                .build();
-//        listener.sendMessage(msg);     // Отправляем сообщение волонтеру
-//
-////сохраняем в базу в виде массива байт
-//
-//        listener.savingDatabase(photo,chatId,text,name,userName,surname);
-//
-//
-//
-//        ////////////////
-//        SendMessage sendReport = new SendMessage();
-//        sendReport.setChatId(chatId);
-//        sendReport.setText("Отчет на проверке.");
-//        return sendReport;
-//    }
-
-
-    ////////////////////////////////
     public SendMessage infoShelterTimeAndAddress(long chatId) {
         SendMessage timeAndAddress = new SendMessage();
         timeAndAddress.setChatId(chatId);

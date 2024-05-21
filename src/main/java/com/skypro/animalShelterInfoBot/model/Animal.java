@@ -31,8 +31,7 @@ public class Animal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
-//    @Column(columnDefinition = "enum('DOG','CAT')")
-//    @Enumerated(EnumType.STRING)
+
     private TapeOfAnimal catOrDog; //вид животного
     @Column(name = "name")
     private String nickName;  //кличка
