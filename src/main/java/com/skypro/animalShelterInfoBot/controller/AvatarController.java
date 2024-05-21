@@ -23,10 +23,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 @Tag(name = "Контроллер аватара",
-        description = "Загрузки аватара." +
-                "Скачивание предпросмотра аватара." +
-                "Скачивание аватара из базы данных." +
-                "Скачивание аватара из файла." +
+        description = "Загрузки аватара. " +
+                "Скачивание предпросмотра аватара. " +
+                "Скачивание аватара из базы данных. " +
+                "Скачивание аватара из файла. " +
                 "Удаление аватара.")
 @RestController
 @RequestMapping(path = "/avatar")
@@ -36,20 +36,20 @@ public class AvatarController {
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
-//    @Operation(summary = "Загрузка аватара",
-//            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-//                    description = "Загрузить аватар",
-//
-//                    content = @Content(
-//                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+    @Operation(summary = "Загрузка аватара",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Загрузить аватар",
+
+                    content = @Content(
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE
 //                            schema = @Schema(implementation = Avatar.class)
-//                    )
-//            )
-//    )
+                    )
+            )
+    )
 
 
     @PostMapping(value = "/{animalId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long animalId, @RequestParam MultipartFile avatar) throws IOException {
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long animalId, @RequestPart MultipartFile avatar) throws IOException {
         avatarService.uploadAvatar(animalId, avatar);
         return ResponseEntity.ok().build();
     }

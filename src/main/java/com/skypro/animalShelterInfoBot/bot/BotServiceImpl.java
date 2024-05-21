@@ -13,14 +13,19 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -160,6 +165,7 @@ public class BotServiceImpl implements BotService {
      * @return текст для отправки
      */
     public SendMessage inputMsg(Update update) {
+        log.info("метод получения и обработки сообщения в BotService");
         SendMessage textToSend = new SendMessage();
 
         if (update.hasCallbackQuery()) {
@@ -174,6 +180,7 @@ public class BotServiceImpl implements BotService {
             String name = callbackQuery.getFrom().getFirstName();
             String userName = callbackQuery.getFrom().getUserName();
             String surname = callbackQuery.getFrom().getLastName();
+
             textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname);
         } else if (update.hasMessage() && update.getMessage().hasText()) {
             String msgText = update.getMessage().getText();
@@ -181,10 +188,28 @@ public class BotServiceImpl implements BotService {
             String name = update.getMessage().getChat().getFirstName();
             String userName = update.getMessage().getChat().getUserName();
             String surname = update.getMessage().getChat().getLastName();
+
             textToSend = processingTextAndCallbackQuery(chatId, msgText, name, userName, surname);
+        } else if (update.getMessage().hasPhoto()) {
+
+            Message message = update.getMessage();
+
+            long chatId = update.getMessage().getChatId();
+            String userName = update.getMessage().getChat().getUserName();
+            String textReport = update.getMessage().getCaption();
+            PhotoSize photo = update.getMessage().getPhoto().get(message.getPhoto().size() - 1);
+            textToSend = processingPhoto(photo, chatId, textReport, userName);
+
         }
+
         return textToSend;
     }
+
+
+    private SendMessage processingPhoto(PhotoSize photo, long chatId, String textReport, String userName) {
+        return sendReport(photo, chatId, textReport, userName);
+    }
+
 
     /**
      * Обработка входящих сообщений
@@ -211,8 +236,8 @@ public class BotServiceImpl implements BotService {
         return switch (text) {
             case BTN_ADMINISTRATION -> administrationMenu(chatId);
             case BTN_INFO_SHELTER, CMD_INFO_SHELTER -> infoShelter(chatId);
-            case BTN_LOCATION, CMD_LOCATION -> InfoShelterTimeAndAddress(chatId);
-            case BTN_SEND_REPORT, CMD_SEND_REPORT -> sendReport(chatId);
+            case BTN_LOCATION, CMD_LOCATION -> infoShelterTimeAndAddress(chatId);
+            case BTN_SEND_REPORT -> returnReportMessage(chatId, text);
             case BTN_INFO_TAKE_ANIMAL, CMD_INFO_TAKE_ANIMAL -> instructionAdoptionMenu(chatId);
             case BTN_GET_PASS, CMD_GET_PASS -> registerPass(chatId);
             case BTN_TB_RECOMMENDATION, CMD_TB_RECOMMENDATIONS -> shelterTB(chatId);
@@ -610,14 +635,96 @@ public class BotServiceImpl implements BotService {
         return registerPass;
     }
 
-    public SendMessage sendReport(long chatId) {
+
+    /**
+     * Метод выполняется если нажата кнопка "Позвать волонтера"
+     * Выбирает волонтера из бд и отправляет ему контактную информацию пользователя
+
+     * @param chatId  идентификатор чата
+     * @param userName    имя отправителя
+     * @return отправка сообщения пользователю
+     */
+    public SendMessage getContactVolunteer(long chatId, String userName) {
+        List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
+        Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
+        long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
+
+        SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
+        messageVolunteer.setChatId(randomVolunteer);
+        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
+                + " телеграмм-бота хочет связаться с вами или оставил контактные данные и ждет звонка!");
+        listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
+
+        SendMessage getContactVolunteer = new SendMessage();
+        getContactVolunteer.setChatId(chatId);
+        getContactVolunteer.setText("""
+                Наши добровольцы скоро свяжутся с вами!
+
+                отправте что нибудь боту, для открытия дополнительного меню, что бы продолжить диалог с ботом!""");
+
+        return getContactVolunteer;
+
+    }
+
+    /**
+     * Метод отправляет сообщение если была нажата кнопка "отправить отчет"
+     * @param chatId  идентификатор чата
+     * @param text   текст сообщения если команда отправленна текстом через //
+     * @return отправка сообщения пользователю
+     */
+    public SendMessage returnReportMessage(long chatId, String text) {
+        log.info("метод ответа на кнопку отчет");
+        SendMessage returnReportMessage = new SendMessage();
+        returnReportMessage.setChatId(chatId);
+        returnReportMessage.setText("Отправьте фото питомца с текстом сообщения");
+        return returnReportMessage;
+    }
+
+
+    /**
+     * Метод обрабатывает отчет клиента в формате фото+сообщение
+     * И отправляет на проверку волонтеру, сохраняет отчет в бд
+
+     * @param chatId  идентификатор чата
+     * @param textReport    текст сообщения
+     * @param userName    имя отправителя
+     * @param photo данные для получения фото с сервера Telegram
+     * @return отправка сообщения пользователю
+     */
+    public SendMessage sendReport(PhotoSize photo, long chatId, String textReport, String userName) {
+        log.info("метод  отправления отчета волонтеру и сохранения в бд");
+
+        List<User> volunteerList = userServiceImpl.getAllVolunteer();   // Записываем в лист всех полученных волонтеров
+        Random rand = new Random();                                     // Выбираем ChatId случайного волонтера
+        long randomVolunteer = volunteerList.get(rand.nextInt(volunteerList.size())).getChatId();
+
+        SendMessage messageVolunteer = new SendMessage();  // Создаем сообщение для волонтера с контактами пользователя
+        messageVolunteer.setChatId(randomVolunteer);
+        messageVolunteer.setText("Пользователь tg://resolve?domain=" + userName
+                + " отправил отчет о питомце: "+textReport);
+        listener.sendMessage(messageVolunteer);     // Отправляем сообщение волонтеру
+
+//        отправляем фото волонтеру
+        String f_id = photo.getFileId();
+
+        SendPhoto msg = SendPhoto
+                .builder()
+                .chatId(randomVolunteer)
+                .photo(new InputFile(f_id))
+                .build();
+        listener.sendMessage(msg);     // Отправляем сообщение волонтеру
+
+//       сохраняем в бд в виде массива байт
+        listener.savingDatabase(photo, chatId, textReport, userName);
+
         SendMessage sendReport = new SendMessage();
         sendReport.setChatId(chatId);
-        sendReport.setText("Если у вас есть какие-либо вопросы или нужно сообщить о проблеме, пожалуйста, свяжитесь с нами.");
+        sendReport.setText("Сейчас отчет на проверке, позже вам придет уведомление или волонтер напишет вам для уточнения деталей.");
         return sendReport;
     }
 
-    public SendMessage InfoShelterTimeAndAddress(long chatId) {
+
+    public SendMessage infoShelterTimeAndAddress(long chatId) {
         SendMessage timeAndAddress = new SendMessage();
         timeAndAddress.setChatId(chatId);
         timeAndAddress.setText(ShelterInformationDirectory.SHELTERADRESS + ShelterInformationDirectory.WORKTIME);
