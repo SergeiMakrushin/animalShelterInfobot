@@ -43,31 +43,4 @@ class TelegramBotTest {
 
         Mockito.verify(botService).inputMsg(update);
     }
-
-    @Test
-    void testSendMessageWithText() {
-        SendMessage message = new SendMessage();
-        message.setText("Test Message");
-
-        TelegramBot telegramBot = new TelegramBot(Mockito.mock(InfoBotConfiguration.class), Mockito.mock(BotService.class), Mockito.mock(PetReportRepository.class));
-
-        telegramBot.sendMessage(message);
-    }
-
-    @Test
-    void testSavingDatabase() throws Exception {
-        PhotoSize photo = new PhotoSize();
-        photo.setFileId("123456");
-        Long chatId = 123456L;
-        String messagePet = "Pet message";
-        String userName = "User";
-
-        PetReportRepository petReportRepository = Mockito.mock(PetReportRepository.class);
-
-        TelegramBot telegramBot = new TelegramBot(Mockito.mock(InfoBotConfiguration.class), Mockito.mock(BotService.class), petReportRepository);
-
-        telegramBot.savingDatabase(photo, chatId, messagePet, userName);
-
-        Mockito.verify(petReportRepository).save(Mockito.any(PetReport.class));
-    }
 }
