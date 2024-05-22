@@ -10,8 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -61,26 +59,12 @@ public class BotServiceImplTest {
         assertEquals(expectedMessage.getChatId(), resultMessage.getChatId());
         assertEquals(expectedMessage.getText(), resultMessage.getText());
     }
-
-   @Test
-   public void testInputMsg() {
-
-       Update update = new Update();
-       Message message = new Message();
-       Chat chat = new Chat();
-       chat.setId(12345L);
-       chat.setFirstName("John");
-       chat.setLastName("Doe");
-       chat.setUserName("johndoe123");
-       message.setChat(chat);
-       message.setText("Hello");
-       update.setMessage(message);
-
-       SendMessage result = botService.inputMsg(update);
-
-       assertNotNull(result);
-   }
-
+    @Test
+    void testInputMsg() {
+        Update update = new Update();
+        SendMessage sendMessage = botService.inputMsg(update);
+        assertEquals(new SendMessage(), sendMessage);
+    }
     @Test
     public void testProcessingTextAndCallbackQuery_AdministrationMenu() {
         long chatId = 123456;
