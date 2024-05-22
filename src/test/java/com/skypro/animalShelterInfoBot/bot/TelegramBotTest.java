@@ -1,12 +1,9 @@
 package com.skypro.animalShelterInfoBot.bot;
 import com.skypro.animalShelterInfoBot.configuration.InfoBotConfiguration;
-import com.skypro.animalShelterInfoBot.model.PetReport;
 import com.skypro.animalShelterInfoBot.repositories.PetReportRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import static org.junit.Assert.assertEquals;
 class TelegramBotTest {
