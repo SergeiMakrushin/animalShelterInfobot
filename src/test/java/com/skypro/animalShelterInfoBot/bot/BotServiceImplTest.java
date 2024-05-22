@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
@@ -373,6 +374,7 @@ public class BotServiceImplTest {
         assertEquals(expectedMessage.getChatId(), actualMessage.getChatId());
         assertEquals(expectedMessage.getText(), actualMessage.getText());
     }
+
 }
 
 
