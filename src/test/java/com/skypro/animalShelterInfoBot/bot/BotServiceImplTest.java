@@ -1,6 +1,7 @@
 package com.skypro.animalShelterInfoBot.bot;
 
 import com.skypro.animalShelterInfoBot.informationDirectory.ShelterInformationDirectory;
+import com.skypro.animalShelterInfoBot.model.User;
 import com.skypro.animalShelterInfoBot.repositories.UserRepository;
 import com.skypro.animalShelterInfoBot.service.AnimalServiceImpl;
 import com.skypro.animalShelterInfoBot.service.UserService;
@@ -8,12 +9,18 @@ import com.skypro.animalShelterInfoBot.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,6 +36,7 @@ public class BotServiceImplTest {
 
     private final long chatIdExample = 1234567890;
     private BotService.Listener listener;
+    private UserService userServiceImpl;
 
     @Test
     void testSettingSendMessage() {
@@ -374,7 +382,23 @@ public class BotServiceImplTest {
         assertEquals(expectedMessage.getChatId(), actualMessage.getChatId());
         assertEquals(expectedMessage.getText(), actualMessage.getText());
     }
-
+//    @Test
+//    public void testSendReport() {
+//        when(userServiceImpl.getAllVolunteer()).thenReturn(Arrays.asList(new User(123456789)));
+//
+//        SendMessage expectedMessage = new SendMessage();
+//        expectedMessage.setChatId(123456789L);
+//        expectedMessage.setText("Сейчас отчет на проверке, позже вам придет уведомление или волонтер напишет вам для уточнения деталей.");
+//
+//        SendMessage result = reportService.sendReport(photo, 987654321, "Test report", "testUser");
+//
+//        verify(listener, times(1)).sendMessage(any(SendMessage.class));
+//        verify(listener, times(1)).sendMessage(any(SendPhoto.class));
+//        verify(listener, times(1)).savingDatabase(any(PhotoSize.class), eq(987654321L), eq("Test report"), eq("testUser"));
+//
+//        assertEquals(expectedMessage.getChatId(), result.getChatId());
+//        assertEquals(expectedMessage.getText(), result.getText());
+//    }
 }
 
 
